@@ -5,18 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>六年甲班行知錄</title>
   
-  <!-- 載入 Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- 載入 Font Awesome 圖標庫 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  
-  <!-- 載入字體：思源宋體 (Noto Serif TC) + 飽滿數字/現代內文字體 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
 
-  <!-- 載入 Firebase SDK (相容模式，適合單一 HTML 檔) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -28,47 +22,24 @@
       color: #2D2926;
       -webkit-font-smoothing: antialiased;
     }
-    .font-serif-tc {
-      font-family: 'Noto Serif TC', serif;
-    }
-    .font-num {
-      font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
-    }
-    .stone-card {
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+    .font-serif-tc { font-family: 'Noto Serif TC', serif; }
+    .font-num { font-family: 'Fredoka', 'Noto Sans TC', sans-serif; }
+    .stone-card { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
     .stone-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
     }
-    .stone-btn {
-      transition: all 0.15s ease-out;
-    }
-    .stone-btn:active {
-      transform: scale(0.96);
-    }
+    .stone-btn { transition: all 0.15s ease-out; }
+    .stone-btn:active { transform: scale(0.96); }
     @keyframes footstep-pulse {
       0%, 100% { transform: scale(1); opacity: 0.92; }
       50% { transform: scale(1.04); opacity: 1; }
     }
-    .footstep-anim {
-      animation: footstep-pulse 3.6s ease-in-out infinite;
-    }
-    .custom-scrollbar::-webkit-scrollbar {
-      height: 5px;
-      width: 5px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: #EFECE6;
-      border-radius: 9999px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #D3CDC2;
-      border-radius: 9999px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: #B5AD9F;
-    }
+    .footstep-anim { animation: footstep-pulse 3.6s ease-in-out infinite; }
+    .custom-scrollbar::-webkit-scrollbar { height: 5px; width: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #EFECE6; border-radius: 9999px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #D3CDC2; border-radius: 9999px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #B5AD9F; }
   </style>
 </head>
 <body class="min-h-screen p-3 sm:p-5 lg:p-6 text-stone-900 select-none">
@@ -77,7 +48,6 @@
   <header class="bg-[#FFFDF9] rounded-3xl border-2 border-stone-200/90 shadow-sm p-4 sm:p-6 mb-5">
     <div class="flex flex-wrap items-center justify-between gap-4">
       
-      <!-- 左側：登山鞋印踏壓圖騰 + 大標題與副標題切齊 -->
       <div class="flex items-center gap-3 sm:gap-5 shrink-0">
         <div class="flex flex-col items-center justify-center shrink-0">
           <div class="footstep-anim flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 text-[#8C5E3C]">
@@ -101,11 +71,10 @@
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v2.9
+            v3.0
           </span>
         </div>
 
-        <!-- 標題與切齊副標 -->
         <div class="flex flex-col justify-center">
           <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black font-serif-tc text-stone-900 tracking-wider">
             六年甲班行知錄
@@ -117,25 +86,22 @@
         </div>
       </div>
 
-      <!-- 右側工具組：雲端小綠點 + 身分切換 + 學年度選單 + 金石木牘風格時鐘 -->
+      <!-- 右側工具組 -->
       <div class="flex flex-wrap items-center gap-3 sm:gap-4 shrink-0">
-        <!-- 雲端連線狀態 -->
         <div class="relative group cursor-pointer" onclick="window.appActions.showConnectionInfo()">
           <div class="w-4 h-4 rounded-full bg-emerald-500 shadow-sm flex items-center justify-center">
             <div id="cloudPing" class="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping opacity-75"></div>
           </div>
           <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block bg-stone-900 text-white text-sm px-3 py-1.5 rounded-xl whitespace-nowrap shadow-lg z-20">
-            Firebase 雲端已連線（即時同步）
+            Firebase 雲端已連線（即時串接資料）
           </div>
         </div>
 
-        <!-- 模式切換按鈕 -->
         <button id="authBtn" onclick="window.appActions.toggleAuthModal()" class="px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 border-2 border-stone-300 shadow-xs stone-btn">
           <i id="authIcon" class="fa-solid fa-lock text-base"></i>
           <span id="authStatusText">學生模式</span>
         </button>
 
-        <!-- 學年度選單 -->
         <div class="hidden sm:flex items-center bg-stone-100 px-3 py-2 rounded-2xl border-2 border-stone-200">
           <select id="academicYearSelect" class="bg-transparent text-lg font-black text-stone-700 cursor-pointer outline-none">
             <option value="115" selected>115學年度 (六甲)</option>
@@ -143,7 +109,6 @@
           </select>
         </div>
 
-        <!-- 金石木牘時鐘 (高度 h-[96px]) -->
         <div class="flex items-center h-[96px] bg-[#F3EDE2] border-2 border-[#DFD7C7] px-4 sm:px-6 rounded-2xl shadow-inner gap-3 sm:gap-4">
           <span id="headerDateText" class="text-stone-700 font-serif-tc font-bold text-lg sm:text-2xl whitespace-nowrap">
             9月28日 星期一
@@ -160,7 +125,6 @@
     <!-- 日期導航列 -->
     <div class="flex items-center justify-between gap-3 pt-4 mt-3 border-t-2 border-stone-100 flex-nowrap w-full">
       
-      <!-- 左側固定：實踐月選單 -->
       <div class="flex items-center gap-1.5 bg-stone-100 px-3 py-1.5 rounded-2xl border-2 border-stone-200 shrink-0">
         <span class="text-lg sm:text-xl font-black text-stone-700 font-serif-tc whitespace-nowrap">實踐月：</span>
         <select id="practiceMonthSelect" onchange="window.appActions.changeMonth(this.value)" class="bg-white text-lg sm:text-xl font-black text-stone-800 border border-stone-300 rounded-xl px-2.5 py-0.5 cursor-pointer">
@@ -179,28 +143,26 @@
         </select>
       </div>
       
-      <!-- 中間橫向滾動區：日期標籤列 -->
+      <!-- 中間標籤容器：未新增時不自作主張冒出 -->
       <div id="datePillsContainer" class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto custom-scrollbar flex-nowrap px-2 flex-1 min-w-0">
       </div>
 
-      <!-- 右側固定工具組 -->
       <div class="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto whitespace-nowrap relative">
-        <button id="deleteDayBtn" onclick="window.appActions.deleteCurrentDate()" class="hidden w-11 h-11 bg-rose-50 border-2 border-rose-300 hover:bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center text-xl font-black shadow-xs stone-btn" title="刪除此日期紀錄">
+        <button id="deleteDayBtn" onclick="window.appActions.deleteCurrentDate()" class="hidden w-11 h-11 bg-rose-50 border-2 border-rose-300 hover:bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center text-xl font-black shadow-xs stone-btn" title="刪除此日期標籤">
           <i class="fa-regular fa-trash-can"></i>
         </button>
 
-        <!-- 連續真實日曆翻頁膠囊 -->
         <div class="flex items-center bg-white border-2 border-stone-300 rounded-2xl px-2 py-1 shadow-xs gap-1.5 sm:gap-2">
-          <button onclick="window.appActions.stepDate(-1)" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-stone-600 hover:text-stone-900 text-xl font-black rounded-xl hover:bg-stone-100" title="前一上課日">
+          <button onclick="window.appActions.stepDate(-1)" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-stone-600 hover:text-stone-900 text-xl font-black rounded-xl hover:bg-stone-100" title="前一日">
             <i class="fa-solid fa-chevron-left"></i>
           </button>
           <span id="currentDateCapsule" class="text-xl sm:text-2xl font-black font-num text-stone-800 px-2 tracking-wide">2026-09-28</span>
-          <button onclick="window.appActions.stepDate(1)" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-stone-600 hover:text-stone-900 text-xl font-black rounded-xl hover:bg-stone-100" title="後一上課日">
+          <button onclick="window.appActions.stepDate(1)" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-stone-600 hover:text-stone-900 text-xl font-black rounded-xl hover:bg-stone-100" title="後一日">
             <i class="fa-solid fa-chevron-right"></i>
           </button>
         </div>
 
-        <!-- ＋號：直接將目前顯示日期加入標籤列 -->
+        <!-- ＋號：按下才將目前日期收納為標籤 -->
         <button id="addDayBtn" onclick="window.appActions.promptAddNewDate()" class="hidden w-11 h-11 bg-emerald-50 border-2 border-emerald-300 hover:bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center text-2xl font-black shadow-xs stone-btn" title="將目前日期納入上課日清單">
           <i class="fa-solid fa-plus"></i>
         </button>
@@ -214,10 +176,9 @@
           <span>今日歸檔封存</span>
         </button>
 
-        <!-- 小月曆浮層 -->
         <div id="customCalendarPopup" class="hidden absolute right-0 top-14 bg-white border-2 border-stone-300 rounded-3xl shadow-2xl p-4 z-40 w-80">
           <div class="flex items-center justify-between pb-3 border-b border-stone-200 mb-3">
-            <span id="calendarTitle" class="font-black text-xl text-stone-800 font-serif-tc">2026年 9月月曆</span>
+            <span id="calendarTitle" class="font-black text-xl text-stone-800 font-serif-tc">月曆</span>
             <button onclick="window.appActions.toggleCalendarPicker()" class="text-stone-400 hover:text-stone-700 text-lg font-black">✕</button>
           </div>
           <div class="grid grid-cols-7 gap-1 text-center font-bold text-xs text-stone-500 mb-2">
@@ -329,12 +290,11 @@
   <div id="auditModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2">
     <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[98vw] max-w-[98vw] h-[96vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden">
       
-      <!-- 彈窗頂部 -->
       <div class="px-8 py-3.5 border-b-2 border-stone-200 flex items-center justify-between bg-stone-50/80 shrink-0">
         <div class="flex items-center gap-4 flex-wrap">
-          <h2 id="modalStudentName" class="text-4xl sm:text-5xl font-black text-stone-900 font-serif-tc tracking-tight">陳O佑</h2>
+          <h2 id="modalStudentName" class="text-4xl sm:text-5xl font-black text-stone-900 font-serif-tc tracking-tight">學生姓名</h2>
           <span id="modalDateBadge" class="bg-amber-100 text-amber-900 border border-amber-300 font-black text-2xl px-5 py-1.5 rounded-2xl font-num">
-            2026-09-28 實踐檢核
+            實踐檢核
           </span>
           <span id="modalLockBadge" class="hidden bg-stone-200 text-stone-800 border border-stone-400 font-black text-2xl px-5 py-1.5 rounded-2xl">
             🔒 今日已結算鎖定 (僅供查閱)
@@ -348,10 +308,8 @@
         </button>
       </div>
 
-      <!-- 彈窗三欄核心 -->
       <div class="flex-1 p-4 grid grid-cols-1 md:grid-cols-3 gap-4 overflow-hidden">
-        
-        <!-- 左欄：🌟 履行責任 -->
+        <!-- 左欄：履行責任 -->
         <div class="bg-emerald-50/70 border-2 border-emerald-200 rounded-3xl p-3 sm:p-4 flex flex-col justify-between overflow-hidden shadow-xs">
           <div>
             <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b-2 border-emerald-200">
@@ -359,11 +317,9 @@
                 <span>🌟</span> 履行責任
               </span>
             </div>
-
             <div class="space-y-1">
-              <!-- 1. 準時繳交簿本 -->
               <div id="card_rule_good_1" class="bg-white py-1.5 px-2.5 rounded-2xl border border-emerald-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_good_1" onclick="window.appActions.applyStudentRule('準時繳交簿本', 1, 'good', 'btn_rule_good_1')" class="text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                <button id="btn_rule_good_1" onclick="window.appActions.applyStudentRule('準時繳交簿本', 1, 'good')" class="text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
                   <span>🎒</span> 準時繳交簿本
                 </button>
                 <div class="flex items-center gap-1 bg-emerald-50 rounded-xl p-1 border border-emerald-200 shrink-0">
@@ -373,9 +329,8 @@
                 </div>
               </div>
 
-              <!-- 2. 個人工作完成 -->
               <div id="card_rule_good_2" class="bg-white py-1.5 px-2.5 rounded-2xl border border-emerald-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_good_2" onclick="window.appActions.applyStudentRule('個人工作完成', 1, 'good', 'btn_rule_good_2')" class="text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                <button id="btn_rule_good_2" onclick="window.appActions.applyStudentRule('個人工作完成', 1, 'good')" class="text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
                   <span>🎖️</span> 個人工作完成
                 </button>
                 <div class="flex items-center gap-1 bg-emerald-50 rounded-xl p-1 border border-emerald-200 shrink-0">
@@ -385,9 +340,8 @@
                 </div>
               </div>
 
-              <!-- 3. 科任表現滿分 -->
               <div id="card_rule_good_3" class="bg-white py-1.5 px-2.5 rounded-2xl border border-emerald-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_good_3" onclick="window.appActions.applyStudentRule('科任表現滿分', 1, 'good', 'btn_rule_good_3')" class="text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                <button id="btn_rule_good_3" onclick="window.appActions.applyStudentRule('科任表現滿分', 1, 'good')" class="text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
                   <span>🧑‍🏫</span> 科任表現滿分
                 </button>
                 <div class="flex items-center gap-1 bg-emerald-50 rounded-xl p-1 border border-emerald-200 shrink-0">
@@ -399,7 +353,6 @@
             </div>
           </div>
 
-          <!-- 下方明細 -->
           <div class="mt-2 pt-1.5 border-t-2 border-emerald-200 flex-1 flex flex-col justify-start overflow-hidden">
             <span class="text-2xl font-black text-emerald-950 mb-1 flex items-center justify-between">
               <span>📋 檢核紀錄明細</span>
@@ -411,7 +364,7 @@
           </div>
         </div>
 
-        <!-- 中欄：🚨 持續進步 -->
+        <!-- 中欄：持續進步 -->
         <div class="bg-rose-50/70 border-2 border-rose-200 rounded-3xl p-3 sm:p-4 flex flex-col justify-between overflow-hidden shadow-xs">
           <div>
             <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b-2 border-rose-200">
@@ -419,11 +372,9 @@
                 <span>🚨</span> 持續進步
               </span>
             </div>
-
             <div class="space-y-1">
-              <!-- 1. 未準時繳交簿本 -->
               <div id="card_rule_bad_1" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_bad_1" onclick="window.appActions.applyStudentRule('未準時繳交簿本', -1, 'bad', 'btn_rule_bad_1')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                <button id="btn_rule_bad_1" onclick="window.appActions.applyStudentRule('未準時繳交簿本', -1, 'bad')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
                   <span>⏰</span> 未準時繳交簿本
                 </button>
                 <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
@@ -433,9 +384,8 @@
                 </div>
               </div>
 
-              <!-- 2. 中午未準時回位 -->
               <div id="card_rule_bad_2" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_bad_2" onclick="window.appActions.applyStudentRule('中午未準時回位', -1, 'bad', 'btn_rule_bad_2')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                <button id="btn_rule_bad_2" onclick="window.appActions.applyStudentRule('中午未準時回位', -1, 'bad')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
                   <span>🔔</span> 中午未準時回位
                 </button>
                 <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
@@ -445,9 +395,8 @@
                 </div>
               </div>
 
-              <!-- 3. 個人工作未完成 -->
               <div id="card_rule_bad_3" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_bad_3" onclick="window.appActions.applyStudentRule('個人工作未完成', -1, 'bad', 'btn_rule_bad_3')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                <button id="btn_rule_bad_3" onclick="window.appActions.applyStudentRule('個人工作未完成', -1, 'bad')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
                   <span>⚠️</span> 個人工作未完成
                 </button>
                 <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
@@ -459,7 +408,6 @@
             </div>
           </div>
 
-          <!-- 下方明細 -->
           <div class="mt-2 pt-1.5 border-t-2 border-rose-200 flex-1 flex flex-col justify-start overflow-hidden">
             <span class="text-2xl font-black text-rose-950 mb-1 flex items-center justify-between">
               <span>📋 檢核紀錄明細</span>
@@ -471,7 +419,7 @@
           </div>
         </div>
 
-        <!-- 右欄：🎯 學習自律 -->
+        <!-- 右欄：學習自律 -->
         <div class="bg-amber-50/70 border-2 border-amber-200 rounded-3xl p-3 sm:p-4 flex flex-col justify-between overflow-hidden shadow-xs">
           <div>
             <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b-2 border-amber-200">
@@ -479,11 +427,9 @@
                 <span>🎯</span> 學習自律
               </span>
             </div>
-
             <div class="space-y-1">
-              <!-- 1. 慢吞吞 -->
               <div id="card_rule_att_1" class="bg-white py-1.5 px-2.5 rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_att_1" onclick="window.appActions.applyStudentRule('慢吞吞', -1, 'attitude', 'btn_rule_att_1')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                <button id="btn_rule_att_1" onclick="window.appActions.applyStudentRule('慢吞吞', -1, 'attitude')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
                   <span>🐢</span> 慢吞吞
                 </button>
                 <div class="flex items-center gap-1 bg-amber-50 rounded-xl p-1 border border-amber-200 shrink-0">
@@ -493,9 +439,8 @@
                 </div>
               </div>
 
-              <!-- 2. 不細心 -->
               <div id="card_rule_att_2" class="bg-white py-1.5 px-2.5 rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_att_2" onclick="window.appActions.applyStudentRule('不細心', -1, 'attitude', 'btn_rule_att_2')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                <button id="btn_rule_att_2" onclick="window.appActions.applyStudentRule('不細心', -1, 'attitude')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
                   <span>👀</span> 不細心
                 </button>
                 <div class="flex items-center gap-1 bg-amber-50 rounded-xl p-1 border border-amber-200 shrink-0">
@@ -505,9 +450,8 @@
                 </div>
               </div>
 
-              <!-- 3. 科任表現不佳 -->
               <div id="card_rule_att_3" class="bg-white py-1.5 px-2.5 rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_att_3" onclick="window.appActions.applyStudentRule('科任表現不佳', -1, 'attitude', 'btn_rule_att_3')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                <button id="btn_rule_att_3" onclick="window.appActions.applyStudentRule('科任表現不佳', -1, 'attitude')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
                   <span>📉</span> 科任表現不佳
                 </button>
                 <div class="flex items-center gap-1 bg-amber-50 rounded-xl p-1 border border-amber-200 shrink-0">
@@ -519,7 +463,6 @@
             </div>
           </div>
 
-          <!-- 下方明細 -->
           <div class="mt-2 pt-1.5 border-t-2 border-amber-200 flex-1 flex flex-col justify-start overflow-hidden">
             <span class="text-2xl font-black text-amber-950 mb-1 flex items-center justify-between">
               <span>📋 檢核紀錄明細</span>
@@ -530,16 +473,13 @@
             </div>
           </div>
         </div>
-
       </div>
 
-      <!-- 彈窗底欄 -->
       <div class="px-8 py-3 bg-stone-100/90 border-t-2 border-stone-200 flex flex-wrap items-center justify-between gap-4 shrink-0">
         <div class="flex items-center gap-4">
           <span class="text-3xl font-black text-stone-700 font-serif-tc">當前表現結算：</span>
           <span id="modalCurrentScore" class="text-5xl font-black font-num text-stone-900">♟️ 0 步</span>
         </div>
-
         <div class="flex items-center gap-3">
           <button id="modalSubmitBtn" onclick="window.appActions.submitStudentAudit()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-3xl font-black rounded-2xl shadow-md stone-btn flex items-center gap-2">
             <i class="fa-solid fa-check-to-slot"></i>
@@ -557,7 +497,7 @@
       <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-6">
         <div class="flex items-center gap-3">
           <span class="text-4xl">📘</span>
-          <h3 id="hwModalTitle" class="text-3xl sm:text-4xl font-black text-stone-900 font-serif-tc">陳O佑 訂正作業狀況</h3>
+          <h3 id="hwModalTitle" class="text-3xl sm:text-4xl font-black text-stone-900 font-serif-tc">訂正作業狀況</h3>
         </div>
         <button onclick="window.appActions.closeHomeworkModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
           <i class="fa-solid fa-xmark"></i>
@@ -573,7 +513,7 @@
     </div>
   </div>
 
-  <!-- 教師權限登入彈窗 (Firebase 伺服器原生驗證，清空預填) -->
+  <!-- 教師權限登入彈窗 -->
   <div id="teacherAuthModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white border-2 border-stone-300 rounded-3xl p-6 max-w-md w-full shadow-2xl">
       <h3 class="text-2xl font-black text-stone-900 font-serif-tc mb-3 flex items-center gap-2">
@@ -585,7 +525,7 @@
       <div class="space-y-3 mb-4">
         <div>
           <label class="block text-sm font-bold text-stone-600 mb-1">教師信箱帳號</label>
-          <input type="email" id="teacherEmailInput" value="" placeholder="請輸入註冊信箱" class="w-full text-xl p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" />
+          <input type="email" id="teacherEmailInput" value="" placeholder="請輸入帳號" class="w-full text-xl p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" />
         </div>
         <div>
           <label class="block text-sm font-bold text-stone-600 mb-1">密碼</label>
@@ -607,42 +547,46 @@
   </div>
 
   <script>
-    // 學生名單
+    // 學生名單（座號 1 ~ 10）
     const STUDENTS = [
-      { id: 'st_1', no: 1, name: '陳O佑' },
-      { id: 'st_2', no: 2, name: '徐O綸' },
-      { id: 'st_3', no: 3, name: '蕭O群' },
-      { id: 'st_4', no: 4, name: '吳O晏' },
-      { id: 'st_5', no: 5, name: '呂O蔚' },
-      { id: 'st_6', no: 6, name: '吳O昇' },
-      { id: 'st_7', no: 7, name: '翁O儀' },
-      { id: 'st_8', no: 8, name: '鄭O妍' },
-      { id: 'st_9', no: 9, name: '周O涵' },
-      { id: 'st_10', no: 10, name: '李O妤' }
+      { id: '1', no: 1, name: '陳昕佑' },
+      { id: '2', no: 2, name: '徐O綸' },
+      { id: '3', no: 3, name: '蕭O群' },
+      { id: '4', no: 4, name: '吳O晏' },
+      { id: '5', no: 5, name: '呂O蔚' },
+      { id: '6', no: 6, name: '吳O昇' },
+      { id: '7', no: 7, name: '翁O儀' },
+      { id: '8', no: 8, name: '鄭O妍' },
+      { id: '9', no: 9, name: '周O涵' },
+      { id: '10', no: 10, name: '李O妤' }
     ];
 
-    // 已登記上課日清單
-    let RECORDED_DAYS = [
-      '2026-10-02', '2026-10-01',
-      '2026-09-30', '2026-09-29', '2026-09-28', '2026-09-25', '2026-09-24', '2026-09-23', '2026-09-22',
-      '2026-09-21', '2026-09-18', '2026-09-17', '2026-09-16', '2026-09-15',
-      '2026-09-14', '2026-09-11', '2026-09-10', '2026-09-09', '2026-09-08',
-      '2026-09-07', '2026-09-04', '2026-09-03', '2026-09-02', '2026-09-01'
-    ];
+    // 全域狀態：RECORDED_DAYS 預設只放當天，其餘日期必須由老師手動按「＋」加入，不自動長出！
+    function getTodayString() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
 
-    // 全域狀態
     const AppState = {
       isTeacher: false,
-      currentDate: '2026-09-28',
-      selectedMonth: '9',
+      currentDate: getTodayString(),
+      selectedMonth: String(new Date().getMonth() + 1),
       activeModalStudentId: null,
-      steppers: {
-        clean_done: 1, clean_fail: 1, spec_perfect: 1, spec_fair: 1
-      },
+      steppers: { clean_done: 1, clean_fail: 1, spec_perfect: 1, spec_fair: 1 },
+      // 紀錄標籤清單（從 localStorage 讀取或預設僅當天）
+      recordedDays: JSON.parse(localStorage.getItem('six_grade_recorded_days') || '[]'),
+      // 課堂自評/加扣步資料
       dailyData: {},
-      homeworkMock: {},
-      checkinMock: {}
+      // 來自 Firebase 的真實遠端資料快取
+      remoteAnnouncements: {},
+      remoteAttendance: {}
     };
+
+    // 若清單為空，先將今天納入
+    if (!AppState.recordedDays.includes(AppState.currentDate)) {
+      AppState.recordedDays.push(AppState.currentDate);
+      AppState.recordedDays.sort().reverse();
+    }
 
     // Firebase 初始化
     const firebaseConfig = {
@@ -663,7 +607,6 @@
       db = firebase.firestore();
       auth = firebase.auth();
 
-      // 監聽 Firebase 伺服器驗證狀態
       auth.onAuthStateChanged((user) => {
         if (user && !user.isAnonymous) {
           AppState.isTeacher = true;
@@ -675,9 +618,7 @@
           document.getElementById('authStatusText').innerText = '學生模式';
           document.getElementById('authIcon').className = 'fa-solid fa-lock text-base';
           document.getElementById('authBtn').className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 border-2 border-stone-300 shadow-xs stone-btn';
-          if (!user) {
-            auth.signInAnonymously().catch(e => console.debug("Anon auth:", e));
-          }
+          if (!user) auth.signInAnonymously().catch(e => console.debug("Anon auth:", e));
         }
         renderDatePills();
         renderStudentCards();
@@ -687,6 +628,10 @@
       console.warn("Firebase 初始化警示:", e);
     }
 
+    function saveRecordedDays() {
+      localStorage.setItem('six_grade_recorded_days', JSON.stringify(AppState.recordedDays));
+    }
+
     function getDayData(dateStr) {
       if (!AppState.dailyData[dateStr]) {
         AppState.dailyData[dateStr] = {
@@ -694,49 +639,40 @@
           studentLocked: {},
           classApplied: { clean: null, spec: null },
           records: {
-            st_1: [], st_2: [], st_3: [], st_4: [], st_5: [],
-            st_6: [], st_7: [], st_8: [], st_9: [], st_10: []
+            '1': [], '2': [], '3': [], '4': [], '5': [],
+            '6': [], '7': [], '8': [], '9': [], '10': []
           }
         };
-      }
-      if (!AppState.dailyData[dateStr].classApplied) {
-        AppState.dailyData[dateStr].classApplied = { clean: null, spec: null };
       }
       return AppState.dailyData[dateStr];
     }
 
-    getDayData('2026-09-28').records.st_2 = [
-      { time: '12:40', name: '中午未準時回位', step: -1, category: 'bad', isClass: false }
-    ];
+    // 核心：從 Firestore 載入所選日期的「作業清單」與「學生打卡」
+    async function fetchRealFirebaseData(dateStr) {
+      if (!db) return;
+      try {
+        // 1. 抓取作業清單 115_announcements / {dateStr}
+        const docRef = db.collection('115_announcements').doc(dateStr);
+        const docSnap = await docRef.get();
+        if (docSnap.exists) {
+          AppState.remoteAnnouncements[dateStr] = docSnap.data().items || [];
+        } else {
+          AppState.remoteAnnouncements[dateStr] = [];
+        }
 
-    AppState.homeworkMock['2026-09-28'] = {
-      items: ['國乙L4', '國習L4(四)', '背成4-2+小24', '數筆記3-1', '數課40-42', '交回條*1', '數習26.27'],
-      studentStatus: {
-        st_1: [true, true, true, true, true, true, true],
-        st_2: [true, true, true, true, true, false, false],
-        st_3: [true, true, true, true, true, true, true],
-        st_4: [true, true, true, true, true, true, true],
-        st_5: [true, true, true, true, true, true, true],
-        st_6: [true, true, true, true, true, true, false],
-        st_7: [true, true, true, true, true, true, true],
-        st_8: [true, true, true, true, true, true, true],
-        st_9: [true, true, true, true, true, true, true],
-        st_10: [true, true, true, true, true, true, true]
+        // 2. 抓取打卡與訂正 115_attendance_{dateStr}
+        const attColl = db.collection(`115_attendance_${dateStr}`);
+        const attSnap = await attColl.get();
+        AppState.remoteAttendance[dateStr] = {};
+        attSnap.forEach(d => {
+          AppState.remoteAttendance[dateStr][d.id] = d.data();
+        });
+
+        renderStudentCards();
+      } catch (err) {
+        console.error("載入雲端資料失敗:", err);
       }
-    };
-
-    AppState.checkinMock['2026-09-28'] = {
-      st_1: { preview: true, supplies: true, correction: true },
-      st_2: { preview: true, supplies: true, correction: false },
-      st_3: { preview: true, supplies: true, correction: true },
-      st_4: { preview: true, supplies: false, correction: true },
-      st_5: { preview: true, supplies: true, correction: false },
-      st_6: { preview: true, supplies: true, correction: true },
-      st_7: { preview: true, supplies: true, correction: true },
-      st_8: { preview: true, supplies: true, correction: true },
-      st_9: { preview: true, supplies: true, correction: true },
-      st_10: { preview: true, supplies: true, correction: true }
-    };
+    }
 
     const AudioEngine = {
       ctx: null,
@@ -802,19 +738,14 @@
       return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
     }
 
-    function getNextSchoolDay(currentDateStr, direction) {
-      const parts = currentDateStr.split('-');
+    function stepDay(dateStr, delta) {
+      const parts = dateStr.split('-');
       const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-      while (true) {
-        d.setDate(d.getDate() + direction);
-        const dayOfWeek = d.getDay();
-        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-          const y = d.getFullYear();
-          const m = String(d.getMonth() + 1).padStart(2, '0');
-          const day = String(d.getDate()).padStart(2, '0');
-          return `${y}-${m}-${day}`;
-        }
-      }
+      d.setDate(d.getDate() + delta);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
     }
 
     function renderClassActionState() {
@@ -871,13 +802,12 @@
       container.innerHTML = '';
 
       const curMonthInt = parseInt(AppState.selectedMonth, 10);
-      const filteredDays = RECORDED_DAYS.filter(dStr => {
-        const m = parseInt(dStr.split('-')[1], 10);
-        return m === curMonthInt;
+      const filteredDays = AppState.recordedDays.filter(dStr => {
+        return parseInt(dStr.split('-')[1], 10) === curMonthInt;
       });
 
       if (filteredDays.length === 0) {
-        container.innerHTML = `<span class="text-stone-400 font-bold px-3 py-2 whitespace-nowrap">${AppState.selectedMonth}月尚無登記上課日</span>`;
+        container.innerHTML = `<span class="text-stone-400 font-bold px-3 py-2 whitespace-nowrap">${AppState.selectedMonth}月尚無登記上課日標籤</span>`;
       } else {
         filteredDays.forEach(dStr => {
           const dayNumber = dStr.split('-')[2];
@@ -937,7 +867,7 @@
       for (let d = 1; d <= daysInMonth; d++) {
         const dStr = `${curYear}-${String(curMonth).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
         const isCurrent = dStr === AppState.currentDate;
-        const isRecorded = RECORDED_DAYS.includes(dStr);
+        const isRecorded = AppState.recordedDays.includes(dStr);
 
         const dayBtn = document.createElement('button');
         dayBtn.className = `w-9 h-9 rounded-xl font-num font-black text-sm flex items-center justify-center transition ${
@@ -960,25 +890,39 @@
       const grid = document.getElementById('studentCardsContainer');
       grid.innerHTML = '';
 
-      const dayData = getDayData(AppState.currentDate);
+      const curDate = AppState.currentDate;
+      const dayData = getDayData(curDate);
       const isDayLocked = dayData.locked;
-      const hwData = AppState.homeworkMock[AppState.currentDate] || AppState.homeworkMock['2026-09-28'];
-      const chkData = AppState.checkinMock[AppState.currentDate] || AppState.checkinMock['2026-09-28'];
+
+      // 取得真實 Firestore 資料
+      const dayAnnouncements = AppState.remoteAnnouncements[curDate] || [];
+      const dayAttendance = AppState.remoteAttendance[curDate] || {};
 
       STUDENTS.forEach(st => {
         const isStudentLocked = !!dayData.studentLocked[st.id];
 
-        const stChk = chkData[st.id] || { preview: true, supplies: true, correction: true };
-        const checkinStep = (stChk.preview && stChk.supplies && stChk.correction) ? 1 : 0;
+        // 1. 打卡計算：必須三項皆 true 才算打卡成功 (+1步)
+        const stAttDoc = dayAttendance[st.id] || {};
+        const completedTasks = stAttDoc.completedTasks || {};
+        
+        const previewDone = !!completedTasks['複習+預習'];
+        const suppliesDone = !!completedTasks['帶學用品'];
+        const checkinDone = !!completedTasks['訂正功課'];
+        const isAllCheckedIn = (previewDone && suppliesDone && checkinDone);
+        const checkinStep = isAllCheckedIn ? 1 : 0;
 
-        const stHw = (hwData && hwData.studentStatus[st.id]) ? hwData.studentStatus[st.id] : [true, true, true, true, true, true, true];
-        const hwDoneCount = stHw.filter(Boolean).length;
+        // 2. 訂正作業計算：排除三大打卡項，其餘且為 true 者即為訂正作業
+        const excludedKeys = ['複習+預習', '帶學用品', '訂正功課'];
+        const correctedItems = Object.keys(completedTasks).filter(k => !excludedKeys.includes(k) && completedTasks[k] === true);
+        const hwDoneCount = correctedItems.length;
+        const hwTextPreview = correctedItems.join('、') || (dayAnnouncements.length === 0 ? '本日未指派作業' : '尚無已訂正項目');
 
+        // 3. 課堂表現分
         const records = dayData.records[st.id] || [];
         const classroomScore = records.reduce((acc, r) => acc + r.step, 0);
 
+        // 總步數
         const totalSteps = checkinStep + hwDoneCount + classroomScore;
-        const hwTextPreview = hwData.items.map((it, idx) => stHw[idx] ? it : '').filter(Boolean).join('、') || '尚無已訂正項目';
 
         const card = document.createElement('div');
         card.className = `bg-[#FFFDF9] rounded-3xl border-2 ${
@@ -1008,19 +952,19 @@
                   </span>
                 </div>
                 <div class="flex items-center justify-between gap-1 text-sm font-black whitespace-nowrap">
-                  <span class="px-2.5 py-1 rounded-lg ${stChk.preview ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200 text-stone-500'}">
+                  <span class="px-2.5 py-1 rounded-lg ${previewDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200 text-stone-500'}">
                     預習複習
                   </span>
-                  <span class="px-2.5 py-1 rounded-lg ${stChk.supplies ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200 text-stone-500'}">
+                  <span class="px-2.5 py-1 rounded-lg ${suppliesDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200 text-stone-500'}">
                     帶學用品
                   </span>
-                  <span class="px-2.5 py-1 rounded-lg ${stChk.correction ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200 text-stone-500'}">
+                  <span class="px-2.5 py-1 rounded-lg ${checkinDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200 text-stone-500'}">
                     訂正功課
                   </span>
                 </div>
               </div>
 
-              <!-- 訂正 -->
+              <!-- 訂正作業 -->
               <div onclick="window.appActions.openHomeworkModal('${st.id}')" class="bg-[#F4F9FF] p-2.5 rounded-2xl border border-blue-200/70 cursor-pointer hover:bg-blue-100/50 transition">
                 <div class="flex items-center justify-between mb-1">
                   <span class="text-xl font-black text-blue-950 flex items-center gap-1">
@@ -1035,7 +979,7 @@
                 </div>
               </div>
 
-              <!-- 表現 -->
+              <!-- 課堂表現 -->
               <div class="bg-[#FFF9F2] p-2.5 rounded-2xl border border-amber-200/70 flex items-center justify-between">
                 <span class="text-xl font-black text-amber-950 flex items-center gap-1">
                   <span>🏆</span> 表現
@@ -1157,35 +1101,6 @@
         }).join('');
       }
 
-      const ruleMapping = [
-        { name: '準時繳交簿本', cardId: 'card_rule_good_1', btnId: 'btn_rule_good_1' },
-        { name: '個人工作完成', cardId: 'card_rule_good_2', btnId: 'btn_rule_good_2' },
-        { name: '科任表現滿分', cardId: 'card_rule_good_3', btnId: 'btn_rule_good_3' },
-        { name: '未準時繳交簿本', cardId: 'card_rule_bad_1', btnId: 'btn_rule_bad_1' },
-        { name: '中午未準時回位', cardId: 'card_rule_bad_2', btnId: 'btn_rule_bad_2' },
-        { name: '個人工作未完成', cardId: 'card_rule_bad_3', btnId: 'btn_rule_bad_3' },
-        { name: '慢吞吞', cardId: 'card_rule_att_1', btnId: 'btn_rule_att_1' },
-        { name: '不細心', cardId: 'card_rule_att_2', btnId: 'btn_rule_att_2' },
-        { name: '科任表現不佳', cardId: 'card_rule_att_3', btnId: 'btn_rule_att_3' }
-      ];
-
-      ruleMapping.forEach(item => {
-        const isRecorded = records.some(r => r.name === item.name && !r.isClass);
-        const cardEl = document.getElementById(item.cardId);
-        const btnEl = document.getElementById(item.btnId);
-
-        if (isFullyDisabled) {
-          btnEl.disabled = true;
-          cardEl.classList.add('opacity-50', 'pointer-events-none');
-        } else if (isRecorded) {
-          btnEl.disabled = true;
-          cardEl.classList.add('opacity-40', 'bg-stone-100');
-        } else {
-          btnEl.disabled = false;
-          cardEl.classList.remove('opacity-40', 'opacity-50', 'pointer-events-none', 'bg-stone-100');
-        }
-      });
-
       const totalModalClassroom = records.reduce((acc, r) => acc + r.step, 0);
       document.getElementById('modalCurrentScore').innerText = `♟️ ${totalModalClassroom >= 0 ? '+' : ''}${totalModalClassroom} 步`;
     }
@@ -1199,41 +1114,41 @@
           document.getElementById('practiceMonthSelect').value = monthNum;
         }
         renderDatePills();
-        renderStudentCards();
+        fetchRealFirebaseData(dateStr);
         AudioEngine.playAdd();
       },
 
       stepDate(delta) {
-        const nextDate = getNextSchoolDay(AppState.currentDate, delta);
+        const nextDate = stepDay(AppState.currentDate, delta);
         this.selectDate(nextDate);
       },
 
+      // 只有手動按 ＋ 號時，才把日期加入標籤列！
       promptAddNewDate() {
         if (!AppState.isTeacher) return;
         const cur = AppState.currentDate;
-        if (!RECORDED_DAYS.includes(cur)) {
-          RECORDED_DAYS.unshift(cur);
-          RECORDED_DAYS.sort().reverse();
+        if (!AppState.recordedDays.includes(cur)) {
+          AppState.recordedDays.unshift(cur);
+          AppState.recordedDays.sort().reverse();
+          saveRecordedDays();
           renderDatePills();
-          showToast(`已將 ${cur} 加入上課日清單`, 'success');
+          showToast(`已成功將 ${cur} 建立為上課日標籤！`, 'success');
         } else {
-          showToast(`${cur} 已在清單中`, 'info');
+          showToast(`${cur} 已在標籤列中`, 'info');
         }
       },
 
       deleteCurrentDate() {
         if (!AppState.isTeacher) return;
-        if (RECORDED_DAYS.length <= 1) {
-          showToast('至少保留一個日期紀錄', 'error');
-          return;
-        }
-        if (confirm(`確定要刪除 ${AppState.currentDate} 的紀錄嗎？`)) {
-          const idx = RECORDED_DAYS.indexOf(AppState.currentDate);
-          if (idx !== -1) RECORDED_DAYS.splice(idx, 1);
-          delete AppState.dailyData[AppState.currentDate];
-          const newIdx = Math.min(idx, RECORDED_DAYS.length - 1);
-          this.selectDate(RECORDED_DAYS[newIdx] || '2026-09-28');
-          showToast('已刪除該日紀錄', 'info');
+        if (confirm(`確定要從標籤列中移除 ${AppState.currentDate} 嗎？`)) {
+          const idx = AppState.recordedDays.indexOf(AppState.currentDate);
+          if (idx !== -1) {
+            AppState.recordedDays.splice(idx, 1);
+            saveRecordedDays();
+          }
+          const next = AppState.recordedDays[0] || getTodayString();
+          this.selectDate(next);
+          showToast('已移除該日標籤', 'info');
         }
       },
 
@@ -1244,15 +1159,7 @@
 
       changeMonth(val) {
         AppState.selectedMonth = val;
-        const monthInt = parseInt(val, 10);
-        const matchDate = RECORDED_DAYS.find(d => parseInt(d.split('-')[1], 10) === monthInt);
-        if (matchDate) {
-          this.selectDate(matchDate);
-        } else {
-          renderDatePills();
-          renderStudentCards();
-          showToast(`已切換至 ${val}月`);
-        }
+        renderDatePills();
       },
 
       adjustClassStepper(type, delta) {
@@ -1358,7 +1265,7 @@
         el.innerText = next;
       },
 
-      applyStudentRule(ruleName, sign, category, btnId) {
+      applyStudentRule(ruleName, sign, category) {
         const studentId = AppState.activeModalStudentId;
         if (!studentId) return;
 
@@ -1496,27 +1403,38 @@
         renderStudentCards();
       },
 
+      // 真實彈出所選學生的訂正狀況
       openHomeworkModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('hwModalTitle').innerText = `${st.name} 訂正作業狀況`;
         const container = document.getElementById('hwGridContainer');
         container.innerHTML = '';
 
-        const hwData = AppState.homeworkMock[AppState.currentDate] || AppState.homeworkMock['2026-09-28'];
-        const stStatus = hwData.studentStatus[studentId] || [true, true, true, true, true, true, true];
+        const curDate = AppState.currentDate;
+        const dayAnnouncements = AppState.remoteAnnouncements[curDate] || [];
+        const dayAttendance = AppState.remoteAttendance[curDate] || {};
+        const stAttDoc = dayAttendance[studentId] || {};
+        const completedTasks = stAttDoc.completedTasks || {};
 
-        hwData.items.forEach((item, i) => {
-          const done = stStatus[i];
-          const div = document.createElement('div');
-          div.className = `p-4 sm:p-5 rounded-2xl border-2 flex items-center justify-between text-3xl font-black ${
-            done ? 'bg-emerald-50 text-emerald-950 border-emerald-300' : 'bg-rose-50 text-rose-950 border-rose-300'
-          }`;
-          div.innerHTML = `
-            <span>${item}</span>
-            <span class="text-4xl ${done ? 'text-emerald-700' : 'text-rose-700'}">${done ? '✓' : '✗'}</span>
-          `;
-          container.appendChild(div);
-        });
+        // 過濾出真正的作業項目（排除三大打卡項目）
+        const hwItems = dayAnnouncements.filter(it => !['帶學用品', '複習+預習', '訂正功課'].includes(it.text));
+
+        if (hwItems.length === 0) {
+          container.innerHTML = '<div class="col-span-3 text-stone-400 font-black text-2xl text-center py-8">本日尚未指派或登記任何作業項目</div>';
+        } else {
+          hwItems.forEach(it => {
+            const isDone = !!completedTasks[it.text];
+            const div = document.createElement('div');
+            div.className = `p-4 sm:p-5 rounded-2xl border-2 flex items-center justify-between text-2xl sm:text-3xl font-black ${
+              isDone ? 'bg-emerald-50 text-emerald-950 border-emerald-300' : 'bg-rose-50 text-rose-950 border-rose-300'
+            }`;
+            div.innerHTML = `
+              <span>${it.text}</span>
+              <span class="text-4xl ${isDone ? 'text-emerald-700' : 'text-rose-700'}">${isDone ? '✓' : '✗'}</span>
+            `;
+            container.appendChild(div);
+          });
+        }
 
         document.getElementById('homeworkModal').classList.remove('hidden');
       },
@@ -1529,7 +1447,7 @@
         if (AppState.isTeacher) {
           if (auth) {
             auth.signOut().then(() => {
-              showToast('已登出教師身分，切換為學生自評模式');
+              showToast('已登出教師身分，切換為學生模式');
             }).catch(e => console.error(e));
           }
         } else {
@@ -1559,7 +1477,7 @@
         auth.signInWithEmailAndPassword(email, pwd)
           .then((userCredential) => {
             this.closeAuthModal();
-            showToast('Google 伺服器驗證成功，教師權限已解鎖！', 'success');
+            showToast('教師權限已解鎖！', 'success');
           })
           .catch((error) => {
             console.error('Firebase Auth Error:', error);
@@ -1581,7 +1499,7 @@
       },
 
       showConnectionInfo() {
-        showToast('🟢 Firebase 資料庫已連線，所有數據分日即時同步中', 'success');
+        showToast('🟢 正在即時讀取 Firestore 作業與出席集合', 'success');
       }
     };
 
@@ -1604,8 +1522,7 @@
       updateClock();
       setInterval(updateClock, 1000);
       renderDatePills();
-      renderStudentCards();
-      renderClassActionState();
+      fetchRealFirebaseData(AppState.currentDate);
     };
   </script>
 </body>
