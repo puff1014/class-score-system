@@ -71,7 +71,7 @@
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v3.1
+            v3.2
           </span>
         </div>
 
@@ -93,13 +93,13 @@
             <div id="cloudPing" class="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping opacity-75"></div>
           </div>
           <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block bg-stone-900 text-white text-sm px-3 py-1.5 rounded-xl whitespace-nowrap shadow-lg z-20">
-            Firebase 雲端已連線（即時串接資料）
+            Firebase 雲端已連線
           </div>
         </div>
 
         <button id="authBtn" onclick="window.appActions.toggleAuthModal()" class="px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 border-2 border-stone-300 shadow-xs stone-btn">
           <i id="authIcon" class="fa-solid fa-lock text-base"></i>
-          <span id="authStatusText">學生模式</span>
+          <span id="authStatusText">學生模式 (點擊登入)</span>
         </button>
 
         <div class="hidden sm:flex items-center bg-stone-100 px-3 py-2 rounded-2xl border-2 border-stone-200">
@@ -162,7 +162,7 @@
           </button>
         </div>
 
-        <!-- ＋號：僅教師模式可見，點擊才將目前日期納入標籤 -->
+        <!-- ＋號：僅教師模式可見，點擊手動新增標籤 -->
         <button id="addDayBtn" onclick="window.appActions.promptAddNewDate()" class="hidden w-11 h-11 bg-emerald-50 border-2 border-emerald-300 hover:bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center text-2xl font-black shadow-xs stone-btn" title="將目前日期納入上課日清單">
           <i class="fa-solid fa-plus"></i>
         </button>
@@ -386,7 +386,7 @@
 
               <div id="card_rule_bad_2" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
                 <button id="btn_rule_bad_2" onclick="window.appActions.applyStudentRule('中午未準時回位', -1, 'bad')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
-                  <span>🔔</span> 中中午未準時回位
+                  <span>🔔</span> 中午未準時回位
                 </button>
                 <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
                   <button onclick="window.appActions.adjustModalStepper('btn_step_bad_2', -1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">-</button>
@@ -513,29 +513,32 @@
     </div>
   </div>
 
-  <!-- 教師權限登入彈窗 (雙軌驗證：支援 Firebase 或 備用通行碼) -->
+  <!-- 教師權限登入彈窗 (與打卡系統完全通用) -->
   <div id="teacherAuthModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white border-2 border-stone-300 rounded-3xl p-6 max-w-md w-full shadow-2xl">
       <h3 class="text-2xl font-black text-stone-900 font-serif-tc mb-2 flex items-center gap-2">
         <i class="fa-solid fa-shield-halved text-emerald-700"></i>
-        <span>解鎖教師管理權限</span>
+        <span>教師權限驗證</span>
       </h3>
-      <p class="text-stone-500 font-bold text-sm mb-4">輸入教師通行碼或 Firebase 帳號解鎖：</p>
+      <p class="text-stone-500 font-bold text-sm mb-4">輸入您在打卡系統使用的教師帳號與密碼：</p>
       
       <div class="space-y-3 mb-4">
         <div>
-          <label class="block text-sm font-bold text-stone-600 mb-1">教師通關密碼</label>
-          <input type="password" id="teacherPwdInput" value="" placeholder="輸入預設密碼 8888 或 Firebase 密碼" class="w-full text-xl p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" onkeydown="if(event.key==='Enter') window.appActions.verifyTeacherAuth()" />
+          <label class="block text-sm font-bold text-stone-700 mb-1">電子郵件帳號</label>
+          <input type="email" id="teacherEmailInput" value="" placeholder="例如：teacher@example.com" class="w-full text-lg p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" />
         </div>
         <div>
-          <label class="block text-sm font-bold text-stone-400 mb-1">（選填）Firebase 帳號</label>
-          <input type="email" id="teacherEmailInput" value="" placeholder="選填，若使用雲端驗證時輸入" class="w-full text-base p-2.5 border border-stone-200 rounded-xl font-num outline-none focus:border-stone-500" />
+          <label class="block text-sm font-bold text-stone-700 mb-1">密碼</label>
+          <input type="password" id="teacherPwdInput" value="" placeholder="輸入您的登入密碼" class="w-full text-lg p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" onkeydown="if(event.key==='Enter') window.appActions.verifyTeacherAuth()" />
+        </div>
+        <div id="authErrorMessage" class="hidden p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-sm font-bold">
+          登入失敗：請確認帳號或密碼是否正確。
         </div>
       </div>
 
       <div class="flex justify-end gap-3">
         <button onclick="window.appActions.closeAuthModal()" class="px-5 py-2.5 text-stone-600 font-black rounded-xl hover:bg-stone-100 text-lg">取消</button>
-        <button id="submitLoginBtn" onclick="window.appActions.verifyTeacherAuth()" class="px-6 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black rounded-xl text-lg stone-btn shadow-xs">確認解鎖</button>
+        <button id="submitLoginBtn" onclick="window.appActions.verifyTeacherAuth()" class="px-6 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black rounded-xl text-lg stone-btn shadow-xs">確認登入</button>
       </div>
     </div>
   </div>
@@ -547,48 +550,51 @@
   </div>
 
   <script>
-    // 學生名單（座號 1 ~ 10）
+    // 學生名單（與打卡系統一致）
     const STUDENTS = [
       { id: '1', no: 1, name: '陳昕佑' },
-      { id: '2', no: 2, name: '徐O綸' },
-      { id: '3', no: 3, name: '蕭O群' },
-      { id: '4', no: 4, name: '吳O晏' },
-      { id: '5', no: 5, name: '呂O蔚' },
-      { id: '6', no: 6, name: '吳O昇' },
-      { id: '7', no: 7, name: '翁O儀' },
-      { id: '8', no: 8, name: '鄭O妍' },
-      { id: '9', no: 9, name: '周O涵' },
-      { id: '10', no: 10, name: '李O妤' }
+      { id: '2', no: 2, name: '徐偉綸' },
+      { id: '3', no: 3, name: '蕭淵群' },
+      { id: '4', no: 4, name: '吳秉晏' },
+      { id: '5', no: 5, name: '呂秉蔚' },
+      { id: '6', no: 6, name: '吳家昇' },
+      { id: '7', no: 7, name: '翁芷儀' },
+      { id: '8', no: 8, name: '鄭筱妍' },
+      { id: '9', no: 9, name: '周筱涵' },
+      { id: '10', no: 10, name: '李婕妤' }
     ];
+
+    function maskName(n) {
+      if (!n) return '';
+      return n[0] + 'O' + (n[2] || '');
+    }
 
     function getTodayString() {
       const d = new Date();
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }
 
-    // 全域狀態：標籤完全由 localStorage 控管，絕不自動 push 今日！
+    // 全域狀態：標籤絕不自動塞入任何日期，完全由 localStorage 控管
     const AppState = {
       isTeacher: false,
       currentDate: getTodayString(),
       selectedMonth: String(new Date().getMonth() + 1),
       activeModalStudentId: null,
       steppers: { clean_done: 1, clean_fail: 1, spec_perfect: 1, spec_fair: 1 },
-      // 讀取已記錄的上課日清單（若空則為空陣列，絕不擅自塞入今日）
       recordedDays: JSON.parse(localStorage.getItem('six_grade_recorded_days') || '[]'),
       dailyData: {},
       remoteAnnouncements: {},
       remoteAttendance: {}
     };
 
-    // Firebase 初始化
+    // 與打卡系統共用同一套 Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyArwz6gPeW9lNq_8LOfnKYwZmkRN-Wgtb8",
       authDomain: "class-5a-app.firebaseapp.com",
       projectId: "class-5a-app",
       storageBucket: "class-5a-app.firebasestorage.app",
       messagingSenderId: "828328241350",
-      appId: "1:828328241350:web:5d39d529209f87a2540fc7",
-      measurementId: "G-8VGE0WKD01"
+      appId: "1:828328241350:web:5d39d529209f87a2540fc7"
     };
 
     let db = null;
@@ -603,10 +609,7 @@
         if (user && !user.isAnonymous) {
           setTeacherModeUI(true);
         } else {
-          if (!AppState.isTeacher) {
-            setTeacherModeUI(false);
-          }
-          if (!user) auth.signInAnonymously().catch(e => console.debug("Anon auth:", e));
+          setTeacherModeUI(false);
         }
       });
     } catch (e) {
@@ -620,11 +623,11 @@
       const authBtn = document.getElementById('authBtn');
 
       if (isT) {
-        statusText.innerText = '已解鎖：教師模式';
+        statusText.innerText = '已解鎖：教師模式 (點擊登出)';
         authIcon.className = 'fa-solid fa-lock-open text-base text-emerald-800';
         authBtn.className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-emerald-100 text-emerald-900 border-2 border-emerald-300 shadow-xs stone-btn';
       } else {
-        statusText.innerText = '學生模式';
+        statusText.innerText = '學生模式 (點擊登入)';
         authIcon.className = 'fa-solid fa-lock text-base';
         authBtn.className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 border-2 border-stone-300 shadow-xs stone-btn';
       }
@@ -652,7 +655,7 @@
       return AppState.dailyData[dateStr];
     }
 
-    // 核心：從 Firestore 載入所選日期的真實資料
+    // 核心：從 Firestore 載入所選日期的真實作業與簽到
     async function fetchRealFirebaseData(dateStr) {
       if (!db) return;
       try {
@@ -800,6 +803,7 @@
       }
     }
 
+    // 嚴格受控：僅繪製 recordedDays 清單中的標籤
     function renderDatePills() {
       const container = document.getElementById('datePillsContainer');
       container.innerHTML = '';
@@ -810,7 +814,7 @@
       });
 
       if (filteredDays.length === 0) {
-        container.innerHTML = `<span class="text-stone-400 font-bold px-3 py-2 whitespace-nowrap">${AppState.selectedMonth}月尚無登記上課日標籤</span>`;
+        container.innerHTML = `<span class="text-stone-400 font-bold px-3 py-2 whitespace-nowrap text-lg">${AppState.selectedMonth}月尚無登記上課日標籤</span>`;
       } else {
         filteredDays.forEach(dStr => {
           const dayNumber = dStr.split('-')[2];
@@ -930,7 +934,7 @@
         card.innerHTML = `
           <div>
             <div class="flex items-center justify-between pb-3 border-b border-stone-100">
-              <span class="text-3xl sm:text-4xl lg:text-5xl font-black font-serif-tc text-stone-900 tracking-wide">${st.name}</span>
+              <span class="text-3xl sm:text-4xl lg:text-5xl font-black font-serif-tc text-stone-900 tracking-wide">${maskName(st.name)}</span>
               <div class="flex items-center gap-1.5 ${isStudentLocked ? 'bg-[#EFE8DF] border-[#8C6D52]/40' : 'bg-amber-50 border-amber-200'} px-3 py-1.5 rounded-2xl border">
                 <span class="text-3xl lg:text-4xl">♟️</span>
                 <span class="text-3xl sm:text-4xl lg:text-5xl font-num font-black ${isStudentLocked ? 'text-[#5C4028]' : 'text-amber-950'}">${totalSteps}</span>
@@ -1118,7 +1122,7 @@
         this.selectDate(nextDate);
       },
 
-      // 只有在教師模式下、手動點擊「＋」號時，才把日期加入標籤列！
+      // 只有在教師模式下、手動點擊「＋」號才建立標籤！
       promptAddNewDate() {
         if (!AppState.isTeacher) {
           showToast('請先解鎖教師模式才能新增日期標籤！', 'error');
@@ -1130,7 +1134,7 @@
           AppState.recordedDays.sort().reverse();
           saveRecordedDays();
           renderDatePills();
-          showToast(`已成功將 ${cur} 建立為上課日標籤！`, 'success');
+          showToast(`已成功將 ${cur} 加入上課日標籤！`, 'success');
         } else {
           showToast(`${cur} 已在標籤列中`, 'info');
         }
@@ -1339,7 +1343,7 @@
       openAuditModal(studentId) {
         AppState.activeModalStudentId = studentId;
         const st = STUDENTS.find(s => s.id === studentId);
-        document.getElementById('modalStudentName').innerText = st.name;
+        document.getElementById('modalStudentName').innerText = maskName(st.name);
         document.getElementById('modalDateBadge').innerText = `${AppState.currentDate} 實踐檢核`;
 
         const dayData = getDayData(AppState.currentDate);
@@ -1406,7 +1410,7 @@
 
       openHomeworkModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
-        document.getElementById('hwModalTitle').innerText = `${st.name} 訂正作業狀況`;
+        document.getElementById('hwModalTitle').innerText = `${maskName(st.name)} 訂正作業狀況`;
         const container = document.getElementById('hwGridContainer');
         container.innerHTML = '';
 
@@ -1444,9 +1448,13 @@
 
       toggleAuthModal() {
         if (AppState.isTeacher) {
-          setTeacherModeUI(false);
-          showToast('已登出教師身分，切換為學生模式');
+          if (confirm('確定要登出教師身分嗎？')) {
+            auth.signOut().then(() => {
+              showToast('已登出教師身分，切換為學生模式');
+            });
+          }
         } else {
+          document.getElementById('authErrorMessage').classList.add('hidden');
           document.getElementById('teacherEmailInput').value = '';
           document.getElementById('teacherPwdInput').value = '';
           document.getElementById('teacherAuthModal').classList.remove('hidden');
@@ -1457,41 +1465,36 @@
         document.getElementById('teacherAuthModal').classList.add('hidden');
       },
 
-      // 支援通關碼快速驗證（例如 8888）或 Firebase 雲端驗證
+      // 與打卡程式相同的原生 signInWithEmailAndPassword 登入
       verifyTeacherAuth() {
-        const pwd = document.getElementById('teacherPwdInput').value.trim();
         const email = document.getElementById('teacherEmailInput').value.trim();
+        const pwd = document.getElementById('teacherPwdInput').value.trim();
+        const errorDiv = document.getElementById('authErrorMessage');
 
-        // 預設教師專屬通關碼：8888 或 admin888（課堂上不用輸長信箱即可秒解鎖）
-        if (pwd === '8888' || pwd === 'admin888') {
-          this.closeAuthModal();
-          setTeacherModeUI(true);
-          showToast('教師權限已順利解鎖！', 'success');
-          return;
-        }
-
-        if (!email && pwd !== '8888') {
-          showToast('通關碼錯誤，若使用雲端登入請一併填寫信箱', 'error');
+        if (!email || !pwd) {
+          errorDiv.innerText = '請完整輸入帳號與密碼！';
+          errorDiv.classList.remove('hidden');
           return;
         }
 
         const submitBtn = document.getElementById('submitLoginBtn');
         submitBtn.disabled = true;
         submitBtn.innerText = '驗證中...';
+        errorDiv.classList.add('hidden');
 
         auth.signInWithEmailAndPassword(email, pwd)
           .then(() => {
             this.closeAuthModal();
-            setTeacherModeUI(true);
-            showToast('教師權限已解鎖！', 'success');
+            showToast('教師權限驗證成功！', 'success');
           })
           .catch((error) => {
             console.error('Firebase Auth Error:', error);
-            showToast('驗證失敗：通關碼錯誤或帳密不合', 'error');
+            errorDiv.innerText = '登入失敗：請確認帳號或密碼是否正確。';
+            errorDiv.classList.remove('hidden');
           })
           .finally(() => {
             submitBtn.disabled = false;
-            submitBtn.innerText = '確認解鎖';
+            submitBtn.innerText = '確認登入';
           });
       },
 
