@@ -1141,7 +1141,6 @@
     const totalModalClassroom = records.reduce((acc, r) => acc + r.step, 0);
     document.getElementById('modalCurrentScore').innerText = `🚩 ${totalModalClassroom >= 0 ? '+' : ''}${totalModalClassroom} 步`;
   }
-  }
     window.appActions = {
       selectDate(dateStr) {
         AppState.currentDate = dateStr;
