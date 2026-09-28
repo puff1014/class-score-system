@@ -71,7 +71,7 @@
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v3.2
+            v3.3
           </span>
         </div>
 
@@ -491,19 +491,19 @@
     </div>
   </div>
 
-  <!-- 訂正作業彈出視窗 -->
+  <!-- 訂正作業彈出視窗（對接訂正系統） -->
   <div id="homeworkModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-full max-w-5xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col">
+    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-full max-w-4xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col">
       <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-6">
         <div class="flex items-center gap-3">
           <span class="text-4xl">📘</span>
-          <h3 id="hwModalTitle" class="text-3xl sm:text-4xl font-black text-stone-900 font-serif-tc">訂正作業狀況</h3>
+          <h3 id="hwModalTitle" class="text-3xl sm:text-4xl font-black text-stone-900 font-serif-tc">作業訂正狀況</h3>
         </div>
         <button onclick="window.appActions.closeHomeworkModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-      <div id="hwGridContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+      <div id="hwGridContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 max-h-[60vh] overflow-y-auto custom-scrollbar p-1">
       </div>
       <div class="pt-4 border-t-2 border-stone-100 flex justify-end">
         <button onclick="window.appActions.closeHomeworkModal()" class="px-8 py-3 bg-stone-900 hover:bg-stone-800 text-white font-black text-2xl rounded-2xl stone-btn shadow-md">
@@ -513,14 +513,14 @@
     </div>
   </div>
 
-  <!-- 教師權限登入彈窗 (與打卡系統完全通用) -->
+  <!-- 教師權限登入彈窗 -->
   <div id="teacherAuthModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white border-2 border-stone-300 rounded-3xl p-6 max-w-md w-full shadow-2xl">
       <h3 class="text-2xl font-black text-stone-900 font-serif-tc mb-2 flex items-center gap-2">
         <i class="fa-solid fa-shield-halved text-emerald-700"></i>
         <span>教師權限驗證</span>
       </h3>
-      <p class="text-stone-500 font-bold text-sm mb-4">輸入您在打卡系統使用的教師帳號與密碼：</p>
+      <p class="text-stone-500 font-bold text-sm mb-4">輸入您在打卡/訂正系統使用的教師帳號與密碼：</p>
       
       <div class="space-y-3 mb-4">
         <div>
@@ -550,7 +550,6 @@
   </div>
 
   <script>
-    // 學生名單（與打卡系統一致）
     const STUDENTS = [
       { id: '1', no: 1, name: '陳昕佑' },
       { id: '2', no: 2, name: '徐偉綸' },
@@ -574,20 +573,19 @@
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }
 
-    // 全域狀態：標籤絕不自動塞入任何日期，完全由 localStorage 控管
     const AppState = {
       isTeacher: false,
       currentDate: getTodayString(),
       selectedMonth: String(new Date().getMonth() + 1),
       activeModalStudentId: null,
       steppers: { clean_done: 1, clean_fail: 1, spec_perfect: 1, spec_fair: 1 },
+      // 標籤絕對由 localStorage 儲存紀錄控管，絕不自動新增今日或明日
       recordedDays: JSON.parse(localStorage.getItem('six_grade_recorded_days') || '[]'),
       dailyData: {},
-      remoteAnnouncements: {},
-      remoteAttendance: {}
+      remoteTasks: {},       // 訂正系統中當天指派的作業清單
+      remoteAttendance: {}   // 訂正/打卡系統中的學生紀錄
     };
 
-    // 與打卡系統共用同一套 Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyArwz6gPeW9lNq_8LOfnKYwZmkRN-Wgtb8",
       authDomain: "class-5a-app.firebaseapp.com",
@@ -655,18 +653,25 @@
       return AppState.dailyData[dateStr];
     }
 
-    // 核心：從 Firestore 載入所選日期的真實作業與簽到
+    // 核心邏輯：讀取訂正系統 (class-5a-app) 當日發布的作業與學生的訂正狀態
     async function fetchRealFirebaseData(dateStr) {
       if (!db) return;
       try {
+        // 1. 抓取當天指派要訂正的作業清單
         const docRef = db.collection('115_announcements').doc(dateStr);
         const docSnap = await docRef.get();
         if (docSnap.exists) {
-          AppState.remoteAnnouncements[dateStr] = docSnap.data().items || [];
+          const rawItems = docSnap.data().items || [];
+          // 過濾掉生活打卡項，留下真正的作業
+          const cleanHw = rawItems
+            .map(item => (typeof item === 'string' ? item : (item.text || '')).trim())
+            .filter(t => t && !t.startsWith('※') && !t.startsWith(' ') && !['帶學用品', '複習+預習', '訂正功課'].includes(t));
+          AppState.remoteTasks[dateStr] = cleanHw;
         } else {
-          AppState.remoteAnnouncements[dateStr] = [];
+          AppState.remoteTasks[dateStr] = [];
         }
 
+        // 2. 抓取當天學生出席與訂正狀態集合
         const attColl = db.collection(`115_attendance_${dateStr}`);
         const attSnap = await attColl.get();
         AppState.remoteAttendance[dateStr] = {};
@@ -678,6 +683,23 @@
       } catch (err) {
         console.error("載入雲端資料失敗:", err);
       }
+    }
+
+    // 判定單項作業是否為綠色勾勾（齊全 / done）
+    function isTaskDone(taskName, stAttDoc) {
+      if (!stAttDoc) return false;
+      const cleanT = taskName.trim();
+
+      // 教師手動指定狀態優先判定
+      if (stAttDoc.manualTasks && stAttDoc.manualTasks[cleanT]) {
+        const mStat = stAttDoc.manualTasks[cleanT];
+        return mStat === 'done'; // 只有手動標記為 done 才是綠色
+      }
+
+      // 訂正網頁預設為全綠，除非被標記缺交或 completedTasks 未勾選
+      const completed = stAttDoc.completedTasks || {};
+      // 只要在 completedTasks 中為 true，且沒有被手動標為 missing，即為綠色
+      return completed[cleanT] === true;
     }
 
     const AudioEngine = {
@@ -803,7 +825,6 @@
       }
     }
 
-    // 嚴格受控：僅繪製 recordedDays 清單中的標籤
     function renderDatePills() {
       const container = document.getElementById('datePillsContainer');
       container.innerHTML = '';
@@ -901,26 +922,27 @@
       const dayData = getDayData(curDate);
       const isDayLocked = dayData.locked;
 
-      const dayAnnouncements = AppState.remoteAnnouncements[curDate] || [];
+      const dayTasks = AppState.remoteTasks[curDate] || [];
       const dayAttendance = AppState.remoteAttendance[curDate] || {};
 
       STUDENTS.forEach(st => {
         const isStudentLocked = !!dayData.studentLocked[st.id];
-
         const stAttDoc = dayAttendance[st.id] || {};
         const completedTasks = stAttDoc.completedTasks || {};
         
+        // 1. 打卡網頁：自由心證勾選的三項習慣
         const previewDone = !!completedTasks['複習+預習'];
         const suppliesDone = !!completedTasks['帶學用品'];
         const checkinDone = !!completedTasks['訂正功課'];
         const isAllCheckedIn = (previewDone && suppliesDone && checkinDone);
         const checkinStep = isAllCheckedIn ? 1 : 0;
 
-        const excludedKeys = ['複習+預習', '帶學用品', '訂正功課'];
-        const correctedItems = Object.keys(completedTasks).filter(k => !excludedKeys.includes(k) && completedTasks[k] === true);
-        const hwDoneCount = correctedItems.length;
-        const hwTextPreview = correctedItems.join('、') || (dayAnnouncements.length === 0 ? '本日未指派作業' : '尚無已訂正項目');
+        // 2. 訂正網頁：當天派發作業中「綠色勾勾（齊全）」的項目數量
+        const greenTasks = dayTasks.filter(tName => isTaskDone(tName, stAttDoc));
+        const hwDoneCount = greenTasks.length;
+        const hwTextPreview = greenTasks.join('、') || (dayTasks.length === 0 ? '本日未指派作業' : '尚無已訂正項目');
 
+        // 3. 表現步數
         const records = dayData.records[st.id] || [];
         const classroomScore = records.reduce((acc, r) => acc + r.step, 0);
 
@@ -943,6 +965,7 @@
             </div>
 
             <div class="mt-4 space-y-3">
+              <!-- 打卡習慣：3項落實才+1步 -->
               <div class="bg-[#FAF7F2] p-2.5 rounded-2xl border border-stone-200/70">
                 <div class="flex items-center justify-between mb-2">
                   <span class="text-xl font-black text-stone-700 flex items-center gap-1">
@@ -965,6 +988,7 @@
                 </div>
               </div>
 
+              <!-- 訂正狀況：綠色勾勾一項+1步 -->
               <div onclick="window.appActions.openHomeworkModal('${st.id}')" class="bg-[#F4F9FF] p-2.5 rounded-2xl border border-blue-200/70 cursor-pointer hover:bg-blue-100/50 transition">
                 <div class="flex items-center justify-between mb-1">
                   <span class="text-xl font-black text-blue-950 flex items-center gap-1">
@@ -979,6 +1003,7 @@
                 </div>
               </div>
 
+              <!-- 課堂表現步數 -->
               <div class="bg-[#FFF9F2] p-2.5 rounded-2xl border border-amber-200/70 flex items-center justify-between">
                 <span class="text-xl font-black text-amber-950 flex items-center gap-1">
                   <span>🏆</span> 表現
@@ -1122,7 +1147,6 @@
         this.selectDate(nextDate);
       },
 
-      // 只有在教師模式下、手動點擊「＋」號才建立標籤！
       promptAddNewDate() {
         if (!AppState.isTeacher) {
           showToast('請先解鎖教師模式才能新增日期標籤！', 'error');
@@ -1408,32 +1432,35 @@
         renderStudentCards();
       },
 
+      // 訂正彈窗：清楚呈現當天作業是綠色勾勾（齊全）還是紅色叉叉（缺交）
       openHomeworkModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
-        document.getElementById('hwModalTitle').innerText = `${maskName(st.name)} 訂正作業狀況`;
+        document.getElementById('hwModalTitle').innerText = `${maskName(st.name)} 作業訂正狀況`;
         const container = document.getElementById('hwGridContainer');
         container.innerHTML = '';
 
         const curDate = AppState.currentDate;
-        const dayAnnouncements = AppState.remoteAnnouncements[curDate] || [];
+        const dayTasks = AppState.remoteTasks[curDate] || [];
         const dayAttendance = AppState.remoteAttendance[curDate] || {};
         const stAttDoc = dayAttendance[studentId] || {};
-        const completedTasks = stAttDoc.completedTasks || {};
 
-        const hwItems = dayAnnouncements.filter(it => !['帶學用品', '複習+預習', '訂正功課'].includes(it.text));
-
-        if (hwItems.length === 0) {
-          container.innerHTML = '<div class="col-span-3 text-stone-400 font-black text-2xl text-center py-8">本日尚未指派或登記任何作業項目</div>';
+        if (dayTasks.length === 0) {
+          container.innerHTML = '<div class="col-span-2 text-stone-400 font-black text-2xl text-center py-8">本日訂正系統尚未指派任何作業項目</div>';
         } else {
-          hwItems.forEach(it => {
-            const isDone = !!completedTasks[it.text];
+          dayTasks.forEach(tName => {
+            const isDone = isTaskDone(tName, stAttDoc);
             const div = document.createElement('div');
             div.className = `p-4 sm:p-5 rounded-2xl border-2 flex items-center justify-between text-2xl sm:text-3xl font-black ${
               isDone ? 'bg-emerald-50 text-emerald-950 border-emerald-300' : 'bg-rose-50 text-rose-950 border-rose-300'
             }`;
             div.innerHTML = `
-              <span>${it.text}</span>
-              <span class="text-4xl ${isDone ? 'text-emerald-700' : 'text-rose-700'}">${isDone ? '✓' : '✗'}</span>
+              <div class="flex items-center gap-3">
+                <span class="text-3xl ${isDone ? 'text-emerald-600' : 'text-rose-600'}">${isDone ? '✓' : '✗'}</span>
+                <span>${tName}</span>
+              </div>
+              <span class="text-xl font-num px-3 py-1 rounded-xl ${isDone ? 'bg-emerald-200/80 text-emerald-900' : 'bg-rose-200/80 text-rose-900'}">
+                ${isDone ? '+1 步 (齊全)' : '+0 步 (未訂正)'}
+              </span>
             `;
             container.appendChild(div);
           });
@@ -1465,7 +1492,6 @@
         document.getElementById('teacherAuthModal').classList.add('hidden');
       },
 
-      // 與打卡程式相同的原生 signInWithEmailAndPassword 登入
       verifyTeacherAuth() {
         const email = document.getElementById('teacherEmailInput').value.trim();
         const pwd = document.getElementById('teacherPwdInput').value.trim();
