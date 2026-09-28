@@ -1211,11 +1211,19 @@
       },
 
       applyClassRule(type) {
-        const dayData = getDayData(AppState.currentDate);
-        if (dayData.locked && !AppState.isTeacher) {
-          showToast('今日已歸檔鎖定，無法加扣步數！', 'error');
-          return;
-        }
+      // 檢查是否已登記上課日標籤
+      const monthDays = (AppState.activeDatesByMonth && AppState.activeDatesByMonth[AppState.selectedMonth]) || [];
+      const hasDatePill = monthDays.includes(AppState.currentDate);
+      if (!hasDatePill) {
+        showToast('⚠️ 今日尚未登記上課日標籤，請先點擊上方「＋」新增！', 'error');
+        return;
+      }
+
+      const dayData = getDayData(AppState.currentDate);
+      if (dayData.locked && !AppState.isTeacher) {
+        showToast('今日已歸檔鎖定，無法加扣步數！', 'error');
+        return;
+      }
 
         const isClean = type.startsWith('clean_');
         const isSpec = type.startsWith('spec_');
@@ -1310,12 +1318,19 @@
         const studentId = AppState.activeModalStudentId;
         if (!studentId) return;
 
-        const dayData = getDayData(AppState.currentDate);
-        if ((dayData.locked || dayData.studentLocked[studentId]) && !AppState.isTeacher) {
-          showToast('今日紀錄已鎖定，無法更改！', 'error');
-          return;
-        }
+        // 檢查是否已登記上課日標籤
+      const monthDays = (AppState.activeDatesByMonth && AppState.activeDatesByMonth[AppState.selectedMonth]) || [];
+      const hasDatePill = monthDays.includes(AppState.currentDate);
+      if (!hasDatePill) {
+        showToast('⚠️ 今日尚未登記上課日標籤，請先點擊上方「＋」新增！', 'error');
+        return;
+      }
 
+      const dayData = getDayData(AppState.currentDate);
+      if ((dayData.locked || dayData.studentLocked[studentId]) && !AppState.isTeacher) {
+        showToast('今日紀錄已鎖定，無法更改！', 'error');
+        return;
+      }
         const records = dayData.records[studentId];
         if (records.some(r => r.name === ruleName && !r.isClass)) {
           showToast(`此項「${ruleName}」今日已登記過！`, 'error');
