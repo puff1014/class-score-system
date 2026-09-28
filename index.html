@@ -653,10 +653,11 @@
       return AppState.dailyData[dateStr];
     }
 
-    // 核心邏輯：直接讀取《訂正作業表》Firestore 的 assignments 集合
+    // 核心邏輯：同時讀取《訂正作業表》與《打卡網頁》
     async function fetchRealFirebaseData(dateStr) {
       if (!db) return;
       try {
+        // 1. 讀取《訂正作業表》
         const assignmentsPath = '/artifacts/class-5a-app/public/data/assignments';
         const qSnapshot = await db.collection(assignmentsPath)
           .where('assignmentDate', '==', dateStr)
@@ -675,9 +676,18 @@
         AppState.remoteTasks[dateStr] = currentTasks;
         AppState.remoteAttendance[dateStr] = currentSubmissionStatus;
 
+        // 2. 同步讀取《打卡網頁》的生活習慣資料 (115_attendance_日期)
+        const attColl = db.collection(`115_attendance_${dateStr}`);
+        const attSnap = await attColl.get();
+        AppState.checkinAttendance = AppState.checkinAttendance || {};
+        AppState.checkinAttendance[dateStr] = {};
+        attSnap.forEach(d => {
+          AppState.checkinAttendance[dateStr][d.id] = d.data();
+        });
+
         renderStudentCards();
       } catch (err) {
-        console.error("載入訂正雲端資料失敗:", err);
+        console.error("載入雲端資料失敗:", err);
       }
     }
 
@@ -919,7 +929,10 @@
             ? dayAttendance[tName][st.id]
             : false;
         });
-        const completedTasks = {};
+        const studentCheckinDoc = (AppState.checkinAttendance && AppState.checkinAttendance[curDate])
+          ? (AppState.checkinAttendance[curDate][st.id] || {})
+          : {};
+        const completedTasks = studentCheckinDoc.completedTasks || {};
         
         // 1. 打卡網頁：自由心證勾選的三項習慣
         const previewDone = !!completedTasks['複習+預習'];
@@ -946,12 +959,15 @@
 
         card.innerHTML = `
           <div>
-            <div class="flex items-center justify-between pb-3 border-b border-stone-100">
-              <span class="text-3xl sm:text-4xl lg:text-5xl font-black font-serif-tc text-stone-900 tracking-wide">${maskName(st.name)}</span>
-              <div class="flex items-center gap-1.5 ${isStudentLocked ? 'bg-[#EFE8DF] border-[#8C6D52]/40' : 'bg-amber-50 border-amber-200'} px-3 py-1.5 rounded-2xl border">
-                <span class="text-3xl lg:text-4xl">♟️</span>
-                <span class="text-3xl sm:text-4xl lg:text-5xl font-num font-black ${isStudentLocked ? 'text-[#5C4028]' : 'text-amber-950'}">${totalSteps}</span>
-                <span class="text-xl sm:text-2xl font-serif-tc font-black ${isStudentLocked ? 'text-[#6E4F36]' : 'text-amber-900'}">步</span>
+            <div class="flex items-center justify-between pb-2 border-b border-stone-100">
+              <span class="text-5xl sm:text-6xl font-black font-serif-tc text-stone-900 tracking-wider">${maskName(st.name)}</span>
+              <div class="flex items-center gap-2 ${isStudentLocked ? 'bg-[#EFE8DF] border-[#8C6D52]/40' : 'bg-amber-50 border-amber-200'} px-3 py-1 rounded-2xl border shrink-0">
+                <!-- 10位學生各自專屬顏色的插旗圖示 -->
+                <i class="fa-solid fa-flag text-4xl lg:text-5xl drop-shadow-sm ${
+                  ['text-rose-600', 'text-amber-500', 'text-yellow-500', 'text-emerald-500', 'text-teal-500', 'text-sky-500', 'text-indigo-600', 'text-purple-600', 'text-pink-500', 'text-orange-600'][(st.no - 1) % 10]
+                }"></i>
+                <span class="text-5xl sm:text-6xl font-num font-black ${isStudentLocked ? 'text-[#5C4028]' : 'text-amber-950'}">${totalSteps}</span>
+                <span class="text-2xl sm:text-3xl font-serif-tc font-black ${isStudentLocked ? 'text-[#6E4F36]' : 'text-amber-900'}">步</span>
               </div>
             </div>
 
@@ -1050,76 +1066,75 @@
       document.getElementById('count_att_records').innerText = `${attRecords.length}筆`;
 
       const listGood = document.getElementById('list_good_records');
-      if (goodRecords.length === 0) {
-        listGood.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4">今日尚無此項加步</div>';
-      } else {
-        listGood.innerHTML = goodRecords.map((r, i) => {
-          const isClassRecord = r.isClass === true;
-          return `
-            <div class="bg-white py-1.5 px-3 rounded-2xl border ${isClassRecord ? 'border-amber-300 bg-amber-50/50' : 'border-emerald-300'} flex items-center justify-between text-2xl font-black shadow-2xs">
-              <span class="text-stone-900 flex items-center gap-2">
-                ${isClassRecord ? '<span class="text-amber-700">🏛️ [全班]</span>' : '<span class="text-emerald-700">✓</span>'}
-                <span>${r.name}</span>
-              </span>
-              <div class="flex items-center gap-2.5">
-                <span class="text-stone-400 text-lg font-num font-normal">${r.time || ''}</span>
-                <span class="text-emerald-800 font-num text-2xl font-black">+${r.step}步</span>
-                ${!isFullyDisabled && !isClassRecord ? `<button onclick="window.appActions.removeRecord('${studentId}', 'good',${i})" class="text-stone-400 hover:text-rose-600 text-2xl font-black px-1">✕</button>` : ''}
-              </div>
+    if (goodRecords.length === 0) {
+      listGood.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4">今日尚未加步數</div>';
+    } else {
+      listGood.innerHTML = goodRecords.map((r, i) => {
+        const isClassRecord = r.isClass === true;
+        return `
+          <div class="bg-white py-2 px-3.5 rounded-2xl border ${isClassRecord ? 'border-amber-300 bg-amber-50/50' : 'border-emerald-300'} flex items-center justify-between text-3xl font-black shadow-2xs whitespace-nowrap">
+            <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
+              ${isClassRecord ? '<span class="text-amber-700 shrink-0">🏛️ [全班]</span>' : '<span class="text-emerald-700 shrink-0">✓</span>'}
+              <span class="truncate">${r.name}</span>
+            </span>
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="text-stone-400 text-lg font-num font-normal">${r.time || ''}</span>
+              <span class="text-emerald-800 font-num text-3xl font-black">+${r.step}步</span>
+              ${!isFullyDisabled && !isClassRecord ? `<button onclick="window.appActions.removeRecord('${studentId}', 'good',${i})" class="text-stone-400 hover:text-rose-600 text-3xl font-black px-1">✕</button>` : ''}
             </div>
-          `;
-        }).join('');
-      }
-
-      const listBad = document.getElementById('list_bad_records');
-      if (badRecords.length === 0) {
-        listBad.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4">今日無扣減步數</div>';
-      } else {
-        listBad.innerHTML = badRecords.map((r, i) => {
-          const isClassRecord = r.isClass === true;
-          const isReEditCost = r.name === '結算後修改';
-          return `
-            <div class="bg-white py-1.5 px-3 rounded-2xl border ${isReEditCost ? 'border-rose-400 bg-rose-100/60' : isClassRecord ? 'border-rose-400 bg-rose-50/50' : 'border-rose-300'} flex items-center justify-between text-2xl font-black shadow-2xs">
-              <span class="text-stone-900 flex items-center gap-2">
-                ${isReEditCost ? '<span class="text-rose-700">🚨 [重審]</span>' : isClassRecord ? '<span class="text-rose-700">🏛️ [全班]</span>' : '<span class="text-rose-700">✗</span>'}
-                <span>${r.name}</span>
-              </span>
-              <div class="flex items-center gap-2.5">
-                <span class="text-stone-400 text-lg font-num font-normal">${r.time || ''}</span>
-                <span class="text-rose-800 font-num text-2xl font-black">${r.step}步</span>
-                ${!isFullyDisabled && !isClassRecord && !isReEditCost ? `<button onclick="window.appActions.removeRecord('${studentId}', 'bad',${i})" class="text-stone-400 hover:text-rose-600 text-2xl font-black px-1">✕</button>` : ''}
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      const listAtt = document.getElementById('list_att_records');
-      if (attRecords.length === 0) {
-        listAtt.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4">今日尚無自律扣步</div>';
-      } else {
-        listAtt.innerHTML = attRecords.map((r, i) => {
-          const isClassRecord = r.isClass === true;
-          return `
-            <div class="bg-white py-1.5 px-3 rounded-2xl border ${isClassRecord ? 'border-amber-400 bg-amber-50/50' : 'border-amber-300'} flex items-center justify-between text-2xl font-black shadow-2xs">
-              <span class="text-stone-900 flex items-center gap-2">
-                ${isClassRecord ? '<span class="text-amber-800">🏛️ [全班]</span>' : '<span class="text-amber-700">⚠</span>'}
-                <span>${r.name}</span>
-              </span>
-              <div class="flex items-center gap-2.5">
-                <span class="text-stone-400 text-lg font-num font-normal">${r.time || ''}</span>
-                <span class="text-amber-900 font-num text-2xl font-black">${r.step}步</span>
-                ${!isFullyDisabled && !isClassRecord ? `<button onclick="window.appActions.removeRecord('${studentId}', 'attitude',${i})" class="text-stone-400 hover:text-rose-600 text-2xl font-black px-1">✕</button>` : ''}
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      const totalModalClassroom = records.reduce((acc, r) => acc + r.step, 0);
-      document.getElementById('modalCurrentScore').innerText = `♟️ ${totalModalClassroom >= 0 ? '+' : ''}${totalModalClassroom} 步`;
+          </div>
+        `;
+      }).join('');
     }
 
+    const listBad = document.getElementById('list_bad_records');
+    if (badRecords.length === 0) {
+      listBad.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4">今日無扣減步數</div>';
+    } else {
+      listBad.innerHTML = badRecords.map((r, i) => {
+        const isClassRecord = r.isClass === true;
+        const isReEditCost = r.name === '結算後修改';
+        return `
+          <div class="bg-white py-2 px-3.5 rounded-2xl border ${isReEditCost ? 'border-rose-400 bg-rose-100/60' : isClassRecord ? 'border-rose-400 bg-rose-50/50' : 'border-rose-300'} flex items-center justify-between text-3xl font-black shadow-2xs whitespace-nowrap">
+            <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
+              ${isReEditCost ? '<span class="text-rose-700 shrink-0">🚨 [重審]</span>' : isClassRecord ? '<span class="text-rose-700 shrink-0">🏛️ [全班]</span>' : '<span class="text-rose-700 shrink-0">✗</span>'}
+              <span class="truncate">${r.name}</span>
+            </span>
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="text-stone-400 text-lg font-num font-normal">${r.time || ''}</span>
+              <span class="text-rose-800 font-num text-3xl font-black">${r.step}步</span>
+              ${!isFullyDisabled && !isClassRecord && !isReEditCost ? `<button onclick="window.appActions.removeRecord('${studentId}', 'bad',${i})" class="text-stone-400 hover:text-rose-600 text-3xl font-black px-1">✕</button>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    const listAtt = document.getElementById('list_att_records');
+    if (attRecords.length === 0) {
+      listAtt.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4">今日無自律扣步</div>';
+    } else {
+      listAtt.innerHTML = attRecords.map((r, i) => {
+        const isClassRecord = r.isClass === true;
+        return `
+          <div class="bg-white py-2 px-3.5 rounded-2xl border ${isClassRecord ? 'border-amber-400 bg-amber-50/50' : 'border-amber-300'} flex items-center justify-between text-3xl font-black shadow-2xs whitespace-nowrap">
+            <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
+              ${isClassRecord ? '<span class="text-amber-800 shrink-0">🏛️ [全班]</span>' : '<span class="text-amber-700 shrink-0">⚠</span>'}
+              <span class="truncate">${r.name}</span>
+            </span>
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="text-stone-400 text-lg font-num font-normal">${r.time || ''}</span>
+              <span class="text-amber-900 font-num text-3xl font-black">${r.step}步</span>
+              ${!isFullyDisabled && !isClassRecord ? `<button onclick="window.appActions.removeRecord('${studentId}', 'attitude',${i})" class="text-stone-400 hover:text-rose-600 text-3xl font-black px-1">✕</button>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    const totalModalClassroom = records.reduce((acc, r) => acc + r.step, 0);
+    document.getElementById('modalCurrentScore').innerText = `🚩 ${totalModalClassroom >= 0 ? '+' : ''}${totalModalClassroom} 步`;
+  }
     window.appActions = {
       selectDate(dateStr) {
         AppState.currentDate = dateStr;
