@@ -353,126 +353,128 @@
             </div>
           </div>
 
-          <!-- 左欄明細區（沉穩灰綠底色塊） -->
-          <div class="mt-3 p-3 bg-emerald-100/80 border-2 border-emerald-300 rounded-2xl flex-1 flex flex-col justify-start overflow-hidden shadow-inner">
-            <span class="text-2xl font-black text-emerald-950 mb-2 flex items-center justify-between">
+          <!-- 左欄明細區（沉穩深墨綠黑板底座） -->
+          <div class="mt-2 p-2.5 bg-[#0f2e22] border-2 border-emerald-700/80 rounded-2xl flex-1 flex flex-col justify-start overflow-hidden shadow-inner">
+            <span class="text-xl font-black text-emerald-200 mb-1.5 flex items-center justify-between">
               <span>📋 檢核紀錄明細</span>
-              <span id="count_good_records" class="font-num text-2xl text-emerald-800 font-bold">0筆</span>
+              <span id="count_good_records" class="font-num text-xl text-emerald-300 font-bold">0筆</span>
             </span>
-            <div id="list_good_records" class="space-y-2 overflow-y-auto custom-scrollbar flex-1 pr-1">
-              <div class="text-stone-500 text-3xl text-center py-4">今日尚未加步數</div>
+            <div id="list_good_records" class="space-y-1.5 overflow-hidden flex-1">
+              <div class="text-stone-400 text-2xl text-center py-3">今日尚未加步數</div>
             </div>
           </div>
         </div>
 
         <!-- 中欄：持續進步 -->
-        <div class="bg-rose-50/70 border-2 border-rose-200 rounded-3xl p-3 sm:p-4 flex flex-col justify-between overflow-hidden shadow-xs">
+        <div class="bg-rose-50/70 border-2 border-rose-200 rounded-3xl p-2.5 sm:p-3 flex flex-col justify-between overflow-hidden shadow-xs">
           <div>
-            <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b-2 border-rose-200">
-              <span class="text-3xl font-black text-rose-950 font-serif-tc flex items-center gap-2">
+            <div class="flex items-center justify-between pb-1 mb-1 border-b-2 border-rose-200">
+              <span class="text-2xl font-black text-rose-950 font-serif-tc flex items-center gap-1.5">
                 <span>🚨</span> 持續進步
               </span>
             </div>
+            <!-- 按鈕垂直高度緊湊化 -->
             <div class="space-y-1">
-              <div id="card_rule_bad_1" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_bad_1" onclick="window.appActions.applyStudentRule('未準時繳交簿本', -1, 'bad')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left">
+              <div id="card_rule_bad_1" class="bg-white py-1 px-2.5 rounded-xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
+                <button id="btn_rule_bad_1" onclick="window.appActions.applyStudentRule('未準時繳交簿本', -1, 'bad')" class="text-xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-1.5 flex-1 text-left">
                   <span>⏰</span> 未準時繳交簿本
                 </button>
-                <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_1', -1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">-</button>
-                  <span id="btn_step_bad_1" class="w-7 text-center text-2xl font-num font-black text-rose-900">1</span>
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_1', 1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">+</button>
+                <div class="flex items-center gap-1 bg-rose-50 rounded-lg p-0.5 border border-rose-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_1', -1)" class="w-6 h-6 text-rose-800 text-lg font-black hover:bg-rose-200 rounded">-</button>
+                  <span id="btn_step_bad_1" class="w-6 text-center text-xl font-num font-black text-rose-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_1', 1)" class="w-6 h-6 text-rose-800 text-lg font-black hover:bg-rose-200 rounded">+</button>
                 </div>
               </div>
 
-              <div id="card_rule_bad_2" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_bad_2" onclick="window.appActions.applyStudentRule('中午未準時回位', -1, 'bad')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left">
+              <div id="card_rule_bad_2" class="bg-white py-1 px-2.5 rounded-xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
+                <button id="btn_rule_bad_2" onclick="window.appActions.applyStudentRule('中午未準時回位', -1, 'bad')" class="text-xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-1.5 flex-1 text-left">
                   <span>🔔</span> 中午未準時回位
                 </button>
-                <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_2', -1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">-</button>
-                  <span id="btn_step_bad_2" class="w-7 text-center text-2xl font-num font-black text-rose-900">1</span>
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_2', 1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">+</button>
+                <div class="flex items-center gap-1 bg-rose-50 rounded-lg p-0.5 border border-rose-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_2', -1)" class="w-6 h-6 text-rose-800 text-lg font-black hover:bg-rose-200 rounded">-</button>
+                  <span id="btn_step_bad_2" class="w-6 text-center text-xl font-num font-black text-rose-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_2', 1)" class="w-6 h-6 text-rose-800 text-lg font-black hover:bg-rose-200 rounded">+</button>
                 </div>
               </div>
 
-              <div id="card_rule_bad_3" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_bad_3" onclick="window.appActions.applyStudentRule('個人工作未完成', -1, 'bad')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left">
+              <div id="card_rule_bad_3" class="bg-white py-1 px-2.5 rounded-xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
+                <button id="btn_rule_bad_3" onclick="window.appActions.applyStudentRule('個人工作未完成', -1, 'bad')" class="text-xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-1.5 flex-1 text-left">
                   <span>⚠️</span> 個人工作未完成
                 </button>
-                <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_3', -1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">-</button>
-                  <span id="btn_step_bad_3" class="w-7 text-center text-2xl font-num font-black text-rose-900">1</span>
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_3', 1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">+</button>
+                <div class="flex items-center gap-1 bg-rose-50 rounded-lg p-0.5 border border-rose-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_3', -1)" class="w-6 h-6 text-rose-800 text-lg font-black hover:bg-rose-200 rounded">-</button>
+                  <span id="btn_step_bad_3" class="w-6 text-center text-xl font-num font-black text-rose-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_3', 1)" class="w-6 h-6 text-rose-800 text-lg font-black hover:bg-rose-200 rounded">+</button>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- 中欄明細區（沉穩粉紅底色塊） -->
-          <div class="mt-3 p-3 bg-rose-100/80 border-2 border-rose-300 rounded-2xl flex-1 flex flex-col justify-start overflow-hidden shadow-inner">
-            <span class="text-2xl font-black text-rose-950 mb-2 flex items-center justify-between">
+          <!-- 中欄明細區（沉穩深酒紅底座） -->
+          <div class="mt-2 p-2.5 bg-[#330f16] border-2 border-rose-800/80 rounded-2xl flex-1 flex flex-col justify-start overflow-hidden shadow-inner">
+            <span class="text-xl font-black text-rose-200 mb-1.5 flex items-center justify-between">
               <span>📋 檢核紀錄明細</span>
-              <span id="count_bad_records" class="font-num text-2xl text-rose-800 font-bold">0筆</span>
+              <span id="count_bad_records" class="font-num text-xl text-rose-300 font-bold">0筆</span>
             </span>
-            <div id="list_bad_records" class="space-y-2 overflow-y-auto custom-scrollbar flex-1 pr-1">
-              <div class="text-stone-500 text-3xl text-center py-4">今日無扣減步數</div>
+            <div id="list_bad_records" class="space-y-1.5 overflow-hidden flex-1">
+              <div class="text-stone-400 text-2xl text-center py-3">今日無扣減步數</div>
             </div>
           </div>
         </div>
 
         <!-- 右欄：學習自律 -->
-        <div class="bg-amber-50/70 border-2 border-amber-200 rounded-3xl p-3 sm:p-4 flex flex-col justify-between overflow-hidden shadow-xs">
+        <div class="bg-amber-50/70 border-2 border-amber-200 rounded-3xl p-2.5 sm:p-3 flex flex-col justify-between overflow-hidden shadow-xs">
           <div>
-            <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b-2 border-amber-200">
-              <span class="text-3xl font-black text-amber-950 font-serif-tc flex items-center gap-2">
+            <div class="flex items-center justify-between pb-1 mb-1 border-b-2 border-amber-200">
+              <span class="text-2xl font-black text-amber-950 font-serif-tc flex items-center gap-1.5">
                 <span>🎯</span> 學習自律
               </span>
             </div>
+            <!-- 按鈕垂直高度緊湊化 -->
             <div class="space-y-1">
-              <div id="card_rule_att_1" class="bg-white py-1.5 px-2.5 rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_att_1" onclick="window.appActions.applyStudentRule('慢吞吞', -1, 'attitude')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left">
+              <div id="card_rule_att_1" class="bg-white py-1 px-2.5 rounded-xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
+                <button id="btn_rule_att_1" onclick="window.appActions.applyStudentRule('慢吞吞', -1, 'attitude')" class="text-xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-1.5 flex-1 text-left">
                   <span>🐢</span> 慢吞吞
                 </button>
-                <div class="flex items-center gap-1 bg-amber-50 rounded-xl p-1 border border-amber-200 shrink-0">
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_1', -1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">-</button>
-                  <span id="btn_step_att_1" class="w-7 text-center text-2xl font-num font-black text-amber-900">1</span>
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_1', 1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">+</button>
+                <div class="flex items-center gap-1 bg-amber-50 rounded-lg p-0.5 border border-amber-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_1', -1)" class="w-6 h-6 text-amber-800 text-lg font-black hover:bg-amber-200 rounded">-</button>
+                  <span id="btn_step_att_1" class="w-6 text-center text-xl font-num font-black text-amber-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_1', 1)" class="w-6 h-6 text-amber-800 text-lg font-black hover:bg-amber-200 rounded">+</button>
                 </div>
               </div>
 
-              <div id="card_rule_att_2" class="bg-white py-1.5 px-2.5 rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_att_2" onclick="window.appActions.applyStudentRule('不細心', -1, 'attitude')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left">
+              <div id="card_rule_att_2" class="bg-white py-1 px-2.5 rounded-xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
+                <button id="btn_rule_att_2" onclick="window.appActions.applyStudentRule('不細心', -1, 'attitude')" class="text-xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-1.5 flex-1 text-left">
                   <span>👀</span> 不細心
                 </button>
-                <div class="flex items-center gap-1 bg-amber-50 rounded-xl p-1 border border-amber-200 shrink-0">
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_2', -1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">-</button>
-                  <span id="btn_step_att_2" class="w-7 text-center text-2xl font-num font-black text-amber-900">1</span>
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_2', 1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">+</button>
+                <div class="flex items-center gap-1 bg-amber-50 rounded-lg p-0.5 border border-amber-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_2', -1)" class="w-6 h-6 text-amber-800 text-lg font-black hover:bg-amber-200 rounded">-</button>
+                  <span id="btn_step_att_2" class="w-6 text-center text-xl font-num font-black text-amber-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_2', 1)" class="w-6 h-6 text-amber-800 text-lg font-black hover:bg-amber-200 rounded">+</button>
                 </div>
               </div>
 
-              <div id="card_rule_att_3" class="bg-white py-1.5 px-2.5 rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_att_3" onclick="window.appActions.applyStudentRule('科任表現不佳', -1, 'attitude')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left">
+              <div id="card_rule_att_3" class="bg-white py-1 px-2.5 rounded-xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
+                <button id="btn_rule_att_3" onclick="window.appActions.applyStudentRule('科任表現不佳', -1, 'attitude')" class="text-xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-1.5 flex-1 text-left">
                   <span>📉</span> 科任表現不佳
                 </button>
-                <div class="flex items-center gap-1 bg-amber-50 rounded-xl p-1 border border-amber-200 shrink-0">
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_3', -1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">-</button>
-                  <span id="btn_step_att_3" class="w-7 text-center text-2xl font-num font-black text-amber-900">1</span>
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_3', 1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">+</button>
+                <div class="flex items-center gap-1 bg-amber-50 rounded-lg p-0.5 border border-amber-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_3', -1)" class="w-6 h-6 text-amber-800 text-lg font-black hover:bg-amber-200 rounded">-</button>
+                  <span id="btn_step_att_3" class="w-6 text-center text-xl font-num font-black text-amber-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_3', 1)" class="w-6 h-6 text-amber-800 text-lg font-black hover:bg-amber-200 rounded">+</button>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- 右欄明細區（沉穩金橘底色塊） -->
-          <div class="mt-3 p-3 bg-amber-100/80 border-2 border-amber-300 rounded-2xl flex-1 flex flex-col justify-start overflow-hidden shadow-inner">
-            <span class="text-2xl font-black text-amber-950 mb-2 flex items-center justify-between">
+          <!-- 右欄明細區（沉穩深焦糖黑棕底座） -->
+          <div class="mt-2 p-2.5 bg-[#261a10] border-2 border-amber-800/80 rounded-2xl flex-1 flex flex-col justify-start overflow-hidden shadow-inner">
+            <span class="text-xl font-black text-amber-200 mb-1.5 flex items-center justify-between">
               <span>📋 檢核紀錄明細</span>
-              <span id="count_att_records" class="font-num text-2xl text-amber-800 font-bold">0筆</span>
+              <span id="count_att_records" class="font-num text-xl text-amber-300 font-bold">0筆</span>
             </span>
-            <div id="list_att_records" class="space-y-2 overflow-y-auto custom-scrollbar flex-1 pr-1">
-              <div class="text-stone-500 text-3xl text-center py-4">今日無自律扣步</div>
+            <div id="list_att_records" class="space-y-1.5 overflow-hidden flex-1">
+              <div class="text-stone-400 text-2xl text-center py-3">今日無自律扣步</div>
             </div>
           </div>
         </div>
@@ -963,15 +965,15 @@
 
         card.innerHTML = `
           <div>
-            <div class="flex items-center justify-between pb-2 border-b border-stone-100">
-              <span class="text-5xl sm:text-6xl font-black font-serif-tc text-stone-900 tracking-wider">${maskName(st.name)}</span>
+            <div class="flex items-center justify-between pb-2 border-b border-stone-100 gap-1">
+              <!-- 姓名縮至3xl~4xl並強制單行不折行 -->
+              <span class="text-3xl sm:text-4xl font-black font-serif-tc text-stone-900 whitespace-nowrap tracking-tight">${maskName(st.name)}</span>
+              <!-- 右側膠囊移除「步」字，超大彩色旗子 + 超大步數 -->
               <div class="flex items-center gap-2 ${isStudentLocked ? 'bg-[#EFE8DF] border-[#8C6D52]/40' : 'bg-amber-50 border-amber-200'} px-3 py-1 rounded-2xl border shrink-0">
-                <!-- 10位學生各自專屬顏色的插旗圖示 -->
-                <i class="fa-solid fa-flag text-4xl lg:text-5xl drop-shadow-sm ${
+                <i class="fa-solid fa-flag text-5xl sm:text-6xl drop-shadow-sm ${
                   ['text-rose-600', 'text-amber-500', 'text-yellow-500', 'text-emerald-500', 'text-teal-500', 'text-sky-500', 'text-indigo-600', 'text-purple-600', 'text-pink-500', 'text-orange-600'][(st.no - 1) % 10]
                 }"></i>
                 <span class="text-5xl sm:text-6xl font-num font-black ${isStudentLocked ? 'text-[#5C4028]' : 'text-amber-950'}">${totalSteps}</span>
-                <span class="text-2xl sm:text-3xl font-serif-tc font-black ${isStudentLocked ? 'text-[#6E4F36]' : 'text-amber-900'}">步</span>
               </div>
             </div>
 
@@ -1071,20 +1073,20 @@
 
       const listGood = document.getElementById('list_good_records');
     if (goodRecords.length === 0) {
-      listGood.innerHTML = '<div class="text-stone-500 text-3xl text-center py-6 font-bold">今日尚未加步數</div>';
+      listGood.innerHTML = '<div class="text-stone-400 text-2xl text-center py-4 font-bold">今日尚未加步數</div>';
     } else {
       listGood.innerHTML = goodRecords.map((r, i) => {
         const isClassRecord = r.isClass === true;
         return `
-          <div class="bg-white py-2.5 px-3.5 rounded-2xl border-2 ${isClassRecord ? 'border-amber-400 bg-amber-50/80' : 'border-emerald-400'} flex items-center justify-between text-3xl sm:text-4xl font-black shadow-sm whitespace-nowrap">
-            <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
-              ${isClassRecord ? '<span class="text-amber-700 shrink-0">🏛️</span>' : '<span class="text-emerald-600 shrink-0">✓</span>'}
+          <div class="bg-[#153e2d] py-1.5 px-3 rounded-xl border border-emerald-500/70 flex items-center justify-between text-2xl sm:text-3xl font-black shadow-sm whitespace-nowrap">
+            <span class="text-white flex items-center gap-2 truncate mr-2">
+              ${isClassRecord ? '<span class="text-emerald-300 shrink-0">🏛️</span>' : '<span class="text-emerald-400 shrink-0">✓</span>'}
               <span class="truncate">${r.name}</span>
             </span>
-            <div class="flex items-center gap-2.5 shrink-0">
-              <span class="text-stone-400 text-lg font-num font-normal tracking-tighter">${r.time || ''}</span>
-              <span class="text-emerald-800 font-num text-3xl sm:text-4xl font-black">+${r.step}步</span>
-              ${!isFullyDisabled && !isClassRecord ? `<button onclick="window.appActions.removeRecord('${studentId}', 'good',${i})" class="text-stone-400 hover:text-rose-600 text-3xl font-black px-1 leading-none">✕</button>` : ''}
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="text-emerald-300/60 text-base font-num font-normal tracking-tight">${r.time || ''}</span>
+              <span class="text-emerald-300 font-num text-2xl sm:text-3xl font-black">+${r.step}步</span>
+              ${!isFullyDisabled && !isClassRecord ? `<button onclick="window.appActions.removeRecord('${studentId}', 'good',${i})" class="text-stone-400 hover:text-rose-400 text-2xl font-black px-1 leading-none">✕</button>` : ''}
             </div>
           </div>
         `;
@@ -1093,21 +1095,21 @@
 
     const listBad = document.getElementById('list_bad_records');
     if (badRecords.length === 0) {
-      listBad.innerHTML = '<div class="text-stone-500 text-3xl text-center py-6 font-bold">今日無扣減步數</div>';
+      listBad.innerHTML = '<div class="text-stone-400 text-2xl text-center py-4 font-bold">今日無扣減步數</div>';
     } else {
       listBad.innerHTML = badRecords.map((r, i) => {
         const isClassRecord = r.isClass === true;
         const isReEditCost = r.name === '結算後修改';
         return `
-          <div class="bg-white py-2.5 px-3.5 rounded-2xl border-2 ${isReEditCost ? 'border-rose-500 bg-rose-100/80' : isClassRecord ? 'border-rose-400 bg-rose-50/80' : 'border-rose-400'} flex items-center justify-between text-3xl sm:text-4xl font-black shadow-sm whitespace-nowrap">
-            <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
-              ${isReEditCost ? '<span class="text-rose-700 shrink-0">🚨</span>' : isClassRecord ? '<span class="text-rose-700 shrink-0">🏛️</span>' : '<span class="text-rose-600 shrink-0">✗</span>'}
+          <div class="bg-[#42151e] py-1.5 px-3 rounded-xl border border-rose-500/70 flex items-center justify-between text-2xl sm:text-3xl font-black shadow-sm whitespace-nowrap">
+            <span class="text-white flex items-center gap-2 truncate mr-2">
+              ${isReEditCost ? '<span class="text-rose-300 shrink-0">🚨</span>' : isClassRecord ? '<span class="text-rose-300 shrink-0">🏛️</span>' : '<span class="text-rose-400 shrink-0">✗</span>'}
               <span class="truncate">${r.name}</span>
             </span>
-            <div class="flex items-center gap-2.5 shrink-0">
-              <span class="text-stone-400 text-lg font-num font-normal tracking-tighter">${r.time || ''}</span>
-              <span class="text-rose-800 font-num text-3xl sm:text-4xl font-black">${r.step}步</span>
-              ${!isFullyDisabled && !isClassRecord && !isReEditCost ? `<button onclick="window.appActions.removeRecord('${studentId}', 'bad',${i})" class="text-stone-400 hover:text-rose-600 text-3xl font-black px-1 leading-none">✕</button>` : ''}
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="text-rose-300/60 text-base font-num font-normal tracking-tight">${r.time || ''}</span>
+              <span class="text-rose-300 font-num text-2xl sm:text-3xl font-black">${r.step}步</span>
+              ${!isFullyDisabled && !isClassRecord && !isReEditCost ? `<button onclick="window.appActions.removeRecord('${studentId}', 'bad',${i})" class="text-stone-400 hover:text-rose-300 text-2xl font-black px-1 leading-none">✕</button>` : ''}
             </div>
           </div>
         `;
@@ -1116,20 +1118,20 @@
 
     const listAtt = document.getElementById('list_att_records');
     if (attRecords.length === 0) {
-      listAtt.innerHTML = '<div class="text-stone-500 text-3xl text-center py-6 font-bold">今日無自律扣步</div>';
+      listAtt.innerHTML = '<div class="text-stone-400 text-2xl text-center py-4 font-bold">今日無自律扣步</div>';
     } else {
       listAtt.innerHTML = attRecords.map((r, i) => {
         const isClassRecord = r.isClass === true;
         return `
-          <div class="bg-white py-2.5 px-3.5 rounded-2xl border-2 ${isClassRecord ? 'border-amber-400 bg-amber-50/80' : 'border-amber-400'} flex items-center justify-between text-3xl sm:text-4xl font-black shadow-sm whitespace-nowrap">
-            <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
-              ${isClassRecord ? '<span class="text-amber-800 shrink-0">🏛️</span>' : '<span class="text-amber-600 shrink-0">⚠</span>'}
+          <div class="bg-[#382313] py-1.5 px-3 rounded-xl border border-amber-600/70 flex items-center justify-between text-2xl sm:text-3xl font-black shadow-sm whitespace-nowrap">
+            <span class="text-white flex items-center gap-2 truncate mr-2">
+              ${isClassRecord ? '<span class="text-amber-300 shrink-0">🏛️</span>' : '<span class="text-amber-400 shrink-0">⚠️</span>'}
               <span class="truncate">${r.name}</span>
             </span>
-            <div class="flex items-center gap-2.5 shrink-0">
-              <span class="text-stone-400 text-lg font-num font-normal tracking-tighter">${r.time || ''}</span>
-              <span class="text-amber-900 font-num text-3xl sm:text-4xl font-black">${r.step}步</span>
-              ${!isFullyDisabled && !isClassRecord ? `<button onclick="window.appActions.removeRecord('${studentId}', 'attitude',${i})" class="text-stone-400 hover:text-rose-600 text-3xl font-black px-1 leading-none">✕</button>` : ''}
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="text-amber-300/60 text-base font-num font-normal tracking-tight">${r.time || ''}</span>
+              <span class="text-amber-300 font-num text-2xl sm:text-3xl font-black">${r.step}步</span>
+              ${!isFullyDisabled && !isClassRecord ? `<button onclick="window.appActions.removeRecord('${studentId}', 'attitude',${i})" class="text-stone-400 hover:text-rose-400 text-2xl font-black px-1 leading-none">✕</button>` : ''}
             </div>
           </div>
         `;
