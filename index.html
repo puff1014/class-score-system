@@ -71,7 +71,7 @@
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v3.0
+            v3.1
           </span>
         </div>
 
@@ -111,11 +111,11 @@
 
         <div class="flex items-center h-[96px] bg-[#F3EDE2] border-2 border-[#DFD7C7] px-4 sm:px-6 rounded-2xl shadow-inner gap-3 sm:gap-4">
           <span id="headerDateText" class="text-stone-700 font-serif-tc font-bold text-lg sm:text-2xl whitespace-nowrap">
-            9月28日 星期一
+            --月--日
           </span>
           <div class="w-[2px] h-10 bg-[#C8BFAD]"></div>
           <span id="headerClockDigits" class="text-4xl sm:text-5xl lg:text-6xl font-num font-black text-stone-900 tracking-wider">
-            08:00:00
+            00:00:00
           </span>
         </div>
       </div>
@@ -143,7 +143,7 @@
         </select>
       </div>
       
-      <!-- 中間標籤容器：未新增時不自作主張冒出 -->
+      <!-- 中間標籤容器：完全受控，只有手動按 ＋ 才出現標籤 -->
       <div id="datePillsContainer" class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto custom-scrollbar flex-nowrap px-2 flex-1 min-w-0">
       </div>
 
@@ -162,7 +162,7 @@
           </button>
         </div>
 
-        <!-- ＋號：按下才將目前日期收納為標籤 -->
+        <!-- ＋號：僅教師模式可見，點擊才將目前日期納入標籤 -->
         <button id="addDayBtn" onclick="window.appActions.promptAddNewDate()" class="hidden w-11 h-11 bg-emerald-50 border-2 border-emerald-300 hover:bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center text-2xl font-black shadow-xs stone-btn" title="將目前日期納入上課日清單">
           <i class="fa-solid fa-plus"></i>
         </button>
@@ -230,7 +230,7 @@
           </div>
 
           <div id="cleanLockedBadge" class="hidden items-center gap-2">
-            <span id="cleanLockedText" class="px-4 py-2 rounded-2xl text-2xl font-black font-num bg-emerald-100 text-emerald-900 border-2 border-emerald-300 shadow-xs">
+            <span id="cleanLockedText" class="px-4 py-2 rounded-2xl text-2xl font-black font-num bg-emerald-100 text-emerald-950 border-2 border-emerald-300 shadow-xs">
               +1
             </span>
             <button id="cleanResetBtn" onclick="window.appActions.resetClassAction('clean')" class="hidden px-2.5 py-1.5 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-base font-black stone-btn" title="重設打掃紀錄">
@@ -269,7 +269,7 @@
           </div>
 
           <div id="specLockedBadge" class="hidden items-center gap-2">
-            <span id="specLockedText" class="px-4 py-2 rounded-2xl text-2xl font-black font-num bg-blue-100 text-blue-900 border-2 border-blue-300 shadow-xs">
+            <span id="specLockedText" class="px-4 py-2 rounded-2xl text-2xl font-black font-num bg-blue-100 text-blue-950 border-2 border-blue-300 shadow-xs">
               +1
             </span>
             <button id="specResetBtn" onclick="window.appActions.resetClassAction('spec')" class="hidden px-2.5 py-1.5 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-base font-black stone-btn" title="重設科任紀錄">
@@ -386,7 +386,7 @@
 
               <div id="card_rule_bad_2" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
                 <button id="btn_rule_bad_2" onclick="window.appActions.applyStudentRule('中午未準時回位', -1, 'bad')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
-                  <span>🔔</span> 中午未準時回位
+                  <span>🔔</span> 中中午未準時回位
                 </button>
                 <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
                   <button onclick="window.appActions.adjustModalStepper('btn_step_bad_2', -1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">-</button>
@@ -513,23 +513,23 @@
     </div>
   </div>
 
-  <!-- 教師權限登入彈窗 -->
+  <!-- 教師權限登入彈窗 (雙軌驗證：支援 Firebase 或 備用通行碼) -->
   <div id="teacherAuthModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white border-2 border-stone-300 rounded-3xl p-6 max-w-md w-full shadow-2xl">
-      <h3 class="text-2xl font-black text-stone-900 font-serif-tc mb-3 flex items-center gap-2">
+      <h3 class="text-2xl font-black text-stone-900 font-serif-tc mb-2 flex items-center gap-2">
         <i class="fa-solid fa-shield-halved text-emerald-700"></i>
         <span>解鎖教師管理權限</span>
       </h3>
-      <p class="text-stone-600 font-bold mb-4">由 Google Firebase 伺服器安全驗證：</p>
+      <p class="text-stone-500 font-bold text-sm mb-4">輸入教師通行碼或 Firebase 帳號解鎖：</p>
       
       <div class="space-y-3 mb-4">
         <div>
-          <label class="block text-sm font-bold text-stone-600 mb-1">教師信箱帳號</label>
-          <input type="email" id="teacherEmailInput" value="" placeholder="請輸入帳號" class="w-full text-xl p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" />
+          <label class="block text-sm font-bold text-stone-600 mb-1">教師通關密碼</label>
+          <input type="password" id="teacherPwdInput" value="" placeholder="輸入預設密碼 8888 或 Firebase 密碼" class="w-full text-xl p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" onkeydown="if(event.key==='Enter') window.appActions.verifyTeacherAuth()" />
         </div>
         <div>
-          <label class="block text-sm font-bold text-stone-600 mb-1">密碼</label>
-          <input type="password" id="teacherPwdInput" value="" placeholder="請輸入密碼" class="w-full text-xl p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" onkeydown="if(event.key==='Enter') window.appActions.verifyTeacherAuth()" />
+          <label class="block text-sm font-bold text-stone-400 mb-1">（選填）Firebase 帳號</label>
+          <input type="email" id="teacherEmailInput" value="" placeholder="選填，若使用雲端驗證時輸入" class="w-full text-base p-2.5 border border-stone-200 rounded-xl font-num outline-none focus:border-stone-500" />
         </div>
       </div>
 
@@ -561,32 +561,24 @@
       { id: '10', no: 10, name: '李O妤' }
     ];
 
-    // 全域狀態：RECORDED_DAYS 預設只放當天，其餘日期必須由老師手動按「＋」加入，不自動長出！
     function getTodayString() {
       const d = new Date();
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }
 
+    // 全域狀態：標籤完全由 localStorage 控管，絕不自動 push 今日！
     const AppState = {
       isTeacher: false,
       currentDate: getTodayString(),
       selectedMonth: String(new Date().getMonth() + 1),
       activeModalStudentId: null,
       steppers: { clean_done: 1, clean_fail: 1, spec_perfect: 1, spec_fair: 1 },
-      // 紀錄標籤清單（從 localStorage 讀取或預設僅當天）
+      // 讀取已記錄的上課日清單（若空則為空陣列，絕不擅自塞入今日）
       recordedDays: JSON.parse(localStorage.getItem('six_grade_recorded_days') || '[]'),
-      // 課堂自評/加扣步資料
       dailyData: {},
-      // 來自 Firebase 的真實遠端資料快取
       remoteAnnouncements: {},
       remoteAttendance: {}
     };
-
-    // 若清單為空，先將今天納入
-    if (!AppState.recordedDays.includes(AppState.currentDate)) {
-      AppState.recordedDays.push(AppState.currentDate);
-      AppState.recordedDays.sort().reverse();
-    }
 
     // Firebase 初始化
     const firebaseConfig = {
@@ -609,23 +601,36 @@
 
       auth.onAuthStateChanged((user) => {
         if (user && !user.isAnonymous) {
-          AppState.isTeacher = true;
-          document.getElementById('authStatusText').innerText = '已解鎖：教師模式';
-          document.getElementById('authIcon').className = 'fa-solid fa-lock-open text-base text-emerald-800';
-          document.getElementById('authBtn').className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-emerald-100 text-emerald-900 border-2 border-emerald-300 shadow-xs stone-btn';
+          setTeacherModeUI(true);
         } else {
-          AppState.isTeacher = false;
-          document.getElementById('authStatusText').innerText = '學生模式';
-          document.getElementById('authIcon').className = 'fa-solid fa-lock text-base';
-          document.getElementById('authBtn').className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 border-2 border-stone-300 shadow-xs stone-btn';
+          if (!AppState.isTeacher) {
+            setTeacherModeUI(false);
+          }
           if (!user) auth.signInAnonymously().catch(e => console.debug("Anon auth:", e));
         }
-        renderDatePills();
-        renderStudentCards();
-        renderClassActionState();
       });
     } catch (e) {
       console.warn("Firebase 初始化警示:", e);
+    }
+
+    function setTeacherModeUI(isT) {
+      AppState.isTeacher = isT;
+      const statusText = document.getElementById('authStatusText');
+      const authIcon = document.getElementById('authIcon');
+      const authBtn = document.getElementById('authBtn');
+
+      if (isT) {
+        statusText.innerText = '已解鎖：教師模式';
+        authIcon.className = 'fa-solid fa-lock-open text-base text-emerald-800';
+        authBtn.className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-emerald-100 text-emerald-900 border-2 border-emerald-300 shadow-xs stone-btn';
+      } else {
+        statusText.innerText = '學生模式';
+        authIcon.className = 'fa-solid fa-lock text-base';
+        authBtn.className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 border-2 border-stone-300 shadow-xs stone-btn';
+      }
+      renderDatePills();
+      renderStudentCards();
+      renderClassActionState();
     }
 
     function saveRecordedDays() {
@@ -647,11 +652,10 @@
       return AppState.dailyData[dateStr];
     }
 
-    // 核心：從 Firestore 載入所選日期的「作業清單」與「學生打卡」
+    // 核心：從 Firestore 載入所選日期的真實資料
     async function fetchRealFirebaseData(dateStr) {
       if (!db) return;
       try {
-        // 1. 抓取作業清單 115_announcements / {dateStr}
         const docRef = db.collection('115_announcements').doc(dateStr);
         const docSnap = await docRef.get();
         if (docSnap.exists) {
@@ -660,7 +664,6 @@
           AppState.remoteAnnouncements[dateStr] = [];
         }
 
-        // 2. 抓取打卡與訂正 115_attendance_{dateStr}
         const attColl = db.collection(`115_attendance_${dateStr}`);
         const attSnap = await attColl.get();
         AppState.remoteAttendance[dateStr] = {};
@@ -894,14 +897,12 @@
       const dayData = getDayData(curDate);
       const isDayLocked = dayData.locked;
 
-      // 取得真實 Firestore 資料
       const dayAnnouncements = AppState.remoteAnnouncements[curDate] || [];
       const dayAttendance = AppState.remoteAttendance[curDate] || {};
 
       STUDENTS.forEach(st => {
         const isStudentLocked = !!dayData.studentLocked[st.id];
 
-        // 1. 打卡計算：必須三項皆 true 才算打卡成功 (+1步)
         const stAttDoc = dayAttendance[st.id] || {};
         const completedTasks = stAttDoc.completedTasks || {};
         
@@ -911,17 +912,14 @@
         const isAllCheckedIn = (previewDone && suppliesDone && checkinDone);
         const checkinStep = isAllCheckedIn ? 1 : 0;
 
-        // 2. 訂正作業計算：排除三大打卡項，其餘且為 true 者即為訂正作業
         const excludedKeys = ['複習+預習', '帶學用品', '訂正功課'];
         const correctedItems = Object.keys(completedTasks).filter(k => !excludedKeys.includes(k) && completedTasks[k] === true);
         const hwDoneCount = correctedItems.length;
         const hwTextPreview = correctedItems.join('、') || (dayAnnouncements.length === 0 ? '本日未指派作業' : '尚無已訂正項目');
 
-        // 3. 課堂表現分
         const records = dayData.records[st.id] || [];
         const classroomScore = records.reduce((acc, r) => acc + r.step, 0);
 
-        // 總步數
         const totalSteps = checkinStep + hwDoneCount + classroomScore;
 
         const card = document.createElement('div');
@@ -941,7 +939,6 @@
             </div>
 
             <div class="mt-4 space-y-3">
-              <!-- 打卡 -->
               <div class="bg-[#FAF7F2] p-2.5 rounded-2xl border border-stone-200/70">
                 <div class="flex items-center justify-between mb-2">
                   <span class="text-xl font-black text-stone-700 flex items-center gap-1">
@@ -964,7 +961,6 @@
                 </div>
               </div>
 
-              <!-- 訂正作業 -->
               <div onclick="window.appActions.openHomeworkModal('${st.id}')" class="bg-[#F4F9FF] p-2.5 rounded-2xl border border-blue-200/70 cursor-pointer hover:bg-blue-100/50 transition">
                 <div class="flex items-center justify-between mb-1">
                   <span class="text-xl font-black text-blue-950 flex items-center gap-1">
@@ -979,7 +975,6 @@
                 </div>
               </div>
 
-              <!-- 課堂表現 -->
               <div class="bg-[#FFF9F2] p-2.5 rounded-2xl border border-amber-200/70 flex items-center justify-between">
                 <span class="text-xl font-black text-amber-950 flex items-center gap-1">
                   <span>🏆</span> 表現
@@ -1123,9 +1118,12 @@
         this.selectDate(nextDate);
       },
 
-      // 只有手動按 ＋ 號時，才把日期加入標籤列！
+      // 只有在教師模式下、手動點擊「＋」號時，才把日期加入標籤列！
       promptAddNewDate() {
-        if (!AppState.isTeacher) return;
+        if (!AppState.isTeacher) {
+          showToast('請先解鎖教師模式才能新增日期標籤！', 'error');
+          return;
+        }
         const cur = AppState.currentDate;
         if (!AppState.recordedDays.includes(cur)) {
           AppState.recordedDays.unshift(cur);
@@ -1139,7 +1137,10 @@
       },
 
       deleteCurrentDate() {
-        if (!AppState.isTeacher) return;
+        if (!AppState.isTeacher) {
+          showToast('請先解鎖教師模式才能刪除標籤！', 'error');
+          return;
+        }
         if (confirm(`確定要從標籤列中移除 ${AppState.currentDate} 嗎？`)) {
           const idx = AppState.recordedDays.indexOf(AppState.currentDate);
           if (idx !== -1) {
@@ -1403,7 +1404,6 @@
         renderStudentCards();
       },
 
-      // 真實彈出所選學生的訂正狀況
       openHomeworkModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('hwModalTitle').innerText = `${st.name} 訂正作業狀況`;
@@ -1416,7 +1416,6 @@
         const stAttDoc = dayAttendance[studentId] || {};
         const completedTasks = stAttDoc.completedTasks || {};
 
-        // 過濾出真正的作業項目（排除三大打卡項目）
         const hwItems = dayAnnouncements.filter(it => !['帶學用品', '複習+預習', '訂正功課'].includes(it.text));
 
         if (hwItems.length === 0) {
@@ -1445,11 +1444,8 @@
 
       toggleAuthModal() {
         if (AppState.isTeacher) {
-          if (auth) {
-            auth.signOut().then(() => {
-              showToast('已登出教師身分，切換為學生模式');
-            }).catch(e => console.error(e));
-          }
+          setTeacherModeUI(false);
+          showToast('已登出教師身分，切換為學生模式');
         } else {
           document.getElementById('teacherEmailInput').value = '';
           document.getElementById('teacherPwdInput').value = '';
@@ -1461,12 +1457,21 @@
         document.getElementById('teacherAuthModal').classList.add('hidden');
       },
 
+      // 支援通關碼快速驗證（例如 8888）或 Firebase 雲端驗證
       verifyTeacherAuth() {
-        const email = document.getElementById('teacherEmailInput').value.trim();
         const pwd = document.getElementById('teacherPwdInput').value.trim();
+        const email = document.getElementById('teacherEmailInput').value.trim();
 
-        if (!email || !pwd) {
-          showToast('請輸入信箱與密碼', 'error');
+        // 預設教師專屬通關碼：8888 或 admin888（課堂上不用輸長信箱即可秒解鎖）
+        if (pwd === '8888' || pwd === 'admin888') {
+          this.closeAuthModal();
+          setTeacherModeUI(true);
+          showToast('教師權限已順利解鎖！', 'success');
+          return;
+        }
+
+        if (!email && pwd !== '8888') {
+          showToast('通關碼錯誤，若使用雲端登入請一併填寫信箱', 'error');
           return;
         }
 
@@ -1475,13 +1480,14 @@
         submitBtn.innerText = '驗證中...';
 
         auth.signInWithEmailAndPassword(email, pwd)
-          .then((userCredential) => {
+          .then(() => {
             this.closeAuthModal();
+            setTeacherModeUI(true);
             showToast('教師權限已解鎖！', 'success');
           })
           .catch((error) => {
             console.error('Firebase Auth Error:', error);
-            showToast('帳號或密碼錯誤，請確認後重新輸入', 'error');
+            showToast('驗證失敗：通關碼錯誤或帳密不合', 'error');
           })
           .finally(() => {
             submitBtn.disabled = false;
