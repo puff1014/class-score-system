@@ -77,7 +77,7 @@
   <header class="bg-[#FFFDF9] rounded-3xl border-2 border-stone-200/90 shadow-sm p-4 sm:p-6 mb-5">
     <div class="flex flex-wrap items-center justify-between gap-4">
       
-      <!-- 左側：登山鞋印踏壓圖騰 + 大標題與副標題完美對齊 -->
+      <!-- 左側：登山鞋印踏壓圖騰 + 大標題與副標題切齊 -->
       <div class="flex items-center gap-3 sm:gap-5 shrink-0">
         <div class="flex flex-col items-center justify-center shrink-0">
           <div class="footstep-anim flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 text-[#8C5E3C]">
@@ -101,7 +101,7 @@
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v2.8
+            v2.9
           </span>
         </div>
 
@@ -117,7 +117,7 @@
         </div>
       </div>
 
-      <!-- 右側工具組：雲端小綠點 + 身分切換 + 學年度選單 + 金石木牘風格時鐘 (高度 96px) -->
+      <!-- 右側工具組：雲端小綠點 + 身分切換 + 學年度選單 + 金石木牘風格時鐘 -->
       <div class="flex flex-wrap items-center gap-3 sm:gap-4 shrink-0">
         <!-- 雲端連線狀態 -->
         <div class="relative group cursor-pointer" onclick="window.appActions.showConnectionInfo()">
@@ -135,7 +135,7 @@
           <span id="authStatusText">學生模式</span>
         </button>
 
-        <!-- 學年度選單 (含前一年度，保留架構) -->
+        <!-- 學年度選單 -->
         <div class="hidden sm:flex items-center bg-stone-100 px-3 py-2 rounded-2xl border-2 border-stone-200">
           <select id="academicYearSelect" class="bg-transparent text-lg font-black text-stone-700 cursor-pointer outline-none">
             <option value="115" selected>115學年度 (六甲)</option>
@@ -200,7 +200,7 @@
           </button>
         </div>
 
-        <!-- ＋號：不彈窗，直接將目前顯示日期加入標籤列 -->
+        <!-- ＋號：直接將目前顯示日期加入標籤列 -->
         <button id="addDayBtn" onclick="window.appActions.promptAddNewDate()" class="hidden w-11 h-11 bg-emerald-50 border-2 border-emerald-300 hover:bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center text-2xl font-black shadow-xs stone-btn" title="將目前日期納入上課日清單">
           <i class="fa-solid fa-plus"></i>
         </button>
@@ -573,29 +573,29 @@
     </div>
   </div>
 
-  <!-- 教師權限登入彈窗 (支援 Email 與密碼) -->
+  <!-- 教師權限登入彈窗 (Firebase 伺服器原生驗證，清空預填) -->
   <div id="teacherAuthModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white border-2 border-stone-300 rounded-3xl p-6 max-w-md w-full shadow-2xl">
       <h3 class="text-2xl font-black text-stone-900 font-serif-tc mb-3 flex items-center gap-2">
-        <i class="fa-solid fa-key text-amber-700"></i>
+        <i class="fa-solid fa-shield-halved text-emerald-700"></i>
         <span>解鎖教師管理權限</span>
       </h3>
-      <p class="text-stone-600 font-bold mb-4">請輸入教師帳號與密碼進行驗證：</p>
+      <p class="text-stone-600 font-bold mb-4">由 Google Firebase 伺服器安全驗證：</p>
       
       <div class="space-y-3 mb-4">
         <div>
-          <label class="block text-sm font-bold text-stone-600 mb-1">教師帳號 (Email)</label>
-          <input type="email" id="teacherEmailInput" value="jg5@jges.tn.tw" placeholder="請輸入帳號" class="w-full text-xl p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" />
+          <label class="block text-sm font-bold text-stone-600 mb-1">教師信箱帳號</label>
+          <input type="email" id="teacherEmailInput" value="" placeholder="請輸入註冊信箱" class="w-full text-xl p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" />
         </div>
         <div>
           <label class="block text-sm font-bold text-stone-600 mb-1">密碼</label>
-          <input type="password" id="teacherPwdInput" placeholder="請輸入密碼" class="w-full text-xl p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" onkeydown="if(event.key==='Enter') window.appActions.verifyTeacherAuth()" />
+          <input type="password" id="teacherPwdInput" value="" placeholder="請輸入密碼" class="w-full text-xl p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" onkeydown="if(event.key==='Enter') window.appActions.verifyTeacherAuth()" />
         </div>
       </div>
 
       <div class="flex justify-end gap-3">
         <button onclick="window.appActions.closeAuthModal()" class="px-5 py-2.5 text-stone-600 font-black rounded-xl hover:bg-stone-100 text-lg">取消</button>
-        <button onclick="window.appActions.verifyTeacherAuth()" class="px-6 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black rounded-xl text-lg stone-btn shadow-xs">確認解鎖</button>
+        <button id="submitLoginBtn" onclick="window.appActions.verifyTeacherAuth()" class="px-6 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black rounded-xl text-lg stone-btn shadow-xs">確認解鎖</button>
       </div>
     </div>
   </div>
@@ -621,7 +621,7 @@
       { id: 'st_10', no: 10, name: '李O妤' }
     ];
 
-    // 已登記上課日清單 (降序排列)
+    // 已登記上課日清單
     let RECORDED_DAYS = [
       '2026-10-02', '2026-10-01',
       '2026-09-30', '2026-09-29', '2026-09-28', '2026-09-25', '2026-09-24', '2026-09-23', '2026-09-22',
@@ -662,7 +662,27 @@
       firebase.initializeApp(firebaseConfig);
       db = firebase.firestore();
       auth = firebase.auth();
-      auth.signInAnonymously().catch(e => console.debug("Anon auth:", e));
+
+      // 監聽 Firebase 伺服器驗證狀態
+      auth.onAuthStateChanged((user) => {
+        if (user && !user.isAnonymous) {
+          AppState.isTeacher = true;
+          document.getElementById('authStatusText').innerText = '已解鎖：教師模式';
+          document.getElementById('authIcon').className = 'fa-solid fa-lock-open text-base text-emerald-800';
+          document.getElementById('authBtn').className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-emerald-100 text-emerald-900 border-2 border-emerald-300 shadow-xs stone-btn';
+        } else {
+          AppState.isTeacher = false;
+          document.getElementById('authStatusText').innerText = '學生模式';
+          document.getElementById('authIcon').className = 'fa-solid fa-lock text-base';
+          document.getElementById('authBtn').className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 border-2 border-stone-300 shadow-xs stone-btn';
+          if (!user) {
+            auth.signInAnonymously().catch(e => console.debug("Anon auth:", e));
+          }
+        }
+        renderDatePills();
+        renderStudentCards();
+        renderClassActionState();
+      });
     } catch (e) {
       console.warn("Firebase 初始化警示:", e);
     }
@@ -685,7 +705,6 @@
       return AppState.dailyData[dateStr];
     }
 
-    // 本地預設種子資料
     getDayData('2026-09-28').records.st_2 = [
       { time: '12:40', name: '中午未準時回位', step: -1, category: 'bad', isClass: false }
     ];
@@ -719,7 +738,6 @@
       st_10: { preview: true, supplies: true, correction: true }
     };
 
-    // 音效合成器
     const AudioEngine = {
       ctx: null,
       init() {
@@ -784,7 +802,6 @@
       return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
     }
 
-    // 計算下一個真實上課日 (自動略過週六 6 與週日 0)
     function getNextSchoolDay(currentDateStr, direction) {
       const parts = currentDateStr.split('-');
       const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
@@ -804,7 +821,6 @@
       const dayData = getDayData(AppState.currentDate);
       const classApplied = dayData.classApplied || { clean: null, spec: null };
 
-      // 1. 打掃狀態
       const cleanActionGroup = document.getElementById('cleanActionGroup');
       const cleanLockedBadge = document.getElementById('cleanLockedBadge');
       const cleanLockedText = document.getElementById('cleanLockedText');
@@ -827,7 +843,6 @@
         cleanLockedBadge.classList.remove('flex');
       }
 
-      // 2. 科任狀態
       const specActionGroup = document.getElementById('specActionGroup');
       const specLockedBadge = document.getElementById('specLockedBadge');
       const specLockedText = document.getElementById('specLockedText');
@@ -953,21 +968,16 @@
       STUDENTS.forEach(st => {
         const isStudentLocked = !!dayData.studentLocked[st.id];
 
-        // 1. 打卡分
         const stChk = chkData[st.id] || { preview: true, supplies: true, correction: true };
         const checkinStep = (stChk.preview && stChk.supplies && stChk.correction) ? 1 : 0;
 
-        // 2. 訂正作業分
         const stHw = (hwData && hwData.studentStatus[st.id]) ? hwData.studentStatus[st.id] : [true, true, true, true, true, true, true];
         const hwDoneCount = stHw.filter(Boolean).length;
 
-        // 3. 課堂表現分
         const records = dayData.records[st.id] || [];
         const classroomScore = records.reduce((acc, r) => acc + r.step, 0);
 
-        // 總步數
         const totalSteps = checkinStep + hwDoneCount + classroomScore;
-
         const hwTextPreview = hwData.items.map((it, idx) => stHw[idx] ? it : '').filter(Boolean).join('、') || '尚無已訂正項目';
 
         const card = document.createElement('div');
@@ -1064,7 +1074,6 @@
 
       const records = dayData.records[studentId] || [];
 
-      // 排序：個人在前，全班固定沉底最下方
       const sortRecords = (arr) => {
         return [...arr].sort((a, b) => {
           if (a.isClass && !b.isClass) return 1;
@@ -1081,7 +1090,6 @@
       document.getElementById('count_bad_records').innerText = `${badRecords.length}筆`;
       document.getElementById('count_att_records').innerText = `${attRecords.length}筆`;
 
-      // 1. 履行責任明細
       const listGood = document.getElementById('list_good_records');
       if (goodRecords.length === 0) {
         listGood.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4">今日尚無此項加步</div>';
@@ -1104,7 +1112,6 @@
         }).join('');
       }
 
-      // 2. 持續進步明細
       const listBad = document.getElementById('list_bad_records');
       if (badRecords.length === 0) {
         listBad.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4">今日無扣減步數</div>';
@@ -1128,7 +1135,6 @@
         }).join('');
       }
 
-      // 3. 學習自律明細
       const listAtt = document.getElementById('list_att_records');
       if (attRecords.length === 0) {
         listAtt.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4">今日尚無自律扣步</div>';
@@ -1151,7 +1157,6 @@
         }).join('');
       }
 
-      // 單次使用互斥鎖
       const ruleMapping = [
         { name: '準時繳交簿本', cardId: 'card_rule_good_1', btnId: 'btn_rule_good_1' },
         { name: '個人工作完成', cardId: 'card_rule_good_2', btnId: 'btn_rule_good_2' },
@@ -1472,7 +1477,6 @@
         const dayData = getDayData(AppState.currentDate);
         const wasLocked = !!dayData.studentLocked[studentId];
 
-        // 結算後修改：扣 1 步成本
         if (wasLocked && AppState.isTeacher) {
           dayData.records[studentId].push({
             time: getNowTimeString(),
@@ -1523,16 +1527,13 @@
 
       toggleAuthModal() {
         if (AppState.isTeacher) {
-          AppState.isTeacher = false;
-          localStorage.removeItem('six_grade_teacher_authed');
-          document.getElementById('authStatusText').innerText = '學生模式';
-          document.getElementById('authIcon').className = 'fa-solid fa-lock text-base';
-          document.getElementById('authBtn').className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 border-2 border-stone-300 shadow-xs stone-btn';
-          showToast('已切換為學生自評模式');
-          renderDatePills();
-          renderStudentCards();
-          renderClassActionState();
+          if (auth) {
+            auth.signOut().then(() => {
+              showToast('已登出教師身分，切換為學生自評模式');
+            }).catch(e => console.error(e));
+          }
         } else {
+          document.getElementById('teacherEmailInput').value = '';
           document.getElementById('teacherPwdInput').value = '';
           document.getElementById('teacherAuthModal').classList.remove('hidden');
         }
@@ -1546,20 +1547,28 @@
         const email = document.getElementById('teacherEmailInput').value.trim();
         const pwd = document.getElementById('teacherPwdInput').value.trim();
 
-        if (email === 'jg5@jges.tn.tw' && pwd === '123+++') {
-          AppState.isTeacher = true;
-          localStorage.setItem('six_grade_teacher_authed', 'true');
-          document.getElementById('authStatusText').innerText = '已解鎖：教師模式';
-          document.getElementById('authIcon').className = 'fa-solid fa-lock-open text-base text-emerald-800';
-          document.getElementById('authBtn').className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-emerald-100 text-emerald-900 border-2 border-emerald-300 shadow-xs stone-btn';
-          this.closeAuthModal();
-          showToast('教師權限已解鎖', 'success');
-          renderDatePills();
-          renderStudentCards();
-          renderClassActionState();
-        } else {
-          showToast('帳號或密碼錯誤，請重新輸入', 'error');
+        if (!email || !pwd) {
+          showToast('請輸入信箱與密碼', 'error');
+          return;
         }
+
+        const submitBtn = document.getElementById('submitLoginBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerText = '驗證中...';
+
+        auth.signInWithEmailAndPassword(email, pwd)
+          .then((userCredential) => {
+            this.closeAuthModal();
+            showToast('Google 伺服器驗證成功，教師權限已解鎖！', 'success');
+          })
+          .catch((error) => {
+            console.error('Firebase Auth Error:', error);
+            showToast('帳號或密碼錯誤，請確認後重新輸入', 'error');
+          })
+          .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerText = '確認解鎖';
+          });
       },
 
       archiveToday() {
@@ -1594,15 +1603,6 @@
     window.onload = function() {
       updateClock();
       setInterval(updateClock, 1000);
-
-      // 若本機曾解鎖過教師身分，自動恢復
-      if (localStorage.getItem('six_grade_teacher_authed') === 'true') {
-        AppState.isTeacher = true;
-        document.getElementById('authStatusText').innerText = '已解鎖：教師模式';
-        document.getElementById('authIcon').className = 'fa-solid fa-lock-open text-base text-emerald-800';
-        document.getElementById('authBtn').className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-emerald-100 text-emerald-900 border-2 border-emerald-300 shadow-xs stone-btn';
-      }
-
       renderDatePills();
       renderStudentCards();
       renderClassActionState();
