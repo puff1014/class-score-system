@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>六年甲班行知錄</title>
+  
+  <!-- 載入 Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- 載入 Font Awesome 圖標庫 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- 載入字體：思源宋體 (Noto Serif TC) + 飽滿數字/現代內文字體 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+
+  <!-- 載入 Firebase SDK (相容模式，適合單一 HTML 檔) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background-color: #F7F4EE;
+      color: #2D2926;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-serif-tc {
+      font-family: 'Noto Serif TC', serif;
+    }
+    .font-num {
+      font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+    }
+    .stone-card {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .stone-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    }
+    .stone-btn {
+      transition: all 0.15s ease-out;
+    }
+    .stone-btn:active {
+      transform: scale(0.96);
+    }
+    @keyframes footstep-pulse {
+      0%, 100% { transform: scale(1); opacity: 0.92; }
+      50% { transform: scale(1.04); opacity: 1; }
+    }
+    .footstep-anim {
+      animation: footstep-pulse 3.6s ease-in-out infinite;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 5px;
+      width: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #EFECE6;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #D3CDC2;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #B5AD9F;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-3 sm:p-5 lg:p-6 text-stone-900 select-none">
+
+  <!-- 頂部大橫幅區塊 -->
+  <header class="bg-[#FFFDF9] rounded-3xl border-2 border-stone-200/90 shadow-sm p-4 sm:p-6 mb-5">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- 左側：登山鞋印踏壓圖騰 + 大標題與副標題完美對齊 -->
+      <div class="flex items-center gap-3 sm:gap-5 shrink-0">
+        <div class="flex flex-col items-center justify-center shrink-0">
+          <div class="footstep-anim flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 text-[#8C5E3C]">
+            <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 100 100" fill="currentColor">
+              <g transform="translate(14, 8) rotate(-4)">
+                <rect x="6" y="4" width="22" height="34" rx="10" />
+                <line x1="8" y1="12" x2="26" y2="12" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="7" y1="20" x2="27" y2="20" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="9" y1="28" x2="25" y2="28" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
+                <rect x="7.5" y="44" width="19" height="18" rx="6" />
+                <line x1="9" y1="52" x2="25" y2="52" stroke="#FFFDF9" stroke-width="2" stroke-linecap="round"/>
+              </g>
+              <g transform="translate(56, 26) rotate(6)">
+                <rect x="6" y="4" width="22" height="34" rx="10" />
+                <line x1="8" y1="12" x2="26" y2="12" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="7" y1="20" x2="27" y2="20" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="9" y1="28" x2="25" y2="28" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
+                <rect x="7.5" y="44" width="19" height="18" rx="6" />
+                <line x1="9" y1="52" x2="25" y2="52" stroke="#FFFDF9" stroke-width="2" stroke-linecap="round"/>
+              </g>
+            </svg>
+          </div>
+          <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
+            v2.8
+          </span>
+        </div>
+
+        <!-- 標題與切齊副標 -->
+        <div class="flex flex-col justify-center">
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black font-serif-tc text-stone-900 tracking-wider">
+            六年甲班行知錄
+          </h1>
+          <div class="h-[1.5px] w-full bg-gradient-to-r from-stone-300 via-amber-800/40 to-stone-300 my-1"></div>
+          <div class="w-full flex justify-between items-center text-amber-900 font-serif-tc font-bold italic text-base sm:text-xl lg:text-2xl tracking-normal">
+            <span>千</span><span>里</span><span>之</span><span>行</span><span>，</span><span>始</span><span>於</span><span>足</span><span>下</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右側工具組：雲端小綠點 + 身分切換 + 學年度選單 + 金石木牘風格時鐘 (高度 96px) -->
+      <div class="flex flex-wrap items-center gap-3 sm:gap-4 shrink-0">
+        <!-- 雲端連線狀態 -->
+        <div class="relative group cursor-pointer" onclick="window.appActions.showConnectionInfo()">
+          <div class="w-4 h-4 rounded-full bg-emerald-500 shadow-sm flex items-center justify-center">
+            <div id="cloudPing" class="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping opacity-75"></div>
+          </div>
+          <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block bg-stone-900 text-white text-sm px-3 py-1.5 rounded-xl whitespace-nowrap shadow-lg z-20">
+            Firebase 雲端已連線（即時同步）
+          </div>
+        </div>
+
+        <!-- 模式切換按鈕 -->
+        <button id="authBtn" onclick="window.appActions.toggleAuthModal()" class="px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 border-2 border-stone-300 shadow-xs stone-btn">
+          <i id="authIcon" class="fa-solid fa-lock text-base"></i>
+          <span id="authStatusText">學生模式</span>
+        </button>
+
+        <!-- 學年度選單 (含前一年度，保留架構) -->
+        <div class="hidden sm:flex items-center bg-stone-100 px-3 py-2 rounded-2xl border-2 border-stone-200">
+          <select id="academicYearSelect" class="bg-transparent text-lg font-black text-stone-700 cursor-pointer outline-none">
+            <option value="115" selected>115學年度 (六甲)</option>
+            <option value="114">114學年度 (五甲)</option>
+          </select>
+        </div>
+
+        <!-- 金石木牘時鐘 (高度 h-[96px]) -->
+        <div class="flex items-center h-[96px] bg-[#F3EDE2] border-2 border-[#DFD7C7] px-4 sm:px-6 rounded-2xl shadow-inner gap-3 sm:gap-4">
+          <span id="headerDateText" class="text-stone-700 font-serif-tc font-bold text-lg sm:text-2xl whitespace-nowrap">
+            9月28日 星期一
+          </span>
+          <div class="w-[2px] h-10 bg-[#C8BFAD]"></div>
+          <span id="headerClockDigits" class="text-4xl sm:text-5xl lg:text-6xl font-num font-black text-stone-900 tracking-wider">
+            08:00:00
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 日期導航列 -->
+    <div class="flex items-center justify-between gap-3 pt-4 mt-3 border-t-2 border-stone-100 flex-nowrap w-full">
+      
+      <!-- 左側固定：實踐月選單 -->
+      <div class="flex items-center gap-1.5 bg-stone-100 px-3 py-1.5 rounded-2xl border-2 border-stone-200 shrink-0">
+        <span class="text-lg sm:text-xl font-black text-stone-700 font-serif-tc whitespace-nowrap">實踐月：</span>
+        <select id="practiceMonthSelect" onchange="window.appActions.changeMonth(this.value)" class="bg-white text-lg sm:text-xl font-black text-stone-800 border border-stone-300 rounded-xl px-2.5 py-0.5 cursor-pointer">
+          <option value="8">8月</option>
+          <option value="9" selected>9月</option>
+          <option value="10">10月</option>
+          <option value="11">11月</option>
+          <option value="12">12月</option>
+          <option value="1">1月</option>
+          <option value="2">2月</option>
+          <option value="3">3月</option>
+          <option value="4">4月</option>
+          <option value="5">5月</option>
+          <option value="6">6月</option>
+          <option value="7">7月</option>
+        </select>
+      </div>
+      
+      <!-- 中間橫向滾動區：日期標籤列 -->
+      <div id="datePillsContainer" class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto custom-scrollbar flex-nowrap px-2 flex-1 min-w-0">
+      </div>
+
+      <!-- 右側固定工具組 -->
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto whitespace-nowrap relative">
+        <button id="deleteDayBtn" onclick="window.appActions.deleteCurrentDate()" class="hidden w-11 h-11 bg-rose-50 border-2 border-rose-300 hover:bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center text-xl font-black shadow-xs stone-btn" title="刪除此日期紀錄">
+          <i class="fa-regular fa-trash-can"></i>
+        </button>
+
+        <!-- 連續真實日曆翻頁膠囊 -->
+        <div class="flex items-center bg-white border-2 border-stone-300 rounded-2xl px-2 py-1 shadow-xs gap-1.5 sm:gap-2">
+          <button onclick="window.appActions.stepDate(-1)" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-stone-600 hover:text-stone-900 text-xl font-black rounded-xl hover:bg-stone-100" title="前一上課日">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <span id="currentDateCapsule" class="text-xl sm:text-2xl font-black font-num text-stone-800 px-2 tracking-wide">2026-09-28</span>
+          <button onclick="window.appActions.stepDate(1)" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-stone-600 hover:text-stone-900 text-xl font-black rounded-xl hover:bg-stone-100" title="後一上課日">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <!-- ＋號：不彈窗，直接將目前顯示日期加入標籤列 -->
+        <button id="addDayBtn" onclick="window.appActions.promptAddNewDate()" class="hidden w-11 h-11 bg-emerald-50 border-2 border-emerald-300 hover:bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center text-2xl font-black shadow-xs stone-btn" title="將目前日期納入上課日清單">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+        
+        <button onclick="window.appActions.toggleCalendarPicker()" class="w-11 h-11 bg-white border-2 border-stone-300 hover:border-amber-700 text-amber-900 text-xl rounded-2xl flex items-center justify-center shadow-xs stone-btn" title="選擇日期">
+          <i class="fa-regular fa-calendar-days"></i>
+        </button>
+
+        <button id="archiveDayBtn" onclick="window.appActions.archiveToday()" class="hidden px-4 py-2 bg-amber-800 hover:bg-amber-900 text-white font-black text-lg sm:text-xl rounded-2xl shadow-xs stone-btn flex items-center gap-2">
+          <i class="fa-solid fa-box-archive"></i>
+          <span>今日歸檔封存</span>
+        </button>
+
+        <!-- 小月曆浮層 -->
+        <div id="customCalendarPopup" class="hidden absolute right-0 top-14 bg-white border-2 border-stone-300 rounded-3xl shadow-2xl p-4 z-40 w-80">
+          <div class="flex items-center justify-between pb-3 border-b border-stone-200 mb-3">
+            <span id="calendarTitle" class="font-black text-xl text-stone-800 font-serif-tc">2026年 9月月曆</span>
+            <button onclick="window.appActions.toggleCalendarPicker()" class="text-stone-400 hover:text-stone-700 text-lg font-black">✕</button>
+          </div>
+          <div class="grid grid-cols-7 gap-1 text-center font-bold text-xs text-stone-500 mb-2">
+            <div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div class="text-rose-500">六</div><div class="text-rose-500">日</div>
+          </div>
+          <div id="calendarMonthGrid" class="grid grid-cols-7 gap-1 text-center">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- 全班表現橫幅 -->
+  <section class="bg-[#FFFDF9] rounded-3xl border-2 border-stone-200/90 p-4 sm:p-5 mb-6 shadow-sm">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3 shrink-0">
+        <h2 class="text-2xl sm:text-3xl font-black text-stone-900 font-serif-tc tracking-wide">全班表現</h2>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-4 sm:gap-8 flex-1 justify-end">
+        <!-- 整潔打掃 -->
+        <div class="flex items-center gap-3 bg-[#FAF6F0] p-2 sm:p-2.5 rounded-2xl border border-stone-200">
+          <span class="text-xl sm:text-2xl font-black text-stone-800 flex items-center gap-1.5 shrink-0">
+            <span>🧹</span> 整潔打掃
+          </span>
+
+          <div id="cleanActionGroup" class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-1 shadow-xs">
+              <button onclick="window.appActions.applyClassRule('clean_done')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-3xl font-black flex items-center justify-center stone-btn" title="打掃完畢套用加步">
+                <span>😀</span>
+              </button>
+              <div class="flex items-center gap-1 bg-white rounded-xl px-2 py-1 border border-emerald-200">
+                <button onclick="window.appActions.adjustClassStepper('clean_done', -1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-100 rounded">-</button>
+                <span id="step_clean_done" class="w-6 text-center text-2xl font-num font-black text-emerald-900">1</span>
+                <button onclick="window.appActions.adjustClassStepper('clean_done', 1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-100 rounded">+</button>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 bg-rose-50 border-2 border-rose-300 rounded-2xl p-1 shadow-xs">
+              <button onclick="window.appActions.applyClassRule('clean_fail')" class="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-3xl font-black flex items-center justify-center stone-btn" title="未打掃完套用扣步">
+                <span>☹️</span>
+              </button>
+              <div class="flex items-center gap-1 bg-white rounded-xl px-2 py-1 border border-rose-200">
+                <button onclick="window.appActions.adjustClassStepper('clean_fail', -1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-100 rounded">-</button>
+                <span id="step_clean_fail" class="w-6 text-center text-2xl font-num font-black text-rose-900">1</span>
+                <button onclick="window.appActions.adjustClassStepper('clean_fail', 1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-100 rounded">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="cleanLockedBadge" class="hidden items-center gap-2">
+            <span id="cleanLockedText" class="px-4 py-2 rounded-2xl text-2xl font-black font-num bg-emerald-100 text-emerald-900 border-2 border-emerald-300 shadow-xs">
+              +1
+            </span>
+            <button id="cleanResetBtn" onclick="window.appActions.resetClassAction('clean')" class="hidden px-2.5 py-1.5 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-base font-black stone-btn" title="重設打掃紀錄">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 科任表現 -->
+        <div class="flex items-center gap-3 bg-[#FAF6F0] p-2 sm:p-2.5 rounded-2xl border border-stone-200">
+          <span class="text-xl sm:text-2xl font-black text-stone-800 flex items-center gap-1.5 shrink-0">
+            <span>🧑‍🏫</span> 科任表現
+          </span>
+
+          <div id="specActionGroup" class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 bg-blue-50 border-2 border-blue-300 rounded-2xl p-1 shadow-xs">
+              <button onclick="window.appActions.applyClassRule('spec_perfect')" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-3xl font-black flex items-center justify-center stone-btn" title="科任表現滿分套用加步">
+                <span>😀</span>
+              </button>
+              <div class="flex items-center gap-1 bg-white rounded-xl px-2 py-1 border border-blue-200">
+                <button onclick="window.appActions.adjustClassStepper('spec_perfect', -1)" class="w-7 h-7 text-blue-800 text-xl font-black hover:bg-blue-100 rounded">-</button>
+                <span id="step_spec_perfect" class="w-6 text-center text-2xl font-num font-black text-blue-900">1</span>
+                <button onclick="window.appActions.adjustClassStepper('spec_perfect', 1)" class="w-7 h-7 text-blue-800 text-xl font-black hover:bg-blue-100 rounded">+</button>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 bg-amber-50 border-2 border-amber-300 rounded-2xl p-1 shadow-xs">
+              <button onclick="window.appActions.applyClassRule('spec_fair')" class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-3xl font-black flex items-center justify-center stone-btn" title="科任表現尚可套用扣步">
+                <span>☹️</span>
+              </button>
+              <div class="flex items-center gap-1 bg-white rounded-xl px-2 py-1 border border-amber-200">
+                <button onclick="window.appActions.adjustClassStepper('spec_fair', -1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-100 rounded">-</button>
+                <span id="step_spec_fair" class="w-6 text-center text-2xl font-num font-black text-amber-900">1</span>
+                <button onclick="window.appActions.adjustClassStepper('spec_fair', 1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-100 rounded">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="specLockedBadge" class="hidden items-center gap-2">
+            <span id="specLockedText" class="px-4 py-2 rounded-2xl text-2xl font-black font-num bg-blue-100 text-blue-900 border-2 border-blue-300 shadow-xs">
+              +1
+            </span>
+            <button id="specResetBtn" onclick="window.appActions.resetClassAction('spec')" class="hidden px-2.5 py-1.5 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-base font-black stone-btn" title="重設科任紀錄">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 學生卡片網格 -->
+  <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5 mb-8" id="studentCardsContainer">
+  </main>
+
+  <!-- 學生檢核彈出視窗 -->
+  <div id="auditModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2">
+    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[98vw] max-w-[98vw] h-[96vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden">
+      
+      <!-- 彈窗頂部 -->
+      <div class="px-8 py-3.5 border-b-2 border-stone-200 flex items-center justify-between bg-stone-50/80 shrink-0">
+        <div class="flex items-center gap-4 flex-wrap">
+          <h2 id="modalStudentName" class="text-4xl sm:text-5xl font-black text-stone-900 font-serif-tc tracking-tight">陳O佑</h2>
+          <span id="modalDateBadge" class="bg-amber-100 text-amber-900 border border-amber-300 font-black text-2xl px-5 py-1.5 rounded-2xl font-num">
+            2026-09-28 實踐檢核
+          </span>
+          <span id="modalLockBadge" class="hidden bg-stone-200 text-stone-800 border border-stone-400 font-black text-2xl px-5 py-1.5 rounded-2xl">
+            🔒 今日已結算鎖定 (僅供查閱)
+          </span>
+          <span id="modalReEditNotice" class="hidden bg-rose-100 text-rose-900 border border-rose-300 font-black text-xl px-4 py-1.5 rounded-2xl">
+            ⚠️ 結算後修改模式 (送出將扣 1 步成本)
+          </span>
+        </div>
+        <button onclick="window.appActions.closeAuditModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- 彈窗三欄核心 -->
+      <div class="flex-1 p-4 grid grid-cols-1 md:grid-cols-3 gap-4 overflow-hidden">
+        
+        <!-- 左欄：🌟 履行責任 -->
+        <div class="bg-emerald-50/70 border-2 border-emerald-200 rounded-3xl p-3 sm:p-4 flex flex-col justify-between overflow-hidden shadow-xs">
+          <div>
+            <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b-2 border-emerald-200">
+              <span class="text-3xl font-black text-emerald-950 font-serif-tc flex items-center gap-2">
+                <span>🌟</span> 履行責任
+              </span>
+            </div>
+
+            <div class="space-y-1">
+              <!-- 1. 準時繳交簿本 -->
+              <div id="card_rule_good_1" class="bg-white py-1.5 px-2.5 rounded-2xl border border-emerald-200 flex items-center justify-between shadow-xs gap-2">
+                <button id="btn_rule_good_1" onclick="window.appActions.applyStudentRule('準時繳交簿本', 1, 'good', 'btn_rule_good_1')" class="text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                  <span>🎒</span> 準時繳交簿本
+                </button>
+                <div class="flex items-center gap-1 bg-emerald-50 rounded-xl p-1 border border-emerald-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_1', -1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-200 rounded">-</button>
+                  <span id="btn_step_good_1" class="w-7 text-center text-2xl font-num font-black text-emerald-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_1', 1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-200 rounded">+</button>
+                </div>
+              </div>
+
+              <!-- 2. 個人工作完成 -->
+              <div id="card_rule_good_2" class="bg-white py-1.5 px-2.5 rounded-2xl border border-emerald-200 flex items-center justify-between shadow-xs gap-2">
+                <button id="btn_rule_good_2" onclick="window.appActions.applyStudentRule('個人工作完成', 1, 'good', 'btn_rule_good_2')" class="text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                  <span>🎖️</span> 個人工作完成
+                </button>
+                <div class="flex items-center gap-1 bg-emerald-50 rounded-xl p-1 border border-emerald-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_2', -1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-200 rounded">-</button>
+                  <span id="btn_step_good_2" class="w-7 text-center text-2xl font-num font-black text-emerald-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_2', 1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-200 rounded">+</button>
+                </div>
+              </div>
+
+              <!-- 3. 科任表現滿分 -->
+              <div id="card_rule_good_3" class="bg-white py-1.5 px-2.5 rounded-2xl border border-emerald-200 flex items-center justify-between shadow-xs gap-2">
+                <button id="btn_rule_good_3" onclick="window.appActions.applyStudentRule('科任表現滿分', 1, 'good', 'btn_rule_good_3')" class="text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                  <span>🧑‍🏫</span> 科任表現滿分
+                </button>
+                <div class="flex items-center gap-1 bg-emerald-50 rounded-xl p-1 border border-emerald-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_3', -1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-200 rounded">-</button>
+                  <span id="btn_step_good_3" class="w-7 text-center text-2xl font-num font-black text-emerald-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_3', 1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-200 rounded">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 下方明細 -->
+          <div class="mt-2 pt-1.5 border-t-2 border-emerald-200 flex-1 flex flex-col justify-start overflow-hidden">
+            <span class="text-2xl font-black text-emerald-950 mb-1 flex items-center justify-between">
+              <span>📋 檢核紀錄明細</span>
+              <span id="count_good_records" class="font-num text-2xl text-emerald-800 font-bold">0筆</span>
+            </span>
+            <div id="list_good_records" class="space-y-1.5 overflow-hidden flex-1">
+              <div class="text-stone-400 text-3xl text-center py-4">今日尚無此項加步</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 中欄：🚨 持續進步 -->
+        <div class="bg-rose-50/70 border-2 border-rose-200 rounded-3xl p-3 sm:p-4 flex flex-col justify-between overflow-hidden shadow-xs">
+          <div>
+            <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b-2 border-rose-200">
+              <span class="text-3xl font-black text-rose-950 font-serif-tc flex items-center gap-2">
+                <span>🚨</span> 持續進步
+              </span>
+            </div>
+
+            <div class="space-y-1">
+              <!-- 1. 未準時繳交簿本 -->
+              <div id="card_rule_bad_1" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
+                <button id="btn_rule_bad_1" onclick="window.appActions.applyStudentRule('未準時繳交簿本', -1, 'bad', 'btn_rule_bad_1')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                  <span>⏰</span> 未準時繳交簿本
+                </button>
+                <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_1', -1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">-</button>
+                  <span id="btn_step_bad_1" class="w-7 text-center text-2xl font-num font-black text-rose-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_1', 1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">+</button>
+                </div>
+              </div>
+
+              <!-- 2. 中午未準時回位 -->
+              <div id="card_rule_bad_2" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
+                <button id="btn_rule_bad_2" onclick="window.appActions.applyStudentRule('中午未準時回位', -1, 'bad', 'btn_rule_bad_2')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                  <span>🔔</span> 中午未準時回位
+                </button>
+                <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_2', -1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">-</button>
+                  <span id="btn_step_bad_2" class="w-7 text-center text-2xl font-num font-black text-rose-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_2', 1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">+</button>
+                </div>
+              </div>
+
+              <!-- 3. 個人工作未完成 -->
+              <div id="card_rule_bad_3" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
+                <button id="btn_rule_bad_3" onclick="window.appActions.applyStudentRule('個人工作未完成', -1, 'bad', 'btn_rule_bad_3')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                  <span>⚠️</span> 個人工作未完成
+                </button>
+                <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_3', -1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">-</button>
+                  <span id="btn_step_bad_3" class="w-7 text-center text-2xl font-num font-black text-rose-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_3', 1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 下方明細 -->
+          <div class="mt-2 pt-1.5 border-t-2 border-rose-200 flex-1 flex flex-col justify-start overflow-hidden">
+            <span class="text-2xl font-black text-rose-950 mb-1 flex items-center justify-between">
+              <span>📋 檢核紀錄明細</span>
+              <span id="count_bad_records" class="font-num text-2xl text-rose-800 font-bold">0筆</span>
+            </span>
+            <div id="list_bad_records" class="space-y-1.5 overflow-hidden flex-1">
+              <div class="text-stone-400 text-3xl text-center py-4">今日無扣減步數</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右欄：🎯 學習自律 -->
+        <div class="bg-amber-50/70 border-2 border-amber-200 rounded-3xl p-3 sm:p-4 flex flex-col justify-between overflow-hidden shadow-xs">
+          <div>
+            <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b-2 border-amber-200">
+              <span class="text-3xl font-black text-amber-950 font-serif-tc flex items-center gap-2">
+                <span>🎯</span> 學習自律
+              </span>
+            </div>
+
+            <div class="space-y-1">
+              <!-- 1. 慢吞吞 -->
+              <div id="card_rule_att_1" class="bg-white py-1.5 px-2.5 rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
+                <button id="btn_rule_att_1" onclick="window.appActions.applyStudentRule('慢吞吞', -1, 'attitude', 'btn_rule_att_1')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                  <span>🐢</span> 慢吞吞
+                </button>
+                <div class="flex items-center gap-1 bg-amber-50 rounded-xl p-1 border border-amber-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_1', -1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">-</button>
+                  <span id="btn_step_att_1" class="w-7 text-center text-2xl font-num font-black text-amber-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_1', 1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">+</button>
+                </div>
+              </div>
+
+              <!-- 2. 不細心 -->
+              <div id="card_rule_att_2" class="bg-white py-1.5 px-2.5 rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
+                <button id="btn_rule_att_2" onclick="window.appActions.applyStudentRule('不細心', -1, 'attitude', 'btn_rule_att_2')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                  <span>👀</span> 不細心
+                </button>
+                <div class="flex items-center gap-1 bg-amber-50 rounded-xl p-1 border border-amber-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_2', -1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">-</button>
+                  <span id="btn_step_att_2" class="w-7 text-center text-2xl font-num font-black text-amber-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_2', 1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">+</button>
+                </div>
+              </div>
+
+              <!-- 3. 科任表現不佳 -->
+              <div id="card_rule_att_3" class="bg-white py-1.5 px-2.5 rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
+                <button id="btn_rule_att_3" onclick="window.appActions.applyStudentRule('科任表現不佳', -1, 'attitude', 'btn_rule_att_3')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                  <span>📉</span> 科任表現不佳
+                </button>
+                <div class="flex items-center gap-1 bg-amber-50 rounded-xl p-1 border border-amber-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_3', -1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">-</button>
+                  <span id="btn_step_att_3" class="w-7 text-center text-2xl font-num font-black text-amber-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_3', 1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 下方明細 -->
+          <div class="mt-2 pt-1.5 border-t-2 border-amber-200 flex-1 flex flex-col justify-start overflow-hidden">
+            <span class="text-2xl font-black text-amber-950 mb-1 flex items-center justify-between">
+              <span>📋 檢核紀錄明細</span>
+              <span id="count_att_records" class="font-num text-2xl text-amber-800 font-bold">0筆</span>
+            </span>
+            <div id="list_att_records" class="space-y-1.5 overflow-hidden flex-1">
+              <div class="text-stone-400 text-3xl text-center py-4">今日尚無自律扣步</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 彈窗底欄 -->
+      <div class="px-8 py-3 bg-stone-100/90 border-t-2 border-stone-200 flex flex-wrap items-center justify-between gap-4 shrink-0">
+        <div class="flex items-center gap-4">
+          <span class="text-3xl font-black text-stone-700 font-serif-tc">當前表現結算：</span>
+          <span id="modalCurrentScore" class="text-5xl font-black font-num text-stone-900">♟️ 0 步</span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button id="modalSubmitBtn" onclick="window.appActions.submitStudentAudit()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-3xl font-black rounded-2xl shadow-md stone-btn flex items-center gap-2">
+            <i class="fa-solid fa-check-to-slot"></i>
+            <span id="modalSubmitText">完成並送出結算</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 訂正作業彈出視窗 -->
+  <div id="homeworkModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-full max-w-5xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col">
+      <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-6">
+        <div class="flex items-center gap-3">
+          <span class="text-4xl">📘</span>
+          <h3 id="hwModalTitle" class="text-3xl sm:text-4xl font-black text-stone-900 font-serif-tc">陳O佑 訂正作業狀況</h3>
+        </div>
+        <button onclick="window.appActions.closeHomeworkModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="hwGridContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+      </div>
+      <div class="pt-4 border-t-2 border-stone-100 flex justify-end">
+        <button onclick="window.appActions.closeHomeworkModal()" class="px-8 py-3 bg-stone-900 hover:bg-stone-800 text-white font-black text-2xl rounded-2xl stone-btn shadow-md">
+          關閉視窗
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 教師權限登入彈窗 (支援 Email 與密碼) -->
+  <div id="teacherAuthModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white border-2 border-stone-300 rounded-3xl p-6 max-w-md w-full shadow-2xl">
+      <h3 class="text-2xl font-black text-stone-900 font-serif-tc mb-3 flex items-center gap-2">
+        <i class="fa-solid fa-key text-amber-700"></i>
+        <span>解鎖教師管理權限</span>
+      </h3>
+      <p class="text-stone-600 font-bold mb-4">請輸入教師帳號與密碼進行驗證：</p>
+      
+      <div class="space-y-3 mb-4">
+        <div>
+          <label class="block text-sm font-bold text-stone-600 mb-1">教師帳號 (Email)</label>
+          <input type="email" id="teacherEmailInput" value="jg5@jges.tn.tw" placeholder="請輸入帳號" class="w-full text-xl p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" />
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-stone-600 mb-1">密碼</label>
+          <input type="password" id="teacherPwdInput" placeholder="請輸入密碼" class="w-full text-xl p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" onkeydown="if(event.key==='Enter') window.appActions.verifyTeacherAuth()" />
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button onclick="window.appActions.closeAuthModal()" class="px-5 py-2.5 text-stone-600 font-black rounded-xl hover:bg-stone-100 text-lg">取消</button>
+        <button onclick="window.appActions.verifyTeacherAuth()" class="px-6 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black rounded-xl text-lg stone-btn shadow-xs">確認解鎖</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast 浮層 -->
+  <div id="toastNotification" class="fixed top-8 left-1/2 -translate-x-1/2 z-50 bg-stone-900 text-white px-6 py-3 rounded-2xl shadow-2xl font-black text-xl flex items-center gap-3 transition-all duration-300 opacity-0 pointer-events-none transform -translate-y-4">
+    <span id="toastIcon">✨</span>
+    <span id="toastMessage">提示訊息</span>
+  </div>
+
+  <script>
+    // 學生名單
+    const STUDENTS = [
+      { id: 'st_1', no: 1, name: '陳O佑' },
+      { id: 'st_2', no: 2, name: '徐O綸' },
+      { id: 'st_3', no: 3, name: '蕭O群' },
+      { id: 'st_4', no: 4, name: '吳O晏' },
+      { id: 'st_5', no: 5, name: '呂O蔚' },
+      { id: 'st_6', no: 6, name: '吳O昇' },
+      { id: 'st_7', no: 7, name: '翁O儀' },
+      { id: 'st_8', no: 8, name: '鄭O妍' },
+      { id: 'st_9', no: 9, name: '周O涵' },
+      { id: 'st_10', no: 10, name: '李O妤' }
+    ];
+
+    // 已登記上課日清單 (降序排列)
+    let RECORDED_DAYS = [
+      '2026-10-02', '2026-10-01',
+      '2026-09-30', '2026-09-29', '2026-09-28', '2026-09-25', '2026-09-24', '2026-09-23', '2026-09-22',
+      '2026-09-21', '2026-09-18', '2026-09-17', '2026-09-16', '2026-09-15',
+      '2026-09-14', '2026-09-11', '2026-09-10', '2026-09-09', '2026-09-08',
+      '2026-09-07', '2026-09-04', '2026-09-03', '2026-09-02', '2026-09-01'
+    ];
+
+    // 全域狀態
+    const AppState = {
+      isTeacher: false,
+      currentDate: '2026-09-28',
+      selectedMonth: '9',
+      activeModalStudentId: null,
+      steppers: {
+        clean_done: 1, clean_fail: 1, spec_perfect: 1, spec_fair: 1
+      },
+      dailyData: {},
+      homeworkMock: {},
+      checkinMock: {}
+    };
+
+    // Firebase 初始化
+    const firebaseConfig = {
+      apiKey: "AIzaSyArwz6gPeW9lNq_8LOfnKYwZmkRN-Wgtb8",
+      authDomain: "class-5a-app.firebaseapp.com",
+      projectId: "class-5a-app",
+      storageBucket: "class-5a-app.firebasestorage.app",
+      messagingSenderId: "828328241350",
+      appId: "1:828328241350:web:5d39d529209f87a2540fc7",
+      measurementId: "G-8VGE0WKD01"
+    };
+
+    let db = null;
+    let auth = null;
+
+    try {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      auth = firebase.auth();
+      auth.signInAnonymously().catch(e => console.debug("Anon auth:", e));
+    } catch (e) {
+      console.warn("Firebase 初始化警示:", e);
+    }
+
+    function getDayData(dateStr) {
+      if (!AppState.dailyData[dateStr]) {
+        AppState.dailyData[dateStr] = {
+          locked: false,
+          studentLocked: {},
+          classApplied: { clean: null, spec: null },
+          records: {
+            st_1: [], st_2: [], st_3: [], st_4: [], st_5: [],
+            st_6: [], st_7: [], st_8: [], st_9: [], st_10: []
+          }
+        };
+      }
+      if (!AppState.dailyData[dateStr].classApplied) {
+        AppState.dailyData[dateStr].classApplied = { clean: null, spec: null };
+      }
+      return AppState.dailyData[dateStr];
+    }
+
+    // 本地預設種子資料
+    getDayData('2026-09-28').records.st_2 = [
+      { time: '12:40', name: '中午未準時回位', step: -1, category: 'bad', isClass: false }
+    ];
+
+    AppState.homeworkMock['2026-09-28'] = {
+      items: ['國乙L4', '國習L4(四)', '背成4-2+小24', '數筆記3-1', '數課40-42', '交回條*1', '數習26.27'],
+      studentStatus: {
+        st_1: [true, true, true, true, true, true, true],
+        st_2: [true, true, true, true, true, false, false],
+        st_3: [true, true, true, true, true, true, true],
+        st_4: [true, true, true, true, true, true, true],
+        st_5: [true, true, true, true, true, true, true],
+        st_6: [true, true, true, true, true, true, false],
+        st_7: [true, true, true, true, true, true, true],
+        st_8: [true, true, true, true, true, true, true],
+        st_9: [true, true, true, true, true, true, true],
+        st_10: [true, true, true, true, true, true, true]
+      }
+    };
+
+    AppState.checkinMock['2026-09-28'] = {
+      st_1: { preview: true, supplies: true, correction: true },
+      st_2: { preview: true, supplies: true, correction: false },
+      st_3: { preview: true, supplies: true, correction: true },
+      st_4: { preview: true, supplies: false, correction: true },
+      st_5: { preview: true, supplies: true, correction: false },
+      st_6: { preview: true, supplies: true, correction: true },
+      st_7: { preview: true, supplies: true, correction: true },
+      st_8: { preview: true, supplies: true, correction: true },
+      st_9: { preview: true, supplies: true, correction: true },
+      st_10: { preview: true, supplies: true, correction: true }
+    };
+
+    // 音效合成器
+    const AudioEngine = {
+      ctx: null,
+      init() {
+        if (!this.ctx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) this.ctx = new AudioContextClass();
+        }
+      },
+      playAdd() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const t = this.ctx.currentTime;
+          [1046.5, 1567.98].forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, t + idx * 0.05);
+            gain.gain.setValueAtTime(0.2, t + idx * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + idx * 0.05 + 0.35);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(t + idx * 0.05);
+            osc.stop(t + idx * 0.05 + 0.36);
+          });
+        } catch (e) { console.debug(e); }
+      },
+      playDeduct() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(329.63, t);
+          osc.frequency.exponentialRampToValueAtTime(220.0, t + 0.25);
+          gain.gain.setValueAtTime(0.25, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.26);
+        } catch (e) { console.debug(e); }
+      }
+    };
+
+    function showToast(msg, type = 'info') {
+      const toast = document.getElementById('toastNotification');
+      const toastMsg = document.getElementById('toastMessage');
+      const toastIcon = document.getElementById('toastIcon');
+      toastMsg.innerText = msg;
+      toastIcon.innerText = type === 'success' ? '🌟' : type === 'error' ? '⚠️' : '🔔';
+      toast.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-4');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none', '-translate-y-4');
+      }, 2400);
+    }
+
+    function getNowTimeString() {
+      const now = new Date();
+      return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    }
+
+    // 計算下一個真實上課日 (自動略過週六 6 與週日 0)
+    function getNextSchoolDay(currentDateStr, direction) {
+      const parts = currentDateStr.split('-');
+      const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+      while (true) {
+        d.setDate(d.getDate() + direction);
+        const dayOfWeek = d.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          return `${y}-${m}-${day}`;
+        }
+      }
+    }
+
+    function renderClassActionState() {
+      const dayData = getDayData(AppState.currentDate);
+      const classApplied = dayData.classApplied || { clean: null, spec: null };
+
+      // 1. 打掃狀態
+      const cleanActionGroup = document.getElementById('cleanActionGroup');
+      const cleanLockedBadge = document.getElementById('cleanLockedBadge');
+      const cleanLockedText = document.getElementById('cleanLockedText');
+      const cleanResetBtn = document.getElementById('cleanResetBtn');
+
+      if (classApplied.clean) {
+        cleanActionGroup.classList.add('hidden');
+        cleanLockedBadge.classList.remove('hidden');
+        cleanLockedBadge.classList.add('flex');
+        const s = classApplied.clean.step;
+        cleanLockedText.innerText = `${s >= 0 ? '+' : ''}${s}`;
+        cleanLockedText.className = `px-4 py-1.5 rounded-2xl text-2xl font-black font-num shadow-xs border-2 ${
+          s >= 0 ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-rose-100 text-rose-950 border-rose-300'
+        }`;
+        if (AppState.isTeacher) cleanResetBtn.classList.remove('hidden');
+        else cleanResetBtn.classList.add('hidden');
+      } else {
+        cleanActionGroup.classList.remove('hidden');
+        cleanLockedBadge.classList.add('hidden');
+        cleanLockedBadge.classList.remove('flex');
+      }
+
+      // 2. 科任狀態
+      const specActionGroup = document.getElementById('specActionGroup');
+      const specLockedBadge = document.getElementById('specLockedBadge');
+      const specLockedText = document.getElementById('specLockedText');
+      const specResetBtn = document.getElementById('specResetBtn');
+
+      if (classApplied.spec) {
+        specActionGroup.classList.add('hidden');
+        specLockedBadge.classList.remove('hidden');
+        specLockedBadge.classList.add('flex');
+        const s = classApplied.spec.step;
+        specLockedText.innerText = `${s >= 0 ? '+' : ''}${s}`;
+        specLockedText.className = `px-4 py-1.5 rounded-2xl text-2xl font-black font-num shadow-xs border-2 ${
+          s >= 0 ? 'bg-blue-100 text-blue-950 border-blue-300' : 'bg-amber-100 text-amber-950 border-amber-300'
+        }`;
+        if (AppState.isTeacher) specResetBtn.classList.remove('hidden');
+        else specResetBtn.classList.add('hidden');
+      } else {
+        specActionGroup.classList.remove('hidden');
+        specLockedBadge.classList.add('hidden');
+        specLockedBadge.classList.remove('flex');
+      }
+    }
+
+    function renderDatePills() {
+      const container = document.getElementById('datePillsContainer');
+      container.innerHTML = '';
+
+      const curMonthInt = parseInt(AppState.selectedMonth, 10);
+      const filteredDays = RECORDED_DAYS.filter(dStr => {
+        const m = parseInt(dStr.split('-')[1], 10);
+        return m === curMonthInt;
+      });
+
+      if (filteredDays.length === 0) {
+        container.innerHTML = `<span class="text-stone-400 font-bold px-3 py-2 whitespace-nowrap">${AppState.selectedMonth}月尚無登記上課日</span>`;
+      } else {
+        filteredDays.forEach(dStr => {
+          const dayNumber = dStr.split('-')[2];
+          const isSelected = dStr === AppState.currentDate;
+          const btn = document.createElement('button');
+          btn.className = `w-12 h-12 rounded-2xl font-num font-black text-2xl flex items-center justify-center shrink-0 shadow-xs stone-btn ${
+            isSelected 
+              ? 'bg-stone-900 text-white border-2 border-stone-900' 
+              : 'bg-white text-stone-800 border-2 border-stone-200 hover:border-stone-400'
+          }`;
+          btn.innerText = dayNumber;
+          btn.onclick = () => window.appActions.selectDate(dStr);
+          container.appendChild(btn);
+        });
+      }
+
+      document.getElementById('currentDateCapsule').innerText = AppState.currentDate;
+      const isLocked = getDayData(AppState.currentDate).locked;
+      const archiveBtn = document.getElementById('archiveDayBtn');
+      const addDayBtn = document.getElementById('addDayBtn');
+      const deleteDayBtn = document.getElementById('deleteDayBtn');
+
+      if (AppState.isTeacher) {
+        archiveBtn.classList.remove('hidden');
+        addDayBtn.classList.remove('hidden');
+        deleteDayBtn.classList.remove('hidden');
+        archiveBtn.innerHTML = isLocked 
+          ? '<i class="fa-solid fa-lock"></i> 今日已歸檔' 
+          : '<i class="fa-solid fa-box-archive"></i> 今日歸檔封存';
+      } else {
+        archiveBtn.classList.add('hidden');
+        addDayBtn.classList.add('hidden');
+        deleteDayBtn.classList.add('hidden');
+      }
+
+      renderCalendarGrid();
+      renderClassActionState();
+    }
+
+    function renderCalendarGrid() {
+      const grid = document.getElementById('calendarMonthGrid');
+      grid.innerHTML = '';
+
+      const [curYear, curMonth] = AppState.currentDate.split('-').map(Number);
+      document.getElementById('calendarTitle').innerText = `${curYear}年 ${curMonth}月月曆`;
+
+      const daysInMonth = new Date(curYear, curMonth, 0).getDate();
+      const firstDayRaw = new Date(curYear, curMonth - 1, 1).getDay();
+      const firstDayOffset = firstDayRaw === 0 ? 6 : firstDayRaw - 1;
+
+      for (let i = 0; i < firstDayOffset; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.className = 'w-9 h-9';
+        grid.appendChild(emptyCell);
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dStr = `${curYear}-${String(curMonth).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const isCurrent = dStr === AppState.currentDate;
+        const isRecorded = RECORDED_DAYS.includes(dStr);
+
+        const dayBtn = document.createElement('button');
+        dayBtn.className = `w-9 h-9 rounded-xl font-num font-black text-sm flex items-center justify-center transition ${
+          isCurrent
+            ? 'bg-[#8C5E3C] text-white shadow-xs'
+            : isRecorded
+            ? 'bg-amber-100 text-stone-900 border border-amber-300 hover:bg-amber-200'
+            : 'text-stone-400 hover:bg-stone-100'
+        }`;
+        dayBtn.innerText = d;
+        dayBtn.onclick = () => {
+          window.appActions.selectDate(dStr);
+          window.appActions.toggleCalendarPicker();
+        };
+        grid.appendChild(dayBtn);
+      }
+    }
+
+    function renderStudentCards() {
+      const grid = document.getElementById('studentCardsContainer');
+      grid.innerHTML = '';
+
+      const dayData = getDayData(AppState.currentDate);
+      const isDayLocked = dayData.locked;
+      const hwData = AppState.homeworkMock[AppState.currentDate] || AppState.homeworkMock['2026-09-28'];
+      const chkData = AppState.checkinMock[AppState.currentDate] || AppState.checkinMock['2026-09-28'];
+
+      STUDENTS.forEach(st => {
+        const isStudentLocked = !!dayData.studentLocked[st.id];
+
+        // 1. 打卡分
+        const stChk = chkData[st.id] || { preview: true, supplies: true, correction: true };
+        const checkinStep = (stChk.preview && stChk.supplies && stChk.correction) ? 1 : 0;
+
+        // 2. 訂正作業分
+        const stHw = (hwData && hwData.studentStatus[st.id]) ? hwData.studentStatus[st.id] : [true, true, true, true, true, true, true];
+        const hwDoneCount = stHw.filter(Boolean).length;
+
+        // 3. 課堂表現分
+        const records = dayData.records[st.id] || [];
+        const classroomScore = records.reduce((acc, r) => acc + r.step, 0);
+
+        // 總步數
+        const totalSteps = checkinStep + hwDoneCount + classroomScore;
+
+        const hwTextPreview = hwData.items.map((it, idx) => stHw[idx] ? it : '').filter(Boolean).join('、') || '尚無已訂正項目';
+
+        const card = document.createElement('div');
+        card.className = `bg-[#FFFDF9] rounded-3xl border-2 ${
+          isStudentLocked ? 'border-[#8C6D52] bg-[#F7F3EE]' : 'border-stone-200/90'
+        } p-4 sm:p-5 flex flex-col justify-between shadow-sm stone-card`;
+
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-stone-100">
+              <span class="text-3xl sm:text-4xl lg:text-5xl font-black font-serif-tc text-stone-900 tracking-wide">${st.name}</span>
+              <div class="flex items-center gap-1.5 ${isStudentLocked ? 'bg-[#EFE8DF] border-[#8C6D52]/40' : 'bg-amber-50 border-amber-200'} px-3 py-1.5 rounded-2xl border">
+                <span class="text-3xl lg:text-4xl">♟️</span>
+                <span class="text-3xl sm:text-4xl lg:text-5xl font-num font-black ${isStudentLocked ? 'text-[#5C4028]' : 'text-amber-950'}">${totalSteps}</span>
+                <span class="text-xl sm:text-2xl font-serif-tc font-black ${isStudentLocked ? 'text-[#6E4F36]' : 'text-amber-900'}">步</span>
+              </div>
+            </div>
+
+            <div class="mt-4 space-y-3">
+              <!-- 打卡 -->
+              <div class="bg-[#FAF7F2] p-2.5 rounded-2xl border border-stone-200/70">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xl font-black text-stone-700 flex items-center gap-1">
+                    <span>⌛</span> 打卡
+                  </span>
+                  <span class="text-2xl font-num font-black ${checkinStep > 0 ? 'text-emerald-700' : 'text-stone-400'}">
+                    +${checkinStep} 步
+                  </span>
+                </div>
+                <div class="flex items-center justify-between gap-1 text-sm font-black whitespace-nowrap">
+                  <span class="px-2.5 py-1 rounded-lg ${stChk.preview ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200 text-stone-500'}">
+                    預習複習
+                  </span>
+                  <span class="px-2.5 py-1 rounded-lg ${stChk.supplies ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200 text-stone-500'}">
+                    帶學用品
+                  </span>
+                  <span class="px-2.5 py-1 rounded-lg ${stChk.correction ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200 text-stone-500'}">
+                    訂正功課
+                  </span>
+                </div>
+              </div>
+
+              <!-- 訂正 -->
+              <div onclick="window.appActions.openHomeworkModal('${st.id}')" class="bg-[#F4F9FF] p-2.5 rounded-2xl border border-blue-200/70 cursor-pointer hover:bg-blue-100/50 transition">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xl font-black text-blue-950 flex items-center gap-1">
+                    <span>📘</span> 訂正
+                  </span>
+                  <span class="text-2xl font-num font-black text-blue-800">
+                    +${hwDoneCount} 步
+                  </span>
+                </div>
+                <div class="text-base font-bold text-stone-600 truncate" title="${hwTextPreview}">
+                  ${hwTextPreview}
+                </div>
+              </div>
+
+              <!-- 表現 -->
+              <div class="bg-[#FFF9F2] p-2.5 rounded-2xl border border-amber-200/70 flex items-center justify-between">
+                <span class="text-xl font-black text-amber-950 flex items-center gap-1">
+                  <span>🏆</span> 表現
+                </span>
+                <span class="text-2xl font-num font-black ${classroomScore >= 0 ? 'text-emerald-700' : 'text-rose-700'}">
+                  ${classroomScore >= 0 ? '+' : ''}${classroomScore} 步
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-stone-100">
+            <button onclick="window.appActions.openAuditModal('${st.id}')" class="w-full py-2.5 rounded-2xl text-xl font-black transition flex items-center justify-center gap-2 shadow-xs stone-btn ${
+              (isStudentLocked || isDayLocked)
+                ? 'bg-[#EFE8DF] hover:bg-[#E5DDD2] text-[#5C4028] border-2 border-[#8C6D52]'
+                : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border-2 border-emerald-300'
+            }">
+              <i class="${(isStudentLocked || isDayLocked) ? 'fa-solid fa-lock' : 'fa-regular fa-clipboard'}"></i>
+              <span>${(isStudentLocked || isDayLocked) ? '查看明細 (已結算)' : '實踐檢核'}</span>
+            </button>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    function renderModalRecords() {
+      const studentId = AppState.activeModalStudentId;
+      if (!studentId) return;
+
+      const dayData = getDayData(AppState.currentDate);
+      const isDayLocked = dayData.locked;
+      const isStudentLocked = !!dayData.studentLocked[studentId];
+      const isFullyDisabled = (isDayLocked || isStudentLocked) && !AppState.isTeacher;
+
+      const records = dayData.records[studentId] || [];
+
+      // 排序：個人在前，全班固定沉底最下方
+      const sortRecords = (arr) => {
+        return [...arr].sort((a, b) => {
+          if (a.isClass && !b.isClass) return 1;
+          if (!a.isClass && b.isClass) return -1;
+          return 0;
+        });
+      };
+
+      const goodRecords = sortRecords(records.filter(r => r.category === 'good'));
+      const badRecords = sortRecords(records.filter(r => r.category === 'bad'));
+      const attRecords = sortRecords(records.filter(r => r.category === 'attitude'));
+
+      document.getElementById('count_good_records').innerText = `${goodRecords.length}筆`;
+      document.getElementById('count_bad_records').innerText = `${badRecords.length}筆`;
+      document.getElementById('count_att_records').innerText = `${attRecords.length}筆`;
+
+      // 1. 履行責任明細
+      const listGood = document.getElementById('list_good_records');
+      if (goodRecords.length === 0) {
+        listGood.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4">今日尚無此項加步</div>';
+      } else {
+        listGood.innerHTML = goodRecords.map((r, i) => {
+          const isClassRecord = r.isClass === true;
+          return `
+            <div class="bg-white py-1.5 px-3 rounded-2xl border ${isClassRecord ? 'border-amber-300 bg-amber-50/50' : 'border-emerald-300'} flex items-center justify-between text-2xl font-black shadow-2xs">
+              <span class="text-stone-900 flex items-center gap-2">
+                ${isClassRecord ? '<span class="text-amber-700">🏛️ [全班]</span>' : '<span class="text-emerald-700">✓</span>'}
+                <span>${r.name}</span>
+              </span>
+              <div class="flex items-center gap-2.5">
+                <span class="text-stone-400 text-lg font-num font-normal">${r.time || ''}</span>
+                <span class="text-emerald-800 font-num text-2xl font-black">+${r.step}步</span>
+                ${!isFullyDisabled && !isClassRecord ? `<button onclick="window.appActions.removeRecord('${studentId}', 'good',${i})" class="text-stone-400 hover:text-rose-600 text-2xl font-black px-1">✕</button>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // 2. 持續進步明細
+      const listBad = document.getElementById('list_bad_records');
+      if (badRecords.length === 0) {
+        listBad.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4">今日無扣減步數</div>';
+      } else {
+        listBad.innerHTML = badRecords.map((r, i) => {
+          const isClassRecord = r.isClass === true;
+          const isReEditCost = r.name === '結算後修改';
+          return `
+            <div class="bg-white py-1.5 px-3 rounded-2xl border ${isReEditCost ? 'border-rose-400 bg-rose-100/60' : isClassRecord ? 'border-rose-400 bg-rose-50/50' : 'border-rose-300'} flex items-center justify-between text-2xl font-black shadow-2xs">
+              <span class="text-stone-900 flex items-center gap-2">
+                ${isReEditCost ? '<span class="text-rose-700">🚨 [重審]</span>' : isClassRecord ? '<span class="text-rose-700">🏛️ [全班]</span>' : '<span class="text-rose-700">✗</span>'}
+                <span>${r.name}</span>
+              </span>
+              <div class="flex items-center gap-2.5">
+                <span class="text-stone-400 text-lg font-num font-normal">${r.time || ''}</span>
+                <span class="text-rose-800 font-num text-2xl font-black">${r.step}步</span>
+                ${!isFullyDisabled && !isClassRecord && !isReEditCost ? `<button onclick="window.appActions.removeRecord('${studentId}', 'bad',${i})" class="text-stone-400 hover:text-rose-600 text-2xl font-black px-1">✕</button>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // 3. 學習自律明細
+      const listAtt = document.getElementById('list_att_records');
+      if (attRecords.length === 0) {
+        listAtt.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4">今日尚無自律扣步</div>';
+      } else {
+        listAtt.innerHTML = attRecords.map((r, i) => {
+          const isClassRecord = r.isClass === true;
+          return `
+            <div class="bg-white py-1.5 px-3 rounded-2xl border ${isClassRecord ? 'border-amber-400 bg-amber-50/50' : 'border-amber-300'} flex items-center justify-between text-2xl font-black shadow-2xs">
+              <span class="text-stone-900 flex items-center gap-2">
+                ${isClassRecord ? '<span class="text-amber-800">🏛️ [全班]</span>' : '<span class="text-amber-700">⚠</span>'}
+                <span>${r.name}</span>
+              </span>
+              <div class="flex items-center gap-2.5">
+                <span class="text-stone-400 text-lg font-num font-normal">${r.time || ''}</span>
+                <span class="text-amber-900 font-num text-2xl font-black">${r.step}步</span>
+                ${!isFullyDisabled && !isClassRecord ? `<button onclick="window.appActions.removeRecord('${studentId}', 'attitude',${i})" class="text-stone-400 hover:text-rose-600 text-2xl font-black px-1">✕</button>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // 單次使用互斥鎖
+      const ruleMapping = [
+        { name: '準時繳交簿本', cardId: 'card_rule_good_1', btnId: 'btn_rule_good_1' },
+        { name: '個人工作完成', cardId: 'card_rule_good_2', btnId: 'btn_rule_good_2' },
+        { name: '科任表現滿分', cardId: 'card_rule_good_3', btnId: 'btn_rule_good_3' },
+        { name: '未準時繳交簿本', cardId: 'card_rule_bad_1', btnId: 'btn_rule_bad_1' },
+        { name: '中午未準時回位', cardId: 'card_rule_bad_2', btnId: 'btn_rule_bad_2' },
+        { name: '個人工作未完成', cardId: 'card_rule_bad_3', btnId: 'btn_rule_bad_3' },
+        { name: '慢吞吞', cardId: 'card_rule_att_1', btnId: 'btn_rule_att_1' },
+        { name: '不細心', cardId: 'card_rule_att_2', btnId: 'btn_rule_att_2' },
+        { name: '科任表現不佳', cardId: 'card_rule_att_3', btnId: 'btn_rule_att_3' }
+      ];
+
+      ruleMapping.forEach(item => {
+        const isRecorded = records.some(r => r.name === item.name && !r.isClass);
+        const cardEl = document.getElementById(item.cardId);
+        const btnEl = document.getElementById(item.btnId);
+
+        if (isFullyDisabled) {
+          btnEl.disabled = true;
+          cardEl.classList.add('opacity-50', 'pointer-events-none');
+        } else if (isRecorded) {
+          btnEl.disabled = true;
+          cardEl.classList.add('opacity-40', 'bg-stone-100');
+        } else {
+          btnEl.disabled = false;
+          cardEl.classList.remove('opacity-40', 'opacity-50', 'pointer-events-none', 'bg-stone-100');
+        }
+      });
+
+      const totalModalClassroom = records.reduce((acc, r) => acc + r.step, 0);
+      document.getElementById('modalCurrentScore').innerText = `♟️ ${totalModalClassroom >= 0 ? '+' : ''}${totalModalClassroom} 步`;
+    }
+
+    window.appActions = {
+      selectDate(dateStr) {
+        AppState.currentDate = dateStr;
+        const monthNum = String(parseInt(dateStr.split('-')[1], 10));
+        if (AppState.selectedMonth !== monthNum) {
+          AppState.selectedMonth = monthNum;
+          document.getElementById('practiceMonthSelect').value = monthNum;
+        }
+        renderDatePills();
+        renderStudentCards();
+        AudioEngine.playAdd();
+      },
+
+      stepDate(delta) {
+        const nextDate = getNextSchoolDay(AppState.currentDate, delta);
+        this.selectDate(nextDate);
+      },
+
+      promptAddNewDate() {
+        if (!AppState.isTeacher) return;
+        const cur = AppState.currentDate;
+        if (!RECORDED_DAYS.includes(cur)) {
+          RECORDED_DAYS.unshift(cur);
+          RECORDED_DAYS.sort().reverse();
+          renderDatePills();
+          showToast(`已將 ${cur} 加入上課日清單`, 'success');
+        } else {
+          showToast(`${cur} 已在清單中`, 'info');
+        }
+      },
+
+      deleteCurrentDate() {
+        if (!AppState.isTeacher) return;
+        if (RECORDED_DAYS.length <= 1) {
+          showToast('至少保留一個日期紀錄', 'error');
+          return;
+        }
+        if (confirm(`確定要刪除 ${AppState.currentDate} 的紀錄嗎？`)) {
+          const idx = RECORDED_DAYS.indexOf(AppState.currentDate);
+          if (idx !== -1) RECORDED_DAYS.splice(idx, 1);
+          delete AppState.dailyData[AppState.currentDate];
+          const newIdx = Math.min(idx, RECORDED_DAYS.length - 1);
+          this.selectDate(RECORDED_DAYS[newIdx] || '2026-09-28');
+          showToast('已刪除該日紀錄', 'info');
+        }
+      },
+
+      toggleCalendarPicker() {
+        const p = document.getElementById('customCalendarPopup');
+        p.classList.toggle('hidden');
+      },
+
+      changeMonth(val) {
+        AppState.selectedMonth = val;
+        const monthInt = parseInt(val, 10);
+        const matchDate = RECORDED_DAYS.find(d => parseInt(d.split('-')[1], 10) === monthInt);
+        if (matchDate) {
+          this.selectDate(matchDate);
+        } else {
+          renderDatePills();
+          renderStudentCards();
+          showToast(`已切換至 ${val}月`);
+        }
+      },
+
+      adjustClassStepper(type, delta) {
+        const cur = AppState.steppers[type] || 1;
+        const next = Math.max(1, Math.min(10, cur + delta));
+        AppState.steppers[type] = next;
+        document.getElementById(`step_${type}`).innerText = next;
+      },
+
+      applyClassRule(type) {
+        const dayData = getDayData(AppState.currentDate);
+        if (dayData.locked && !AppState.isTeacher) {
+          showToast('今日已歸檔鎖定，無法加扣步數！', 'error');
+          return;
+        }
+
+        const isClean = type.startsWith('clean_');
+        const isSpec = type.startsWith('spec_');
+
+        if (isClean && dayData.classApplied.clean) {
+          showToast('今日整潔打掃已登記過！', 'error');
+          return;
+        }
+        if (isSpec && dayData.classApplied.spec) {
+          showToast('今日科任表現已登記過！', 'error');
+          return;
+        }
+
+        let name = '';
+        let step = 0;
+        let category = 'good';
+
+        if (type === 'clean_done') {
+          name = '八點前打掃完畢';
+          step = AppState.steppers.clean_done;
+          category = 'good';
+          dayData.classApplied.clean = { type, step };
+          AudioEngine.playAdd();
+        } else if (type === 'clean_fail') {
+          name = '未於八點前打掃完成';
+          step = -AppState.steppers.clean_fail;
+          category = 'bad';
+          dayData.classApplied.clean = { type, step };
+          AudioEngine.playDeduct();
+        } else if (type === 'spec_perfect') {
+          name = '科任課堂表現滿分';
+          step = AppState.steppers.spec_perfect;
+          category = 'good';
+          dayData.classApplied.spec = { type, step };
+          AudioEngine.playAdd();
+        } else if (type === 'spec_fair') {
+          name = '科任課堂表現尚可';
+          step = -AppState.steppers.spec_fair;
+          category = 'attitude';
+          dayData.classApplied.spec = { type, step };
+          AudioEngine.playDeduct();
+        }
+
+        const now = getNowTimeString();
+        STUDENTS.forEach(st => {
+          dayData.records[st.id].push({ time: now, name, step, category, isClass: true });
+        });
+
+        AppState.steppers[type] = 1;
+        document.getElementById(`step_${type}`).innerText = 1;
+
+        showToast(`全班已套用：${name} (${step >= 0 ? '+' : ''}${step}步)`, 'success');
+        renderStudentCards();
+        renderClassActionState();
+      },
+
+      resetClassAction(group) {
+        if (!AppState.isTeacher) return;
+        const dayData = getDayData(AppState.currentDate);
+
+        if (group === 'clean' && dayData.classApplied.clean) {
+          const appliedType = dayData.classApplied.clean.type;
+          const targetName = appliedType === 'clean_done' ? '八點前打掃完畢' : '未於八點前打掃完成';
+          STUDENTS.forEach(st => {
+            dayData.records[st.id] = dayData.records[st.id].filter(r => !(r.isClass && r.name === targetName));
+          });
+          dayData.classApplied.clean = null;
+          showToast('已重設今日整潔打掃紀錄', 'info');
+        } else if (group === 'spec' && dayData.classApplied.spec) {
+          const appliedType = dayData.classApplied.spec.type;
+          const targetName = appliedType === 'spec_perfect' ? '科任課堂表現滿分' : '科任課堂表現尚可';
+          STUDENTS.forEach(st => {
+            dayData.records[st.id] = dayData.records[st.id].filter(r => !(r.isClass && r.name === targetName));
+          });
+          dayData.classApplied.spec = null;
+          showToast('已重設今日科任表現紀錄', 'info');
+        }
+
+        AudioEngine.playDeduct();
+        renderStudentCards();
+        renderClassActionState();
+      },
+
+      adjustModalStepper(elementId, delta) {
+        const el = document.getElementById(elementId);
+        const cur = parseInt(el.innerText, 10) || 1;
+        const next = Math.max(1, Math.min(10, cur + delta));
+        el.innerText = next;
+      },
+
+      applyStudentRule(ruleName, sign, category, btnId) {
+        const studentId = AppState.activeModalStudentId;
+        if (!studentId) return;
+
+        const dayData = getDayData(AppState.currentDate);
+        if ((dayData.locked || dayData.studentLocked[studentId]) && !AppState.isTeacher) {
+          showToast('今日紀錄已鎖定，無法更改！', 'error');
+          return;
+        }
+
+        const records = dayData.records[studentId];
+        if (records.some(r => r.name === ruleName && !r.isClass)) {
+          showToast(`此項「${ruleName}」今日已登記過！`, 'error');
+          return;
+        }
+
+        let stepperId = 'btn_step_good_1';
+        if (ruleName === '個人工作完成') stepperId = 'btn_step_good_2';
+        else if (ruleName === '科任表現滿分') stepperId = 'btn_step_good_3';
+        else if (ruleName === '未準時繳交簿本') stepperId = 'btn_step_bad_1';
+        else if (ruleName === '中午未準時回位') stepperId = 'btn_step_bad_2';
+        else if (ruleName === '個人工作未完成') stepperId = 'btn_step_bad_3';
+        else if (ruleName === '慢吞吞') stepperId = 'btn_step_att_1';
+        else if (ruleName === '不細心') stepperId = 'btn_step_att_2';
+        else if (ruleName === '科任表現不佳') stepperId = 'btn_step_att_3';
+
+        const stepVal = parseInt(document.getElementById(stepperId).innerText, 10) || 1;
+        const finalStep = sign * stepVal;
+
+        records.push({
+          time: getNowTimeString(),
+          name: ruleName,
+          step: finalStep,
+          category,
+          isClass: false
+        });
+
+        document.getElementById(stepperId).innerText = 1;
+
+        if (finalStep > 0) AudioEngine.playAdd();
+        else AudioEngine.playDeduct();
+
+        renderModalRecords();
+        renderStudentCards();
+        showToast(`已登記：${ruleName} (${finalStep >= 0 ? '+' : ''}${finalStep}步)`, 'success');
+      },
+
+      removeRecord(studentId, category, indexInCategory) {
+        const dayData = getDayData(AppState.currentDate);
+        if ((dayData.locked || dayData.studentLocked[studentId]) && !AppState.isTeacher) {
+          showToast('今日已鎖定，不可撤銷！', 'error');
+          return;
+        }
+
+        const records = dayData.records[studentId];
+        const categoryRecords = records.filter(r => r.category === category);
+        const target = categoryRecords[indexInCategory];
+
+        if (target && !target.isClass && target.name !== '結算後修改') {
+          const globalIdx = records.indexOf(target);
+          if (globalIdx !== -1) {
+            records.splice(globalIdx, 1);
+            AudioEngine.playDeduct();
+            renderModalRecords();
+            renderStudentCards();
+            showToast('已撤銷該筆紀錄');
+          }
+        }
+      },
+
+      openAuditModal(studentId) {
+        AppState.activeModalStudentId = studentId;
+        const st = STUDENTS.find(s => s.id === studentId);
+        document.getElementById('modalStudentName').innerText = st.name;
+        document.getElementById('modalDateBadge').innerText = `${AppState.currentDate} 實踐檢核`;
+
+        const dayData = getDayData(AppState.currentDate);
+        const isStudentLocked = !!dayData.studentLocked[studentId];
+        const isDayLocked = dayData.locked;
+
+        const lockBadge = document.getElementById('modalLockBadge');
+        const reEditNotice = document.getElementById('modalReEditNotice');
+        const submitBtn = document.getElementById('modalSubmitBtn');
+        const submitText = document.getElementById('modalSubmitText');
+
+        if (isStudentLocked || isDayLocked) {
+          if (AppState.isTeacher) {
+            lockBadge.classList.add('hidden');
+            reEditNotice.classList.remove('hidden');
+            submitBtn.classList.remove('hidden');
+            submitText.innerText = '完成修訂並重新鎖定 (-1步)';
+          } else {
+            lockBadge.classList.remove('hidden');
+            reEditNotice.classList.add('hidden');
+            submitBtn.classList.add('hidden');
+          }
+        } else {
+          lockBadge.classList.add('hidden');
+          reEditNotice.classList.add('hidden');
+          submitBtn.classList.remove('hidden');
+          submitText.innerText = '完成並送出結算';
+        }
+
+        renderModalRecords();
+        document.getElementById('auditModal').classList.remove('hidden');
+      },
+
+      closeAuditModal() {
+        document.getElementById('auditModal').classList.add('hidden');
+        AppState.activeModalStudentId = null;
+      },
+
+      submitStudentAudit() {
+        const studentId = AppState.activeModalStudentId;
+        if (!studentId) return;
+
+        const dayData = getDayData(AppState.currentDate);
+        const wasLocked = !!dayData.studentLocked[studentId];
+
+        // 結算後修改：扣 1 步成本
+        if (wasLocked && AppState.isTeacher) {
+          dayData.records[studentId].push({
+            time: getNowTimeString(),
+            name: '結算後修改',
+            step: -1,
+            category: 'bad',
+            isClass: false
+          });
+          showToast('已完成重審修訂（套用手續費 -1步）', 'info');
+        } else {
+          showToast('已完成結算並鎖定紀錄！', 'success');
+        }
+
+        dayData.studentLocked[studentId] = true;
+        AudioEngine.playAdd();
+        this.closeAuditModal();
+        renderStudentCards();
+      },
+
+      openHomeworkModal(studentId) {
+        const st = STUDENTS.find(s => s.id === studentId);
+        document.getElementById('hwModalTitle').innerText = `${st.name} 訂正作業狀況`;
+        const container = document.getElementById('hwGridContainer');
+        container.innerHTML = '';
+
+        const hwData = AppState.homeworkMock[AppState.currentDate] || AppState.homeworkMock['2026-09-28'];
+        const stStatus = hwData.studentStatus[studentId] || [true, true, true, true, true, true, true];
+
+        hwData.items.forEach((item, i) => {
+          const done = stStatus[i];
+          const div = document.createElement('div');
+          div.className = `p-4 sm:p-5 rounded-2xl border-2 flex items-center justify-between text-3xl font-black ${
+            done ? 'bg-emerald-50 text-emerald-950 border-emerald-300' : 'bg-rose-50 text-rose-950 border-rose-300'
+          }`;
+          div.innerHTML = `
+            <span>${item}</span>
+            <span class="text-4xl ${done ? 'text-emerald-700' : 'text-rose-700'}">${done ? '✓' : '✗'}</span>
+          `;
+          container.appendChild(div);
+        });
+
+        document.getElementById('homeworkModal').classList.remove('hidden');
+      },
+
+      closeHomeworkModal() {
+        document.getElementById('homeworkModal').classList.add('hidden');
+      },
+
+      toggleAuthModal() {
+        if (AppState.isTeacher) {
+          AppState.isTeacher = false;
+          localStorage.removeItem('six_grade_teacher_authed');
+          document.getElementById('authStatusText').innerText = '學生模式';
+          document.getElementById('authIcon').className = 'fa-solid fa-lock text-base';
+          document.getElementById('authBtn').className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 border-2 border-stone-300 shadow-xs stone-btn';
+          showToast('已切換為學生自評模式');
+          renderDatePills();
+          renderStudentCards();
+          renderClassActionState();
+        } else {
+          document.getElementById('teacherPwdInput').value = '';
+          document.getElementById('teacherAuthModal').classList.remove('hidden');
+        }
+      },
+
+      closeAuthModal() {
+        document.getElementById('teacherAuthModal').classList.add('hidden');
+      },
+
+      verifyTeacherAuth() {
+        const email = document.getElementById('teacherEmailInput').value.trim();
+        const pwd = document.getElementById('teacherPwdInput').value.trim();
+
+        if (email === 'jg5@jges.tn.tw' && pwd === '123+++') {
+          AppState.isTeacher = true;
+          localStorage.setItem('six_grade_teacher_authed', 'true');
+          document.getElementById('authStatusText').innerText = '已解鎖：教師模式';
+          document.getElementById('authIcon').className = 'fa-solid fa-lock-open text-base text-emerald-800';
+          document.getElementById('authBtn').className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-emerald-100 text-emerald-900 border-2 border-emerald-300 shadow-xs stone-btn';
+          this.closeAuthModal();
+          showToast('教師權限已解鎖', 'success');
+          renderDatePills();
+          renderStudentCards();
+          renderClassActionState();
+        } else {
+          showToast('帳號或密碼錯誤，請重新輸入', 'error');
+        }
+      },
+
+      archiveToday() {
+        if (!AppState.isTeacher) return;
+        const dayData = getDayData(AppState.currentDate);
+        dayData.locked = !dayData.locked;
+        showToast(dayData.locked ? '今日紀錄已歸檔封存' : '已解除今日歸檔封存', 'success');
+        renderDatePills();
+        renderStudentCards();
+      },
+
+      showConnectionInfo() {
+        showToast('🟢 Firebase 資料庫已連線，所有數據分日即時同步中', 'success');
+      }
+    };
+
+    function updateClock() {
+      const now = new Date();
+      const month = now.getMonth() + 1;
+      const date = now.getDate();
+      const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+      const dayName = days[now.getDay()];
+
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+
+      document.getElementById('headerDateText').innerText = `${month}月${date}日 ${dayName}`;
+      document.getElementById('headerClockDigits').innerText = `${hh}:${mm}:${ss}`;
+    }
+
+    window.onload = function() {
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      // 若本機曾解鎖過教師身分，自動恢復
+      if (localStorage.getItem('six_grade_teacher_authed') === 'true') {
+        AppState.isTeacher = true;
+        document.getElementById('authStatusText').innerText = '已解鎖：教師模式';
+        document.getElementById('authIcon').className = 'fa-solid fa-lock-open text-base text-emerald-800';
+        document.getElementById('authBtn').className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-emerald-100 text-emerald-900 border-2 border-emerald-300 shadow-xs stone-btn';
+      }
+
+      renderDatePills();
+      renderStudentCards();
+      renderClassActionState();
+    };
+  </script>
+</body>
+</html>
