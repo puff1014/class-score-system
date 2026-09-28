@@ -653,53 +653,38 @@
       return AppState.dailyData[dateStr];
     }
 
-    // 核心邏輯：讀取訂正系統 (class-5a-app) 當日發布的作業與學生的訂正狀態
+    // 核心邏輯：直接讀取《訂正作業表》Firestore 的 assignments 集合
     async function fetchRealFirebaseData(dateStr) {
       if (!db) return;
       try {
-        // 1. 抓取當天指派要訂正的作業清單
-        const docRef = db.collection('115_announcements').doc(dateStr);
-        const docSnap = await docRef.get();
-        if (docSnap.exists) {
-          const rawItems = docSnap.data().items || [];
-          // 過濾掉生活打卡項，留下真正的作業
-          const cleanHw = rawItems
-            .map(item => (typeof item === 'string' ? item : (item.text || '')).trim())
-            .filter(t => t && !t.startsWith('※') && !t.startsWith(' ') && !['帶學用品', '複習+預習', '訂正功課'].includes(t));
-          AppState.remoteTasks[dateStr] = cleanHw;
-        } else {
-          AppState.remoteTasks[dateStr] = [];
-        }
+        const assignmentsPath = '/artifacts/class-5a-app/public/data/assignments';
+        const qSnapshot = await db.collection(assignmentsPath)
+          .where('assignmentDate', '==', dateStr)
+          .get();
 
-        // 2. 抓取當天學生出席與訂正狀態集合
-        const attColl = db.collection(`115_attendance_${dateStr}`);
-        const attSnap = await attColl.get();
-        AppState.remoteAttendance[dateStr] = {};
-        attSnap.forEach(d => {
-          AppState.remoteAttendance[dateStr][d.id] = d.data();
+        const currentTasks = [];
+        const currentSubmissionStatus = {};
+
+        qSnapshot.forEach((doc) => {
+          const data = doc.data();
+          const assignName = data.assignmentName;
+          currentTasks.push(assignName);
+          currentSubmissionStatus[assignName] = data.submissionStatus || {};
         });
+
+        AppState.remoteTasks[dateStr] = currentTasks;
+        AppState.remoteAttendance[dateStr] = currentSubmissionStatus;
 
         renderStudentCards();
       } catch (err) {
-        console.error("載入雲端資料失敗:", err);
+        console.error("載入訂正雲端資料失敗:", err);
       }
     }
 
-    // 判定單項作業是否為綠色勾勾（齊全 / done）
+    // 判定單項作業是否為綠色勾勾（true 為綠勾/已訂正，false 為紅叉/缺交）
     function isTaskDone(taskName, stAttDoc) {
       if (!stAttDoc) return false;
-      const cleanT = taskName.trim();
-
-      // 教師手動指定狀態優先判定
-      if (stAttDoc.manualTasks && stAttDoc.manualTasks[cleanT]) {
-        const mStat = stAttDoc.manualTasks[cleanT];
-        return mStat === 'done'; // 只有手動標記為 done 才是綠色
-      }
-
-      // 訂正網頁預設為全綠，除非被標記缺交或 completedTasks 未勾選
-      const completed = stAttDoc.completedTasks || {};
-      // 只要在 completedTasks 中為 true，且沒有被手動標為 missing，即為綠色
-      return completed[cleanT] === true;
+      return stAttDoc[taskName] === true;
     }
 
     const AudioEngine = {
@@ -927,8 +912,14 @@
 
       STUDENTS.forEach(st => {
         const isStudentLocked = !!dayData.studentLocked[st.id];
-        const stAttDoc = dayAttendance[st.id] || {};
-        const completedTasks = stAttDoc.completedTasks || {};
+        // 整理該學生在當天各作業的訂正狀況
+        const stAttDoc = {};
+        dayTasks.forEach(tName => {
+          stAttDoc[tName] = (dayAttendance[tName] && dayAttendance[tName][st.id] !== undefined)
+            ? dayAttendance[tName][st.id]
+            : false;
+        });
+        const completedTasks = {};
         
         // 1. 打卡網頁：自由心證勾選的三項習慣
         const previewDone = !!completedTasks['複習+預習'];
