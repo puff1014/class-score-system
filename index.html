@@ -1433,7 +1433,12 @@
         const curDate = AppState.currentDate;
         const dayTasks = AppState.remoteTasks[curDate] || [];
         const dayAttendance = AppState.remoteAttendance[curDate] || {};
-        const stAttDoc = dayAttendance[studentId] || {};
+        const stAttDoc = {};
+        dayTasks.forEach(tName => {
+          stAttDoc[tName] = (dayAttendance[tName] && dayAttendance[tName][studentId] !== undefined)
+            ? dayAttendance[tName][studentId]
+            : false;
+        });
 
         if (dayTasks.length === 0) {
           container.innerHTML = '<div class="col-span-2 text-stone-400 font-black text-2xl text-center py-8">本日訂正系統尚未指派任何作業項目</div>';
