@@ -71,7 +71,7 @@
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v3.5
+            v3.6
           </span>
         </div>
 
@@ -296,7 +296,7 @@
             🔒 今日已結算鎖定 (僅供查閱)
           </span>
           <span id="modalReEditNotice" class="hidden bg-rose-100 text-rose-900 border border-rose-300 font-black text-xl px-4 py-1.5 rounded-2xl">
-            ⚠️ 結算後修改模式 (送出將扣 1 步成本)
+            ⚠️ 結算後修改模式 (送出將扣 1 成本)
           </span>
         </div>
         <button onclick="window.appActions.closeAuditModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
@@ -475,7 +475,7 @@
       <div class="px-8 py-3 bg-stone-100/90 border-t-2 border-stone-200 flex flex-wrap items-center justify-between gap-4 shrink-0">
         <div class="flex items-center gap-4">
           <span class="text-3xl font-black text-stone-700 font-serif-tc">當前表現結算：</span>
-          <span id="modalCurrentScore" class="text-5xl font-black font-num text-stone-900">🚩 0 步</span>
+          <span id="modalCurrentScore" class="text-5xl font-black font-num text-stone-900">🚩 0</span>
         </div>
         <div class="flex items-center gap-3">
           <button id="modalSubmitBtn" onclick="window.appActions.submitStudentAudit()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-3xl font-black rounded-2xl shadow-md stone-btn flex items-center gap-2">
@@ -488,7 +488,7 @@
     </div>
   </div>
 
-  <!-- 【打卡系統作業獨立彈窗】：單行寬版、純數字不帶步字 -->
+  <!-- 【打卡系統作業獨立彈窗】：單行寬版、三色狀態、純數字不帶步字 -->
   <div id="checkinHwModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
     <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[95vw] max-w-5xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
       <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-4">
@@ -502,8 +502,13 @@
       </div>
 
       <div class="flex items-center justify-between px-3 py-2 mb-3 bg-stone-100 rounded-2xl border border-stone-200 text-sm font-black text-stone-700">
-        <span>全交：+2 ｜ 每缺 1 項：-1</span>
-        <span id="checkinHwSummaryBadge" class="text-xl font-num font-black"></span>
+        <div class="flex items-center gap-4">
+          <span class="text-stone-500">圖例：</span>
+          <span class="px-2.5 py-0.5 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-900">🟢 齊全 (全齊+2)</span>
+          <span class="px-2.5 py-0.5 rounded-lg bg-yellow-100 border border-yellow-300 text-yellow-900">🟡 遲交</span>
+          <span class="px-2.5 py-0.5 rounded-lg bg-rose-100 border border-rose-300 text-rose-900">🔴 缺交 (-1)</span>
+        </div>
+        <span id="checkinHwSummaryBadge" class="text-2xl font-num font-black"></span>
       </div>
 
       <!-- 單行不折行寬版列表容器 -->
@@ -518,7 +523,7 @@
     </div>
   </div>
 
-  <!-- 【訂正系統作業獨立彈窗】：單行寬版、純數字不帶步字、對齊三色 -->
+  <!-- 【訂正系統作業獨立彈窗】：單行寬版、黃色補訂正不加分(0)、右上角加總分 -->
   <div id="correctionModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
     <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[95vw] max-w-5xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
       
@@ -527,16 +532,24 @@
           <span class="text-4xl">📘</span>
           <h3 id="correctionModalTitle" class="text-3xl sm:text-4xl font-black text-stone-900 font-serif-tc">作業訂正狀況</h3>
         </div>
-        <button onclick="window.appActions.closeCorrectionModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+        
+        <!-- 右側：總分與關閉按鈕 -->
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-1.5 bg-amber-50 border-2 border-amber-300 px-4 py-1.5 rounded-2xl shadow-xs">
+            <span class="text-base font-bold text-amber-900">總計：</span>
+            <span id="correctionTotalScoreBadge" class="text-3xl font-num font-black text-amber-950">+0</span>
+          </div>
+          <button onclick="window.appActions.closeCorrectionModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
       </div>
 
-      <!-- 說明圖例 -->
+      <!-- 說明圖例：黃色補訂正不加分 (0) -->
       <div class="flex flex-wrap items-center gap-4 px-3 py-2 mb-3 bg-stone-100 rounded-2xl border border-stone-200 text-sm font-black text-stone-700">
         <span class="text-stone-500">狀態圖例：</span>
         <span class="flex items-center gap-1 px-3 py-1 bg-emerald-100 border border-emerald-300 text-emerald-950 rounded-xl">🟢 當天完成 (+1)</span>
-        <span class="flex items-center gap-1 px-3 py-1 bg-yellow-100 border border-yellow-300 text-yellow-950 rounded-xl">🟡 補訂正已完成 (+1)</span>
+        <span class="flex items-center gap-1 px-3 py-1 bg-yellow-100 border border-yellow-300 text-yellow-950 rounded-xl">🟡 補訂正 (0)</span>
         <span class="flex items-center gap-1 px-3 py-1 bg-rose-100 border border-rose-300 text-rose-950 rounded-xl">🔴 還未訂正 (0)</span>
       </div>
 
@@ -622,12 +635,10 @@
       steppers: { clean_done: 1, clean_fail: 1, spec_perfect: 1, spec_fair: 1 },
       recordedDays: JSON.parse(localStorage.getItem('six_grade_recorded_days') || '[]'),
       dailyData: {},
-      // 訂正系統數據
       correctionTasks: {},
       correctionAttendance: {},
-      // 打卡系統數據
       checkinAttendance: {},
-      checkinTasksAssigned: {} // 當天學生應繳交的任務（來自前一上課日航海日誌）
+      checkinTasksAssigned: {}
     };
 
     const firebaseConfig = {
@@ -697,7 +708,6 @@
       return AppState.dailyData[dateStr];
     }
 
-    // 核心讀取：同時精準抓取《打卡系統》與《訂正系統》
     async function fetchRealFirebaseData(dateStr) {
       if (!db) return;
       try {
@@ -711,7 +721,7 @@
           AppState.checkinAttendance[dateStr][d.id] = d.data();
         });
 
-        // 2. 讀取《打卡系統》前一上課日的航海日誌（得到當天應繳作業清單）
+        // 2. 讀取《打卡系統》前一上課日的航海日誌（取得當天應繳作業清單）
         const annColName = `${prefix}announcements`;
         const prevLogSnap = await db.collection(annColName)
           .where("date", "<", dateStr)
@@ -755,7 +765,7 @@
       }
     }
 
-    // 打卡系統出席狀態判定邏輯
+    // 打卡系統出席狀態判定
     function getStudentCheckinStatus(studentId, dateStr) {
       const doc = (AppState.checkinAttendance[dateStr] && AppState.checkinAttendance[dateStr][studentId]) || null;
       if (!doc) return 'absent';
@@ -769,14 +779,43 @@
       const [h, m, s] = time.split(':').map(Number);
       const totalS = h * 3600 + m * 60 + (s || 0);
 
-      // 特殊號 5, 7, 8 門檻為 08:10:30，一般生為 07:40:01
       if (SPECIAL_IDS.includes(studentId)) {
         return totalS >= (8 * 3600 + 10 * 60 + 30) ? 'late' : 'on-time';
       }
       return totalS >= (7 * 3600 + 40 * 60 + 1) ? 'late' : 'on-time';
     }
 
-    // 訂正系統狀態判定：'green'（當天完成）, 'yellow'（補訂正已完成）, 'red'（還未訂正）
+    // 打卡系統單項作業三色判定（綠：齊全，黃：遲交，紅：缺交）
+    function getCheckinTaskDetailStatus(studentId, taskName, dateStr) {
+      const d = (AppState.checkinAttendance[dateStr] && AppState.checkinAttendance[dateStr][studentId]) || {};
+      const cleanName = taskName.trim();
+      
+      // 手動覆寫優先
+      if (d.manualTasks && d.manualTasks[cleanName]) {
+        const m = d.manualTasks[cleanName];
+        if (m === 'done') return 'green';
+        if (m === 'late') return 'yellow';
+        if (m === 'missing') return 'red';
+      }
+
+      const hw = d.completedTasks || {};
+      if (!hw[cleanName]) return 'red';
+
+      // 檢查是否逾時完成
+      const actionTime = d.lastActionTime;
+      if (actionTime) {
+        const [h, m, s] = actionTime.split(':').map(Number);
+        const totalS = h * 3600 + m * 60 + (s || 0);
+        const isLate = SPECIAL_IDS.includes(studentId)
+          ? totalS > (8 * 3600 + 15 * 60)
+          : totalS >= (7 * 3600 + 40 * 60 + 1);
+        if (isLate) return 'yellow';
+      }
+
+      return 'green';
+    }
+
+    // 訂正系統狀態判定：'green'（當天完成）, 'yellow'（補訂正）, 'red'（還未訂正）
     function getCorrectionStatus(taskName, studentId, dateStr) {
       const attMap = AppState.correctionAttendance[dateStr] || {};
       const statusMap = attMap[taskName] || {};
@@ -1022,11 +1061,8 @@
       const dayData = getDayData(curDate);
       const isDayLocked = dayData.locked;
 
-      // 打卡系統相關資料
       const assignedHwList = AppState.checkinTasksAssigned[curDate] || [];
       const studentCheckinMap = AppState.checkinAttendance[curDate] || {};
-
-      // 訂正系統相關資料
       const correctionTasks = AppState.correctionTasks[curDate] || [];
 
       STUDENTS.forEach(st => {
@@ -1034,7 +1070,7 @@
         const studentDoc = studentCheckinMap[st.id] || {};
         const completedTasks = studentDoc.completedTasks || {};
 
-        // 1. 打卡上層：到校時間（準時綠色 +1 / 遲到紅色 -2）
+        // 1. 打卡上層：到校時間
         const attStatus = getStudentCheckinStatus(st.id, curDate);
         let arrivalScore = 0;
         let arrivalLabel = '未到校';
@@ -1063,12 +1099,17 @@
           arrivalColorClass = 'text-orange-600';
         }
 
-        // 2. 打卡中層：完成作業（自主勾選：全交綠色 完成 +2 / 缺交紅色 缺交 -n，每缺一項扣 1）
+        // 2. 打卡中層：完成作業（全交 +2 / 缺交每項扣 1）
         let missingHwCount = 0;
+        let lateHwCount = 0;
+        let doneHwCount = 0;
+
         if (assignedHwList.length > 0) {
           assignedHwList.forEach(tName => {
-            const isChecked = !!completedTasks[tName];
-            if (!isChecked) missingHwCount++;
+            const detailStat = getCheckinTaskDetailStatus(st.id, tName, curDate);
+            if (detailStat === 'red') missingHwCount++;
+            else if (detailStat === 'yellow') lateHwCount++;
+            else if (detailStat === 'green') doneHwCount++;
           });
         }
 
@@ -1082,19 +1123,26 @@
           checkinHwLabel = '本日無作業';
           checkinHwScoreText = '0';
           checkinHwColorClass = 'text-stone-500';
-        } else if (missingHwCount === 0) {
-          checkinHwScore = 2;
-          checkinHwLabel = '完成';
-          checkinHwScoreText = '+2';
-          checkinHwColorClass = 'text-emerald-600';
-        } else {
+        } else if (missingHwCount > 0) {
           checkinHwScore = -missingHwCount;
           checkinHwLabel = `缺交 -${missingHwCount}`;
           checkinHwScoreText = `${checkinHwScore}`;
           checkinHwColorClass = 'text-rose-600';
+        } else if (lateHwCount > 0) {
+          // 有遲交但無缺交：不扣分，但也無法獲得全齊 +2
+          checkinHwScore = 0;
+          checkinHwLabel = '遲交完成';
+          checkinHwScoreText = '0';
+          checkinHwColorClass = 'text-yellow-600';
+        } else {
+          // 全部準時完成 (全綠)
+          checkinHwScore = 2;
+          checkinHwLabel = '完成';
+          checkinHwScoreText = '+2';
+          checkinHwColorClass = 'text-emerald-600';
         }
 
-        // 3. 打卡下層：三項生活習慣打卡（預習複習、帶學用品、訂正功課，三項全齊右上小計計入 +1）
+        // 3. 打卡下層：三項生活習慣打卡（全齊計入 +1）
         const previewDone = !!completedTasks['複習+預習'] || !!completedTasks['預習複習'];
         const suppliesDone = !!completedTasks['帶學用品'];
         const checkinDone = !!completedTasks['訂正功課'];
@@ -1103,20 +1151,19 @@
         const habitScoreText = habitScore > 0 ? '+1' : '0';
         const habitColorClass = habitScore > 0 ? 'text-emerald-600' : 'text-stone-400';
 
-        // 打卡區右上角純數字小計（到校 + 作業 + 習慣）
+        // 打卡區小計
         const checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
 
-        // 4. 訂正系統點擊統計（當天完成綠 + 補訂正黃各 +1，純數字展示）
-        const correctedCount = correctionTasks.filter(tName => {
-          const s = getCorrectionStatus(tName, st.id, curDate);
-          return s === 'green' || s === 'yellow';
+        // 4. 訂正狀況：僅「當天完成（綠色）」給 +1，補訂正（黃色）與未訂正不給分
+        const greenCorrectionCount = correctionTasks.filter(tName => {
+          return getCorrectionStatus(tName, st.id, curDate) === 'green';
         }).length;
-        const correctionScore = correctedCount;
+        const correctionScore = greenCorrectionCount;
         const correctionPreviewText = correctionTasks.length === 0
           ? '本日未指派作業'
-          : `${correctedCount} / ${correctionTasks.length} 完成`;
+          : `${greenCorrectionCount} / ${correctionTasks.length} 完成`;
 
-        // 5. 課堂表現步數
+        // 5. 表現步數
         const records = dayData.records[st.id] || [];
         const classroomScore = records.reduce((acc, r) => acc + r.step, 0);
 
@@ -1674,7 +1721,7 @@
         renderStudentCards();
       },
 
-      // 【打卡作業獨立彈窗】：單行寬版、純數字不帶步字
+      // 【打卡作業獨立彈窗】：單行寬版、三色狀態、純數字不帶步字
       openCheckinHwModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('checkinHwModalTitle').innerText = `${maskName(st.name)} 打卡作業自主勾選紀錄`;
@@ -1683,45 +1730,72 @@
 
         const curDate = AppState.currentDate;
         const assignedHwList = AppState.checkinTasksAssigned[curDate] || [];
-        const studentDoc = (AppState.checkinAttendance[curDate] && AppState.checkinAttendance[curDate][studentId]) || {};
-        const completedTasks = studentDoc.completedTasks || {};
 
         let missingCount = 0;
+        let lateCount = 0;
 
         if (assignedHwList.length === 0) {
           container.innerHTML = '<div class="text-stone-400 font-bold text-2xl text-center py-10">本日航海日誌無作業任務</div>';
           document.getElementById('checkinHwSummaryBadge').innerText = '0';
-          document.getElementById('checkinHwSummaryBadge').className = 'text-xl font-num font-black text-stone-500';
+          document.getElementById('checkinHwSummaryBadge').className = 'text-2xl font-num font-black text-stone-500';
         } else {
           assignedHwList.forEach(tName => {
-            const isDone = !!completedTasks[tName];
-            if (!isDone) missingCount++;
+            const detailStat = getCheckinTaskDetailStatus(studentId, tName, curDate);
+
+            let rowBg = 'bg-emerald-50 border-emerald-300 text-emerald-950';
+            let iconText = '✓';
+            let iconColor = 'text-emerald-600';
+            let badgeBg = 'bg-emerald-100 border-emerald-300 text-emerald-900';
+            let labelText = '齊全';
+            let scoreText = ''; // 綠色齊全不顯示數字
+
+            if (detailStat === 'red') {
+              missingCount++;
+              rowBg = 'bg-rose-50 border-rose-300 text-rose-950';
+              iconText = '✗';
+              iconColor = 'text-rose-600';
+              badgeBg = 'bg-rose-100 border-rose-300 text-rose-900';
+              labelText = '缺交';
+              scoreText = '-1'; // 紅色缺交顯示 -1
+            } else if (detailStat === 'yellow') {
+              lateCount++;
+              rowBg = 'bg-amber-50/80 border-amber-300 text-amber-950';
+              iconText = '✓';
+              iconColor = 'text-amber-600';
+              badgeBg = 'bg-yellow-100 border-yellow-300 text-yellow-900';
+              labelText = '遲交';
+              scoreText = ''; // 黃色遲交不顯示數字
+            }
 
             const row = document.createElement('div');
-            row.className = `p-3.5 sm:p-4 rounded-2xl border-2 flex items-center justify-between gap-4 whitespace-nowrap shadow-xs ${
-              isDone ? 'bg-emerald-50 border-emerald-300 text-emerald-950' : 'bg-rose-50 border-rose-300 text-rose-950'
-            }`;
+            row.className = `p-3.5 sm:p-4 rounded-2xl border-2 flex items-center justify-between gap-4 whitespace-nowrap shadow-xs ${rowBg}`;
             row.innerHTML = `
               <div class="flex items-center gap-3 min-w-0 flex-1">
-                <span class="text-3xl font-black ${isDone ? 'text-emerald-600' : 'text-rose-600'} shrink-0">${isDone ? '✓' : '✗'}</span>
+                <span class="text-3xl font-black ${iconColor} shrink-0">${iconText}</span>
                 <span class="text-2xl sm:text-3xl font-black font-serif-tc truncate text-stone-900">${tName}</span>
               </div>
               <div class="flex items-center gap-3 shrink-0">
-                <span class="px-3.5 py-1.5 rounded-xl border text-lg sm:text-xl font-black ${isDone ? 'bg-emerald-100 border-emerald-300 text-emerald-900' : 'bg-rose-100 border-rose-300 text-rose-900'}">
-                  ${isDone ? '已完成' : '缺交'}
+                <span class="px-3.5 py-1.5 rounded-xl border text-lg sm:text-xl font-black ${badgeBg}">
+                  ${labelText}
                 </span>
-                <span class="text-2xl sm:text-3xl font-num font-black ${isDone ? 'text-emerald-700' : 'text-rose-600'}">
-                  ${isDone ? '+0' : '-1'}
-                </span>
+                ${scoreText ? `<span class="text-2xl sm:text-3xl font-num font-black text-rose-600">${scoreText}</span>` : ''}
               </div>
             `;
             container.appendChild(row);
           });
 
-          const finalScore = missingCount === 0 ? '+2' : `-${missingCount}`;
+          // 總結算標籤
           const badge = document.getElementById('checkinHwSummaryBadge');
-          badge.innerText = `總結算：${finalScore}`;
-          badge.className = `text-xl font-num font-black ${missingCount === 0 ? 'text-emerald-700' : 'text-rose-700'}`;
+          if (missingCount > 0) {
+            badge.innerText = `結算：-${missingCount}`;
+            badge.className = 'text-2xl font-num font-black text-rose-700';
+          } else if (lateCount > 0) {
+            badge.innerText = `結算：0 (有遲交)`;
+            badge.className = 'text-2xl font-num font-black text-yellow-700';
+          } else {
+            badge.innerText = `結算：+2 (全齊)`;
+            badge.className = 'text-2xl font-num font-black text-emerald-700';
+          }
         }
 
         document.getElementById('checkinHwModal').classList.remove('hidden');
@@ -1731,7 +1805,7 @@
         document.getElementById('checkinHwModal').classList.add('hidden');
       },
 
-      // 【訂正作業獨立彈窗】：單行寬版、純數字不帶步字、對齊三色
+      // 【訂正作業獨立彈窗】：黃色補訂正不加分(0)、右上角加總分
       openCorrectionModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('correctionModalTitle').innerText = `${maskName(st.name)} 作業訂正狀況`;
@@ -1741,8 +1815,11 @@
         const curDate = AppState.currentDate;
         const correctionTasks = AppState.correctionTasks[curDate] || [];
 
+        let totalCorrectionScore = 0;
+
         if (correctionTasks.length === 0) {
           container.innerHTML = '<div class="text-stone-400 font-bold text-2xl text-center py-10">本日訂正系統尚未指派任何作業項目</div>';
+          document.getElementById('correctionTotalScoreBadge').innerText = '0';
         } else {
           correctionTasks.forEach(tName => {
             const status = getCorrectionStatus(tName, studentId, curDate);
@@ -1755,6 +1832,7 @@
             let scoreText = '0';
 
             if (status === 'green') {
+              totalCorrectionScore += 1;
               statusBg = 'bg-emerald-50 border-emerald-300 text-emerald-950';
               iconText = '✓';
               iconColor = 'text-emerald-600';
@@ -1762,12 +1840,13 @@
               labelText = '當天完成';
               scoreText = '+1';
             } else if (status === 'yellow') {
+              // 補訂正不加分，顯示 0
               statusBg = 'bg-amber-50/80 border-amber-300 text-amber-950';
               iconText = '✓';
               iconColor = 'text-amber-600';
               badgeBg = 'bg-yellow-100 border-yellow-300 text-yellow-950';
-              labelText = '補訂正已完成';
-              scoreText = '+1';
+              labelText = '補訂正';
+              scoreText = '0';
             }
 
             const row = document.createElement('div');
@@ -1781,13 +1860,16 @@
                 <span class="px-3.5 py-1.5 rounded-xl border text-lg sm:text-xl font-black ${badgeBg}">
                   ${labelText}
                 </span>
-                <span class="text-2xl sm:text-3xl font-num font-black ${status === 'red' ? 'text-rose-600' : 'text-emerald-700'}">
+                <span class="text-2xl sm:text-3xl font-num font-black ${status === 'green' ? 'text-emerald-700' : 'text-stone-400'}">
                   ${scoreText}
                 </span>
               </div>
             `;
             container.appendChild(row);
           });
+
+          // 更新右上角總分
+          document.getElementById('correctionTotalScoreBadge').innerText = totalCorrectionScore > 0 ? `+${totalCorrectionScore}` : `${totalCorrectionScore}`;
         }
 
         document.getElementById('correctionModal').classList.remove('hidden');
