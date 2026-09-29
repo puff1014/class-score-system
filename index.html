@@ -71,7 +71,7 @@
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v4.2
+            v4.5
           </span>
         </div>
 
@@ -93,7 +93,7 @@
             <div id="cloudPing" class="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping opacity-75"></div>
           </div>
           <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block bg-stone-900 text-white text-sm px-3 py-1.5 rounded-xl whitespace-nowrap shadow-lg z-20">
-            Firebase 雲端已連線
+            全自動即時雙向連動中
           </div>
         </div>
 
@@ -488,6 +488,51 @@
     </div>
   </div>
 
+  <!-- 【全新彈窗：千里足跡・個人修行歷程簿】 -->
+  <div id="mileageModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-5">
+    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[95vw] max-w-3xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[90vh]">
+      <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-4 shrink-0">
+        <div class="flex items-center gap-3">
+          <span class="text-4xl">👣</span>
+          <div>
+            <h3 id="mileageModalTitle" class="text-3xl sm:text-4xl font-black text-stone-900 font-serif-tc">千里足跡歷程</h3>
+            <p class="text-xs sm:text-sm font-bold text-amber-900/80 font-serif-tc">千里之行，始於足下；寸步積累，方成行者</p>
+          </div>
+        </div>
+        <button onclick="window.appActions.closeMileageModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- 總里程榮譽卡 -->
+      <div class="bg-gradient-to-r from-[#FAF3EA] via-[#F4E8D5] to-[#FAF3EA] border-2 border-[#D9C4A9] rounded-2xl p-4 sm:p-5 flex items-center justify-between shadow-xs mb-4 shrink-0">
+        <div class="flex flex-col">
+          <span class="text-sm sm:text-base font-bold text-stone-600 font-serif-tc">已封存歸檔總里程</span>
+          <span class="text-xs text-stone-400 font-bold">（僅計入教師正式歸檔封存之日子）</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-3xl">🏆</span>
+          <span id="mileageTotalScoreBadge" class="text-5xl sm:text-6xl font-num font-black text-[#8C5E3C]">0</span>
+        </div>
+      </div>
+
+      <!-- 歷史歷程清單 -->
+      <div class="text-base font-black text-stone-700 font-serif-tc mb-2 flex items-center justify-between">
+        <span>📜 歷次封存修行明細</span>
+        <span id="mileageRecordCount" class="font-num text-stone-500 font-normal">共 0 天</span>
+      </div>
+
+      <div id="mileageListContainer" class="space-y-2.5 overflow-y-auto custom-scrollbar flex-1 pr-1">
+      </div>
+
+      <div class="pt-4 mt-3 border-t-2 border-stone-100 flex justify-end shrink-0">
+        <button onclick="window.appActions.closeMileageModal()" class="px-8 py-3 bg-stone-900 hover:bg-stone-800 text-white font-black text-2xl rounded-2xl stone-btn shadow-md">
+          關閉存摺
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- 【打卡系統作業獨立彈窗】：極致寬版、左右雙列、文字完全不折行不省略、純數字 -->
   <div id="checkinHwModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
     <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[98vw] max-w-[98vw] rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
@@ -649,6 +694,8 @@
     let db = null;
     let auth = null;
     let unsubRecordedDays = null;
+    let unsubCheckin = null;
+    let unsubCorrection = null;
 
     try {
       firebase.initializeApp(firebaseConfig);
@@ -666,7 +713,7 @@
       console.warn("Firebase 初始化警示:", e);
     }
 
-    // 🌟 透過《打卡系統》原本合法授權的 announcements 集合監聽上課日，免改權限規則
+    // 透過《打卡系統》原本合法授權的 announcements 集合監聽上課日
     function setupRecordedDaysSync() {
       if (!db) return;
       if (unsubRecordedDays) unsubRecordedDays();
@@ -728,6 +775,7 @@
             locked: false,
             studentLocked: {},
             classApplied: { clean: null, spec: null },
+            snapshot: null, // 🌟 歸檔快照結構
             records: {
               '1': [], '2': [], '3': [], '4': [], '5': [],
               '6': [], '7': [], '8': [], '9': [], '10': []
@@ -745,62 +793,98 @@
       renderClassActionState();
     }
 
-    async function fetchRealFirebaseData(dateStr) {
-      if (!db) return;
-      try {
-        const prefix = AppState.academicYear === '114' ? '' : `${AppState.academicYear}_`;
+    // 🌟 計算每位學生歷來所有「已封存日期」的累計總里程
+    function getStudentCumulativeMileage(studentId) {
+      let totalMileage = 0;
+      const historyList = [];
 
-        // 1. 讀取《打卡系統》當日出席 (attendance_YYYY-MM-DD)
-        const attColName = prefix ? `${prefix}attendance_${dateStr}` : `attendance_${dateStr}`;
-        const attSnap = await db.collection(attColName).get();
-        AppState.checkinAttendance[dateStr] = {};
-        attSnap.forEach(d => {
-          AppState.checkinAttendance[dateStr][d.id] = d.data();
-        });
-
-        // 2. 讀取《打卡系統》前一上課日之航海日誌任務
-        const annColName = `${prefix}announcements`;
-        const prevLogSnap = await db.collection(annColName)
-          .where("date", "<", dateStr)
-          .orderBy("date", "desc")
-          .limit(1)
-          .get();
-
-        const taskNames = [];
-        if (!prevLogSnap.empty) {
-          const rawItems = prevLogSnap.docs[0].data().items || [];
-          rawItems.forEach(t => {
-            const text = (typeof t === 'string' ? t : (t?.text || '')).trim();
-            if (text && !text.startsWith('※') && !text.startsWith(' ') && !text.includes('新航程開始')) {
-              taskNames.push(text);
-            }
+      AppState.recordedDays.forEach(dStr => {
+        const localData = getDayData(dStr);
+        if (localData && localData.locked && localData.snapshot && localData.snapshot[studentId]) {
+          const snap = localData.snapshot[studentId];
+          totalMileage += snap.totalScore;
+          historyList.push({
+            date: dStr,
+            checkinScore: snap.checkinScore,
+            correctionScore: snap.correctionScore,
+            classroomScore: snap.classroomScore,
+            totalScore: snap.totalScore
           });
         }
-        AppState.checkinTasksAssigned[dateStr] = taskNames;
+      });
 
-        // 3. 讀取《訂正系統》當日派發作業 (assignments)
-        const assignmentsPath = '/artifacts/class-5a-app/public/data/assignments';
-        const qSnapshot = await db.collection(assignmentsPath)
-          .where('assignmentDate', '==', dateStr)
-          .get();
+      return { totalMileage, historyList };
+    }
 
-        const currentTasks = [];
-        const currentSubmissionStatus = {};
-        qSnapshot.forEach((doc) => {
-          const data = doc.data();
-          const assignName = data.assignmentName;
-          currentTasks.push(assignName);
-          currentSubmissionStatus[assignName] = data.submissionStatus || {};
+    // 全自動雙向即時監聽（onSnapshot）：打卡全欄位 ＋ 訂正全欄位
+    function setupRealtimeSync(dateStr) {
+      if (!db) return;
+
+      if (unsubCheckin) unsubCheckin();
+      if (unsubCorrection) unsubCorrection();
+
+      const prefix = AppState.academicYear === '114' ? '' : `${AppState.academicYear}_`;
+
+      // 📡【即時監聽 1：打卡系統所有欄位】
+      const attColName = prefix ? `${prefix}attendance_${dateStr}` : `attendance_${dateStr}`;
+      unsubCheckin = db.collection(attColName).onSnapshot((snap) => {
+        AppState.checkinAttendance[dateStr] = {};
+        snap.forEach(d => {
+          AppState.checkinAttendance[dateStr][d.id] = d.data();
         });
-
-        AppState.correctionTasks[dateStr] = currentTasks;
-        AppState.correctionAttendance[dateStr] = currentSubmissionStatus;
-
         renderStudentCards();
-      } catch (err) {
-        console.error("載入雲端資料失敗:", err);
-        renderStudentCards();
-      }
+
+        if (!document.getElementById('checkinHwModal').classList.contains('hidden') && AppState.activeModalStudentId) {
+          window.appActions.openCheckinHwModal(AppState.activeModalStudentId);
+        }
+      }, (err) => console.warn("打卡即時同步提示:", err));
+
+      // 讀取前一上課日之航海日誌任務
+      const annColName = `${prefix}announcements`;
+      db.collection(annColName)
+        .where("date", "<", dateStr)
+        .orderBy("date", "desc")
+        .limit(1)
+        .get()
+        .then((prevLogSnap) => {
+          const taskNames = [];
+          if (!prevLogSnap.empty) {
+            const rawItems = prevLogSnap.docs[0].data().items || [];
+            rawItems.forEach(t => {
+              const text = (typeof t === 'string' ? t : (t?.text || '')).trim();
+              if (text && !text.startsWith('※') && !text.startsWith(' ') && !text.includes('新航程開始')) {
+                taskNames.push(text);
+              }
+            });
+          }
+          AppState.checkinTasksAssigned[dateStr] = taskNames;
+          renderStudentCards();
+        })
+        .catch(err => console.warn("日誌任務讀取提示:", err));
+
+      // 📡【即時監聽 2：訂正系統作業狀態】
+      const assignmentsPath = '/artifacts/class-5a-app/public/data/assignments';
+      unsubCorrection = db.collection(assignmentsPath)
+        .where('assignmentDate', '==', dateStr)
+        .onSnapshot((qSnapshot) => {
+          const currentTasks = [];
+          const currentSubmissionStatus = {};
+          qSnapshot.forEach((doc) => {
+            const data = doc.data();
+            const assignName = data.assignmentName;
+            currentTasks.push(assignName);
+            currentSubmissionStatus[assignName] = data.submissionStatus || {};
+          });
+
+          AppState.correctionTasks[dateStr] = currentTasks;
+          AppState.correctionAttendance[dateStr] = currentSubmissionStatus;
+
+          renderStudentCards();
+
+          if (!document.getElementById('correctionModal').classList.contains('hidden') && AppState.activeModalStudentId) {
+            window.appActions.openCorrectionModal(AppState.activeModalStudentId);
+          }
+        }, (err) => console.warn("訂正作業即時同步提示:", err));
     }
 
     function getStudentCheckinStatus(studentId, dateStr) {
@@ -1084,7 +1168,7 @@
       }
     }
 
-    // 🌟 核心渲染：學生卡片（大地行者風：靈動大圖騰在前 ＋ 質樸石印文字膠囊）
+    // 🌟 核心渲染：學生卡片（含千里足跡橫條 ＋ 固化快照與即時切換）
     function renderStudentCards() {
       const grid = document.getElementById('studentCardsContainer');
       grid.innerHTML = '';
@@ -1099,103 +1183,106 @@
 
       STUDENTS.forEach(st => {
         const isStudentLocked = !!dayData.studentLocked[st.id];
-        const studentDoc = studentCheckinMap[st.id] || {};
-        const completedTasks = studentDoc.completedTasks || {};
 
-        // 1. 打卡上層：到校時間
-        const attStatus = getStudentCheckinStatus(st.id, curDate);
-        let arrivalScore = 0;
-        let arrivalLabel = '未到校';
-        let arrivalScoreText = '--';
-        let arrivalColorClass = 'text-stone-400';
+        // 🌟 核心分水嶺：若該日已封存，直接讀取快照固化分數；未封存則動態計算
+        let arrivalScore, arrivalLabel, arrivalScoreText, arrivalColorClass;
+        let checkinHwScore, checkinHwLabel, checkinHwScoreText, checkinHwColorClass;
+        let previewDone, suppliesDone, checkinDone, habitScore, habitScoreText, habitColorClass;
+        let checkinSubtotal, correctionScore, correctionPreviewText, classroomScore, totalScore;
 
-        if (attStatus === 'on-time') {
-          arrivalScore = 1;
-          arrivalLabel = '準時';
-          arrivalScoreText = '+1';
-          arrivalColorClass = 'text-emerald-600';
-        } else if (attStatus === 'late') {
-          arrivalScore = -2;
-          arrivalLabel = '遲到';
-          arrivalScoreText = '-2';
-          arrivalColorClass = 'text-rose-600';
-        } else if (attStatus === 'sick') {
-          arrivalScore = 0;
-          arrivalLabel = '病假';
-          arrivalScoreText = '0';
-          arrivalColorClass = 'text-purple-600';
-        } else if (attStatus === 'personal') {
-          arrivalScore = 0;
-          arrivalLabel = '事假';
-          arrivalScoreText = '0';
-          arrivalColorClass = 'text-orange-600';
-        }
+        if (isDayLocked && dayData.snapshot && dayData.snapshot[st.id]) {
+          // 🔒 已封存：100% 讀取固化快照
+          const snap = dayData.snapshot[st.id];
+          arrivalScore = snap.arrivalScore;
+          arrivalLabel = snap.arrivalLabel;
+          arrivalScoreText = snap.arrivalScoreText;
+          arrivalColorClass = snap.arrivalColorClass;
 
-        // 2. 打卡中層：完成作業
-        let missingHwCount = 0;
-        let lateHwCount = 0;
+          checkinHwScore = snap.checkinHwScore;
+          checkinHwLabel = snap.checkinHwLabel;
+          checkinHwScoreText = snap.checkinHwScoreText;
+          checkinHwColorClass = snap.checkinHwColorClass;
 
-        if (assignedHwList.length > 0) {
-          assignedHwList.forEach(tName => {
-            const detailStat = getCheckinTaskDetailStatus(st.id, tName, curDate);
-            if (detailStat === 'red') missingHwCount++;
-            else if (detailStat === 'yellow') lateHwCount++;
-          });
-        }
+          previewDone = snap.previewDone;
+          suppliesDone = snap.suppliesDone;
+          checkinDone = snap.checkinDone;
+          habitScore = snap.habitScore;
+          habitScoreText = snap.habitScoreText;
+          habitColorClass = snap.habitColorClass;
 
-        let checkinHwScore = 0;
-        let checkinHwLabel = '作業';
-        let checkinHwScoreText = '0';
-        let checkinHwColorClass = 'text-stone-400';
-
-        if (assignedHwList.length === 0) {
-          checkinHwScore = 0;
-          checkinHwLabel = '本日無作業';
-          checkinHwScoreText = '0';
-          checkinHwColorClass = 'text-stone-500';
-        } else if (missingHwCount > 0) {
-          checkinHwScore = -missingHwCount;
-          checkinHwLabel = `缺交 -${missingHwCount}`;
-          checkinHwScoreText = `${checkinHwScore}`;
-          checkinHwColorClass = 'text-rose-600';
-        } else if (lateHwCount > 0) {
-          checkinHwScore = 0;
-          checkinHwLabel = '遲交完成';
-          checkinHwScoreText = '0';
-          checkinHwColorClass = 'text-yellow-600';
+          checkinSubtotal = snap.checkinScore;
+          correctionScore = snap.correctionScore;
+          correctionPreviewText = snap.correctionPreviewText;
+          classroomScore = snap.classroomScore;
+          totalScore = snap.totalScore;
         } else {
-          checkinHwScore = 2;
-          checkinHwLabel = '完成';
-          checkinHwScoreText = '+2';
-          checkinHwColorClass = 'text-emerald-600';
+          // 🟢 未封存：動態依打卡與訂正系統計算
+          const studentDoc = studentCheckinMap[st.id] || {};
+          const completedTasks = studentDoc.completedTasks || {};
+
+          // 1. 到校
+          const attStatus = getStudentCheckinStatus(st.id, curDate);
+          if (attStatus === 'on-time') {
+            arrivalScore = 1; arrivalLabel = '準時'; arrivalScoreText = '+1'; arrivalColorClass = 'text-emerald-600';
+          } else if (attStatus === 'late') {
+            arrivalScore = -2; arrivalLabel = '遲到'; arrivalScoreText = '-2'; arrivalColorClass = 'text-rose-600';
+          } else if (attStatus === 'sick') {
+            arrivalScore = 0; arrivalLabel = '病假'; arrivalScoreText = '0'; arrivalColorClass = 'text-purple-600';
+          } else if (attStatus === 'personal') {
+            arrivalScore = 0; arrivalLabel = '事假'; arrivalScoreText = '0'; arrivalColorClass = 'text-orange-600';
+          } else {
+            arrivalScore = 0; arrivalLabel = '未到校'; arrivalScoreText = '--'; arrivalColorClass = 'text-stone-400';
+          }
+
+          // 2. 作業
+          let missingHwCount = 0;
+          let lateHwCount = 0;
+          if (assignedHwList.length > 0) {
+            assignedHwList.forEach(tName => {
+              const detailStat = getCheckinTaskDetailStatus(st.id, tName, curDate);
+              if (detailStat === 'red') missingHwCount++;
+              else if (detailStat === 'yellow') lateHwCount++;
+            });
+          }
+
+          if (assignedHwList.length === 0) {
+            checkinHwScore = 0; checkinHwLabel = '本日無作業'; checkinHwScoreText = '0'; checkinHwColorClass = 'text-stone-500';
+          } else if (missingHwCount > 0) {
+            checkinHwScore = -missingHwCount; checkinHwLabel = `缺交 -${missingHwCount}`; checkinHwScoreText = `${checkinHwScore}`; checkinHwColorClass = 'text-rose-600';
+          } else if (lateHwCount > 0) {
+            checkinHwScore = 0; checkinHwLabel = '遲交完成'; checkinHwScoreText = '0'; checkinHwColorClass = 'text-yellow-600';
+          } else {
+            checkinHwScore = 2; checkinHwLabel = '完成'; checkinHwScoreText = '+2'; checkinHwColorClass = 'text-emerald-600';
+          }
+
+          // 3. 習慣
+          previewDone = !!completedTasks['複習+預習'] || !!completedTasks['預習複習'];
+          suppliesDone = !!completedTasks['帶學用品'];
+          checkinDone = !!completedTasks['訂正功課'];
+          habitScore = (previewDone && suppliesDone && checkinDone) ? 1 : 0;
+          habitScoreText = habitScore > 0 ? '+1' : '0';
+          habitColorClass = habitScore > 0 ? 'text-emerald-600' : 'text-stone-400';
+
+          checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
+
+          // 4. 訂正
+          const greenCorrectionCount = correctionTasks.filter(tName => {
+            return getCorrectionStatus(tName, st.id, curDate) === 'green';
+          }).length;
+          correctionScore = greenCorrectionCount;
+          correctionPreviewText = correctionTasks.length === 0
+            ? '0 / 0 完成'
+            : `${greenCorrectionCount} / ${correctionTasks.length} 完成`;
+
+          // 5. 表現
+          const records = dayData.records[st.id] || [];
+          classroomScore = records.reduce((acc, r) => acc + r.step, 0);
+
+          totalScore = checkinSubtotal + correctionScore + classroomScore;
         }
 
-        // 3. 打卡下層：三項生活習慣打卡
-        const previewDone = !!completedTasks['複習+預習'] || !!completedTasks['預習複習'];
-        const suppliesDone = !!completedTasks['帶學用品'];
-        const checkinDone = !!completedTasks['訂正功課'];
-        const isAllHabitsDone = (previewDone && suppliesDone && checkinDone);
-        const habitScore = isAllHabitsDone ? 1 : 0;
-        const habitScoreText = habitScore > 0 ? '+1' : '0';
-        const habitColorClass = habitScore > 0 ? 'text-emerald-600' : 'text-stone-400';
-
-        const checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
-
-        // 4. 訂正狀況：僅當天完成（綠色）加分[cite: 1]
-        const greenCorrectionCount = correctionTasks.filter(tName => {
-          return getCorrectionStatus(tName, st.id, curDate) === 'green';
-        }).length;
-        const correctionScore = greenCorrectionCount;
-        const correctionPreviewText = correctionTasks.length === 0
-          ? '本日未指派作業'
-          : `${greenCorrectionCount} / ${correctionTasks.length} 完成`;
-
-        // 5. 表現步數
-        const records = dayData.records[st.id] || [];
-        const classroomScore = records.reduce((acc, r) => acc + r.step, 0);
-
-        // 總計純數字
-        const totalScore = checkinSubtotal + correctionScore + classroomScore;
+        // 🌟 讀取該生歷史所有已封存總步數
+        const { totalMileage } = getStudentCumulativeMileage(st.id);
 
         const card = document.createElement('div');
         card.className = `bg-[#FFFDF9] rounded-3xl border-2 ${
@@ -1204,6 +1291,7 @@
 
         card.innerHTML = `
           <div>
+            <!-- 姓名與今日旗子 -->
             <div class="flex items-center justify-between pb-2 border-b border-stone-100 gap-1">
               <span class="text-3xl sm:text-4xl font-black font-serif-tc text-stone-900 whitespace-nowrap tracking-tight">${maskName(st.name)}</span>
               <div class="flex items-center gap-2 ${isStudentLocked ? 'bg-[#EFE8DF] border-[#8C6D52]/40' : 'bg-amber-50 border-amber-200'} px-3 py-1 rounded-2xl border shrink-0">
@@ -1214,9 +1302,22 @@
               </div>
             </div>
 
-            <div class="mt-4 space-y-3.5">
+            <!-- 🌟 方案 C：姓名與打卡間插入「👣 千里足跡」行者橫條 -->
+            <div onclick="window.appActions.openMileageModal('${st.id}')" class="mt-3 bg-gradient-to-r from-[#FAF4EA] to-[#F5ECE0] hover:from-[#F4E9D8] hover:to-[#EFE0CB] transition cursor-pointer p-2.5 rounded-2xl border-2 border-[#DFCDB7] flex items-center justify-between shadow-2xs">
+              <div class="flex items-center gap-2">
+                <span class="text-2xl filter drop-shadow-xs">👣</span>
+                <span class="text-base sm:text-lg font-black font-serif-tc text-stone-800">千里足跡</span>
+                <span class="text-xs text-stone-400 font-bold hidden sm:inline">(已封存累計)</span>
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <span class="text-2xl sm:text-3xl font-num font-black text-[#8C5E3C]">${totalMileage}</span>
+                <i class="fa-solid fa-chevron-right text-xs text-stone-400"></i>
+              </div>
+            </div>
+
+            <div class="mt-3 space-y-3">
               
-              <!-- 🌟 1. 打卡：古道陶土（赭紅古拙石印） -->
+              <!-- 🌟 1. 打卡：古道陶土（赭紅石印） -->
               <div class="bg-[#FAF6EE] p-3 rounded-2xl border-2 border-[#D9C8B4] shadow-xs relative">
                 <div class="flex items-center justify-between pb-2 mb-2 border-b border-[#E8DEC8]">
                   <div class="flex items-center gap-2">
@@ -1281,33 +1382,35 @@
                 </div>
               </div>
 
-              <!-- 🌟 2. 訂正：高山青石（冷冽靛藍石印） -->
+              <!-- 🌟 2. 訂正：高山青石（冷冽靛藍石印）＋ 幾分之幾移至膠囊旁並放大 -->
               <div onclick="window.appActions.openCorrectionModal('${st.id}')" class="bg-[#F0F6FA] p-3 rounded-2xl border-2 border-[#B8D3E6] shadow-xs cursor-pointer hover:bg-[#E5F0F7] transition">
-                <div class="flex items-center justify-between mb-1.5">
-                  <div class="flex items-center gap-2">
-                    <span class="text-3xl filter drop-shadow-xs">📘</span>
-                    <span class="px-3.5 py-0.5 rounded-xl bg-[#1E4E79] text-[#F0F6FA] text-xl sm:text-2xl font-black font-serif-tc tracking-wider shadow-xs">
+                <div class="flex items-center justify-between">
+                  <!-- 左側：圖標 + 膠囊 + 幾分之幾完成放大移過來 -->
+                  <div class="flex items-center gap-2 flex-wrap min-w-0">
+                    <span class="text-3xl filter drop-shadow-xs shrink-0">📘</span>
+                    <span class="px-3.5 py-0.5 rounded-xl bg-[#1E4E79] text-[#F0F6FA] text-xl sm:text-2xl font-black font-serif-tc tracking-wider shadow-xs shrink-0">
                       訂正
                     </span>
+                    <span class="text-xl sm:text-2xl font-black font-num text-[#2C6287] whitespace-nowrap tracking-tight ml-1" title="${correctionPreviewText}">
+                      ${correctionPreviewText}
+                    </span>
                   </div>
-                  <span class="text-3xl font-num font-black text-[#1E4E79]">
+                  <!-- 右側得分 -->
+                  <span class="text-3xl font-num font-black text-[#1E4E79] shrink-0 ml-2">
                     +${correctionScore}
                   </span>
                 </div>
-                <div class="text-sm font-bold text-[#3B6E8C] truncate pl-1" title="${correctionPreviewText}">
-                  ${correctionPreviewText}
-                </div>
               </div>
 
-              <!-- 🌟 3. 表現：蒼松品格（沉穩黛綠石印） -->
-              <div class="bg-[#F2F7F4] p-3 rounded-2xl border-2 border-[#BCD4C6] shadow-xs flex items-center justify-between">
+              <!-- 🌟 3. 表現：古銅鍛金（秋麥沉香石印） -->
+              <div class="bg-[#FCF8F0] p-3 rounded-2xl border-2 border-[#EADAC0] shadow-xs flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <span class="text-3xl filter drop-shadow-xs">🏆</span>
-                  <span class="px-3.5 py-0.5 rounded-xl bg-[#2D5A43] text-[#F2F7F4] text-xl sm:text-2xl font-black font-serif-tc tracking-wider shadow-xs">
+                  <span class="px-3.5 py-0.5 rounded-xl bg-[#8A5A1E] text-[#FFFDF9] text-xl sm:text-2xl font-black font-serif-tc tracking-wider shadow-xs">
                     表現
                   </span>
                 </div>
-                <span class="text-3xl font-num font-black ${classroomScore >= 0 ? 'text-[#2D5A43]' : 'text-rose-700'}">
+                <span class="text-3xl font-num font-black ${classroomScore >= 0 ? 'text-[#8A5A1E]' : 'text-rose-700'}">
                   ${classroomScore >= 0 ? '+' : ''}${classroomScore}
                 </span>
               </div>
@@ -1316,6 +1419,7 @@
           </div>
 
           <div class="mt-4 pt-3 border-t border-stone-100">
+            <!-- 🌟 4. 實踐檢核：清爽青松翠綠 -->
             <button onclick="window.appActions.openAuditModal('${st.id}')" class="w-full py-2.5 rounded-2xl text-xl font-black transition flex items-center justify-center gap-2 shadow-xs stone-btn ${
               (isStudentLocked || isDayLocked)
                 ? 'bg-[#EFE8DF] hover:bg-[#E5DDD2] text-[#5C4028] border-2 border-[#8C6D52]'
@@ -1433,7 +1537,7 @@
       changeAcademicYear(val) {
         AppState.academicYear = val;
         setupRecordedDaysSync();
-        fetchRealFirebaseData(AppState.currentDate);
+        setupRealtimeSync(AppState.currentDate);
       },
 
       selectDate(dateStr) {
@@ -1444,7 +1548,7 @@
           document.getElementById('practiceMonthSelect').value = monthNum;
         }
         renderDatePills();
-        fetchRealFirebaseData(dateStr);
+        setupRealtimeSync(dateStr);
         AudioEngine.playAdd();
       },
 
@@ -1763,6 +1867,52 @@
         persistDayData(AppState.currentDate);
       },
 
+      // 🌟 開啟「千里足跡存摺」彈窗
+      openMileageModal(studentId) {
+        const st = STUDENTS.find(s => s.id === studentId);
+        document.getElementById('mileageModalTitle').innerText = `${maskName(st.name)} 的千里足跡`;
+
+        const { totalMileage, historyList } = getStudentCumulativeMileage(studentId);
+        document.getElementById('mileageTotalScoreBadge').innerText = totalMileage;
+        document.getElementById('mileageRecordCount').innerText = `共 ${historyList.length} 天已封存`;
+
+        const container = document.getElementById('mileageListContainer');
+        container.innerHTML = '';
+
+        if (historyList.length === 0) {
+          container.innerHTML = '<div class="text-stone-400 font-bold text-2xl text-center py-10">尚無正式封存歸檔之里程紀錄</div>';
+        } else {
+          historyList.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'bg-white p-3.5 rounded-2xl border-2 border-stone-200 flex items-center justify-between shadow-2xs gap-3';
+            row.innerHTML = `
+              <div class="flex items-center gap-3">
+                <span class="px-3 py-1 rounded-xl bg-stone-100 text-stone-800 font-num font-black text-lg sm:text-xl border border-stone-300">
+                  ${item.date}
+                </span>
+                <div class="flex items-center gap-2 text-xs sm:text-sm font-bold text-stone-500">
+                  <span>打卡 ${item.checkinScore >= 0 ? '+' : ''}${item.checkinScore}</span>
+                  <span>•</span>
+                  <span>訂正 +${item.correctionScore}</span>
+                  <span>•</span>
+                  <span>表現 ${item.classroomScore >= 0 ? '+' : ''}${item.classroomScore}</span>
+                </div>
+              </div>
+              <span class="text-2xl sm:text-3xl font-num font-black text-[#8C5E3C]">
+                ${item.totalScore >= 0 ? '+' : ''}${item.totalScore}
+              </span>
+            `;
+            container.appendChild(row);
+          });
+        }
+
+        document.getElementById('mileageModal').classList.remove('hidden');
+      },
+
+      closeMileageModal() {
+        document.getElementById('mileageModal').classList.add('hidden');
+      },
+
       openCheckinHwModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('checkinHwModalTitle').innerText = `${maskName(st.name)} 打卡作業自主勾選紀錄`;
@@ -1967,17 +2117,95 @@
           });
       },
 
+      // 🌟 今日歸檔封存：落實「快照 Snapshot 拍照固化」
       archiveToday() {
         if (!AppState.isTeacher) return;
-        const dayData = getDayData(AppState.currentDate);
-        dayData.locked = !dayData.locked;
+        const curDate = AppState.currentDate;
+        const dayData = getDayData(curDate);
 
-        persistDayData(AppState.currentDate);
-        showToast(dayData.locked ? '今日紀錄已歸檔封存' : '已解除今日歸檔封存', 'success');
+        if (!dayData.locked) {
+          // 執行封存：拍下全班 1~10 號各項修為快照
+          const assignedHwList = AppState.checkinTasksAssigned[curDate] || [];
+          const studentCheckinMap = AppState.checkinAttendance[curDate] || {};
+          const correctionTasks = AppState.correctionTasks[curDate] || [];
+          const snapshotData = {};
+
+          STUDENTS.forEach(st => {
+            const studentDoc = studentCheckinMap[st.id] || {};
+            const completedTasks = studentDoc.completedTasks || {};
+
+            // 1. 到校
+            const attStatus = getStudentCheckinStatus(st.id, curDate);
+            let arrivalScore = 0, arrivalLabel = '未到校', arrivalScoreText = '--', arrivalColorClass = 'text-stone-400';
+            if (attStatus === 'on-time') { arrivalScore = 1; arrivalLabel = '準時'; arrivalScoreText = '+1'; arrivalColorClass = 'text-emerald-600'; }
+            else if (attStatus === 'late') { arrivalScore = -2; arrivalLabel = '遲到'; arrivalScoreText = '-2'; arrivalColorClass = 'text-rose-600'; }
+            else if (attStatus === 'sick') { arrivalScore = 0; arrivalLabel = '病假'; arrivalScoreText = '0'; arrivalColorClass = 'text-purple-600'; }
+            else if (attStatus === 'personal') { arrivalScore = 0; arrivalLabel = '事假'; arrivalScoreText = '0'; arrivalColorClass = 'text-orange-600'; }
+
+            // 2. 作業
+            let missingHwCount = 0, lateHwCount = 0;
+            if (assignedHwList.length > 0) {
+              assignedHwList.forEach(tName => {
+                const detailStat = getCheckinTaskDetailStatus(st.id, tName, curDate);
+                if (detailStat === 'red') missingHwCount++;
+                else if (detailStat === 'yellow') lateHwCount++;
+              });
+            }
+            let checkinHwScore = 0, checkinHwLabel = '作業', checkinHwScoreText = '0', checkinHwColorClass = 'text-stone-400';
+            if (assignedHwList.length === 0) { checkinHwScore = 0; checkinHwLabel = '本日無作業'; checkinHwScoreText = '0'; checkinHwColorClass = 'text-stone-500'; }
+            else if (missingHwCount > 0) { checkinHwScore = -missingHwCount; checkinHwLabel = `缺交 -${missingHwCount}`; checkinHwScoreText = `${checkinHwScore}`; checkinHwColorClass = 'text-rose-600'; }
+            else if (lateHwCount > 0) { checkinHwScore = 0; checkinHwLabel = '遲交完成'; checkinHwScoreText = '0'; checkinHwColorClass = 'text-yellow-600'; }
+            else { checkinHwScore = 2; checkinHwLabel = '完成'; checkinHwScoreText = '+2'; checkinHwColorClass = 'text-emerald-600'; }
+
+            // 3. 習慣
+            const previewDone = !!completedTasks['複習+預習'] || !!completedTasks['預習複習'];
+            const suppliesDone = !!completedTasks['帶學用品'];
+            const checkinDone = !!completedTasks['訂正功課'];
+            const habitScore = (previewDone && suppliesDone && checkinDone) ? 1 : 0;
+            const habitScoreText = habitScore > 0 ? '+1' : '0';
+            const habitColorClass = habitScore > 0 ? 'text-emerald-600' : 'text-stone-400';
+
+            const checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
+
+            // 4. 訂正
+            const greenCorrectionCount = correctionTasks.filter(tName => getCorrectionStatus(tName, st.id, curDate) === 'green').length;
+            const correctionScore = greenCorrectionCount;
+            const correctionPreviewText = correctionTasks.length === 0 ? '0 / 0 完成' : `${greenCorrectionCount} / ${correctionTasks.length} 完成`;
+
+            // 5. 表現
+            const records = dayData.records[st.id] || [];
+            const classroomScore = records.reduce((acc, r) => acc + r.step, 0);
+
+            const totalScore = checkinSubtotal + correctionScore + classroomScore;
+
+            snapshotData[st.id] = {
+              arrivalScore, arrivalLabel, arrivalScoreText, arrivalColorClass,
+              checkinHwScore, checkinHwLabel, checkinHwScoreText, checkinHwColorClass,
+              previewDone, suppliesDone, checkinDone, habitScore, habitScoreText, habitColorClass,
+              checkinScore: checkinSubtotal,
+              correctionScore,
+              correctionPreviewText,
+              classroomScore,
+              totalScore
+            };
+          });
+
+          dayData.snapshot = snapshotData;
+          dayData.locked = true;
+          showToast('今日修為已正式歸檔封存！已固化入帳千里足跡', 'success');
+        } else {
+          // 解除封存：取消快照固化
+          dayData.locked = false;
+          showToast('已解除歸檔封存，恢復動態連動', 'info');
+        }
+
+        persistDayData(curDate);
+        renderDatePills();
+        renderStudentCards();
       },
 
       showConnectionInfo() {
-        showToast('🟢 雙向連動已就緒：既有合法集合即時監聽中', 'success');
+        showToast('🟢 雙向即時連動中：打卡與訂正異動即時同步', 'success');
       }
     };
 
@@ -2000,7 +2228,7 @@
       updateClock();
       setInterval(updateClock, 1000);
       setupRecordedDaysSync();
-      fetchRealFirebaseData(AppState.currentDate);
+      setupRealtimeSync(AppState.currentDate);
     };
   </script>
 </body>
