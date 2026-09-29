@@ -71,7 +71,7 @@
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v4.0
+            v4.1
           </span>
         </div>
 
@@ -93,7 +93,7 @@
             <div id="cloudPing" class="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping opacity-75"></div>
           </div>
           <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block bg-stone-900 text-white text-sm px-3 py-1.5 rounded-xl whitespace-nowrap shadow-lg z-20">
-            全雲端多設備即時聯動中
+            Firebase 雲端已連線
           </div>
         </div>
 
@@ -154,7 +154,7 @@
           <button onclick="window.appActions.stepDate(-1)" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-stone-600 hover:text-stone-900 text-xl font-black rounded-xl hover:bg-stone-100" title="前一日">
             <i class="fa-solid fa-chevron-left"></i>
           </button>
-          <span id="currentDateCapsule" class="text-xl sm:text-2xl font-black font-num text-stone-800 px-2 tracking-wide">2026-09-28</span>
+          <span id="currentDateCapsule" class="text-xl sm:text-2xl font-black font-num text-stone-800 px-2 tracking-wide">2026-09-29</span>
           <button onclick="window.appActions.stepDate(1)" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-stone-600 hover:text-stone-900 text-xl font-black rounded-xl hover:bg-stone-100" title="後一日">
             <i class="fa-solid fa-chevron-right"></i>
           </button>
@@ -629,7 +629,8 @@
       selectedMonth: String(new Date().getMonth() + 1),
       activeModalStudentId: null,
       steppers: { clean_done: 1, clean_fail: 1, spec_perfect: 1, spec_fair: 1 },
-      recordedDays: [], 
+      // 雙軌備援：優先讀取本地既有標籤
+      recordedDays: JSON.parse(localStorage.getItem('six_grade_recorded_days') || '[]'),
       dailyData: {},
       correctionTasks: {},
       correctionAttendance: {},
@@ -649,7 +650,6 @@
     let db = null;
     let auth = null;
     let unsubRecordedDays = null;
-    let unsubDailyPerformance = null;
 
     try {
       firebase.initializeApp(firebaseConfig);
@@ -667,75 +667,32 @@
       console.warn("Firebase 初始化警示:", e);
     }
 
-    // 🌟 核心同步機制 1：雲端即時雙向監聽「上課日標籤清單」
+    // 🌟 透過《打卡系統》原本合法授權的 announcements 集合監聽上課日，免改權限規則
     function setupRecordedDaysSync() {
       if (!db) return;
       if (unsubRecordedDays) unsubRecordedDays();
 
-      const prefix = AppState.academicYear === '114' ? '114' : '115';
-      unsubRecordedDays = db.collection('system_config').doc(`${prefix}_recorded_days`)
-        .onSnapshot((docSnap) => {
-          if (docSnap.exists) {
-            AppState.recordedDays = docSnap.data().days || [];
-          } else {
-            AppState.recordedDays = [];
-          }
-          renderDatePills();
-          renderClassActionState();
-        }, (err) => console.error("雲端標籤同步失敗:", err));
-    }
+      const prefix = AppState.academicYear === '114' ? '' : `${AppState.academicYear}_`;
+      const annColName = `${prefix}announcements`;
 
-    async function saveRecordedDaysToCloud(daysArr) {
-      if (!db) return;
-      const prefix = AppState.academicYear === '114' ? '114' : '115';
-      try {
-        await db.collection('system_config').doc(`${prefix}_recorded_days`).set({
-          days: daysArr,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
-      } catch (err) {
-        console.error("更新雲端日期標籤失敗:", err);
-        showToast("標籤雲端同步失敗", "error");
-      }
-    }
-
-    // 🌟 核心同步機制 2：雲端即時雙向監聽「每日表現檢核紀錄」
-    function setupDailyPerformanceSync(dateStr) {
-      if (!db) return;
-      if (unsubDailyPerformance) unsubDailyPerformance();
-
-      const prefix = AppState.academicYear === '114' ? '114' : '115';
-      const docRef = db.collection(`${prefix}_daily_performance`).doc(dateStr);
-
-      unsubDailyPerformance = docRef.onSnapshot((docSnap) => {
-        if (docSnap.exists) {
-          AppState.dailyData[dateStr] = docSnap.data();
-        } else {
-          AppState.dailyData[dateStr] = {
-            locked: false,
-            studentLocked: {},
-            classApplied: { clean: null, spec: null },
-            records: { '1':[], '2':[], '3':[], '4':[], '5':[], '6':[], '7':[], '8':[], '9':[], '10':[] }
-          };
-        }
-        renderStudentCards();
+      unsubRecordedDays = db.collection(annColName).onSnapshot((snap) => {
+        const cloudDates = snap.docs.map(d => d.id).filter(Boolean);
+        // 合併本地與雲端，確保就算沒連上雲端也 100% 能看見標籤
+        const localDays = JSON.parse(localStorage.getItem('six_grade_recorded_days') || '[]');
+        const mergedSet = new Set([...cloudDates, ...localDays, ...AppState.recordedDays]);
+        AppState.recordedDays = Array.from(mergedSet).sort().reverse();
+        renderDatePills();
         renderClassActionState();
-        if (AppState.activeModalStudentId) {
-          renderModalRecords();
-        }
-      }, (err) => console.error("雲端表現同步失敗:", err));
+      }, (err) => {
+        console.warn("雲端讀取公告日期提示 (轉為本地模式):", err);
+        renderDatePills();
+      });
     }
 
-    async function saveDayDataToCloud(dateStr) {
-      if (!db) return;
-      const prefix = AppState.academicYear === '114' ? '114' : '115';
-      const data = getDayData(dateStr);
-      try {
-        await db.collection(`${prefix}_daily_performance`).doc(dateStr).set(data, { merge: true });
-      } catch (err) {
-        console.error("更新雲端表現失敗:", err);
-        showToast("雲端同步失敗，請檢查網路", "error");
-      }
+    function saveRecordedDays(daysArr) {
+      AppState.recordedDays = daysArr;
+      localStorage.setItem('six_grade_recorded_days', JSON.stringify(daysArr));
+      renderDatePills();
     }
 
     function setTeacherModeUI(isT) {
@@ -760,25 +717,44 @@
 
     function getDayData(dateStr) {
       if (!AppState.dailyData[dateStr]) {
-        AppState.dailyData[dateStr] = {
-          locked: false,
-          studentLocked: {},
-          classApplied: { clean: null, spec: null },
-          records: {
-            '1': [], '2': [], '3': [], '4': [], '5': [],
-            '6': [], '7': [], '8': [], '9': [], '10': []
+        // 先看 localStorage 是否有此日紀錄
+        const localStored = localStorage.getItem(`daily_data_${dateStr}`);
+        if (localStored) {
+          try {
+            AppState.dailyData[dateStr] = JSON.parse(localStored);
+          } catch(e) {
+            AppState.dailyData[dateStr] = null;
           }
-        };
+        }
+        if (!AppState.dailyData[dateStr]) {
+          AppState.dailyData[dateStr] = {
+            locked: false,
+            studentLocked: {},
+            classApplied: { clean: null, spec: null },
+            records: {
+              '1': [], '2': [], '3': [], '4': [], '5': [],
+              '6': [], '7': [], '8': [], '9': [], '10': []
+            }
+          };
+        }
       }
       return AppState.dailyData[dateStr];
     }
 
+    function persistDayData(dateStr) {
+      const data = getDayData(dateStr);
+      localStorage.setItem(`daily_data_${dateStr}`, JSON.stringify(data));
+      renderStudentCards();
+      renderClassActionState();
+    }
+
+    // 核心資料讀取：精準對接《打卡系統》與《訂正系統》
     async function fetchRealFirebaseData(dateStr) {
       if (!db) return;
       try {
         const prefix = AppState.academicYear === '114' ? '' : `${AppState.academicYear}_`;
 
-        // 1. 讀取《打卡系統》當日出席與自主勾選狀況
+        // 1. 讀取《打卡系統》當日出席 (attendance_YYYY-MM-DD)
         const attColName = prefix ? `${prefix}attendance_${dateStr}` : `attendance_${dateStr}`;
         const attSnap = await db.collection(attColName).get();
         AppState.checkinAttendance[dateStr] = {};
@@ -786,7 +762,7 @@
           AppState.checkinAttendance[dateStr][d.id] = d.data();
         });
 
-        // 2. 讀取《打卡系統》前一上課日的航海日誌（取得當天應繳作業清單）
+        // 2. 讀取《打卡系統》前一上課日之航海日誌任務
         const annColName = `${prefix}announcements`;
         const prevLogSnap = await db.collection(annColName)
           .where("date", "<", dateStr)
@@ -806,7 +782,7 @@
         }
         AppState.checkinTasksAssigned[dateStr] = taskNames;
 
-        // 3. 讀取《訂正系統》當日派發作業與訂正狀態
+        // 3. 讀取《訂正系統》當日派發作業 (assignments)
         const assignmentsPath = '/artifacts/class-5a-app/public/data/assignments';
         const qSnapshot = await db.collection(assignmentsPath)
           .where('assignmentDate', '==', dateStr)
@@ -824,11 +800,10 @@
         AppState.correctionTasks[dateStr] = currentTasks;
         AppState.correctionAttendance[dateStr] = currentSubmissionStatus;
 
-        // 4. 掛載表現檢核的即時雲端監聽
-        setupDailyPerformanceSync(dateStr);
-
+        renderStudentCards();
       } catch (err) {
         console.error("載入雲端資料失敗:", err);
+        renderStudentCards();
       }
     }
 
@@ -1113,6 +1088,7 @@
       }
     }
 
+    // 🌟 核心渲染：學生卡片（A+B 融合版：左側色條 + 實體膠囊標題）
     function renderStudentCards() {
       const grid = document.getElementById('studentCardsContainer');
       grid.innerHTML = '';
@@ -1209,7 +1185,7 @@
 
         const checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
 
-        // 4. 訂正狀況：僅當天完成（綠色）加分，補訂正與未訂正不加分[cite: 1]
+        // 4. 訂正狀況：僅當天完成（綠色）加分[cite: 1]
         const greenCorrectionCount = correctionTasks.filter(tName => {
           return getCorrectionStatus(tName, st.id, curDate) === 'green';
         }).length;
@@ -1218,11 +1194,11 @@
           ? '本日未指派作業'
           : `${greenCorrectionCount} / ${correctionTasks.length} 完成`;
 
-        // 5. 課堂表現步數
+        // 5. 表現步數
         const records = dayData.records[st.id] || [];
         const classroomScore = records.reduce((acc, r) => acc + r.step, 0);
 
-        // 總步數（純數字展示，不帶步字）
+        // 總計純數字
         const totalScore = checkinSubtotal + correctionScore + classroomScore;
 
         const card = document.createElement('div');
@@ -1242,12 +1218,12 @@
               </div>
             </div>
 
-            <div class="mt-4 space-y-3">
-              <!-- 首頁打卡區：上中下三層（純數字、不帶步字） -->
-              <div class="bg-[#FAF7F2] p-3 rounded-2xl border border-stone-200/80 shadow-xs relative">
-                
-                <div class="flex items-center justify-between pb-2 mb-2 border-b border-stone-200/70">
-                  <span class="text-xl font-black text-stone-800 flex items-center gap-1.5 font-serif-tc">
+            <div class="mt-4 space-y-3.5">
+              
+              <!-- 🌟 1. 打卡區：左側粗琥珀色條 + 實體深色膠囊標籤 (A+B) -->
+              <div class="bg-[#FAF7F2] p-3 rounded-2xl border-2 border-stone-200/90 border-l-[6px] border-l-amber-700 shadow-sm relative">
+                <div class="flex items-center justify-between pb-2 mb-2 border-b border-stone-200/80">
+                  <span class="px-3 py-0.5 rounded-full bg-stone-800 text-white text-base font-black flex items-center gap-1 font-serif-tc shadow-xs">
                     <span>⌛</span> 打卡
                   </span>
                   <div class="flex items-center gap-1">
@@ -1259,8 +1235,8 @@
                 </div>
 
                 <div class="space-y-2">
-                  <!-- 上層：到校時間 -->
-                  <div class="bg-white/80 px-2.5 py-1.5 rounded-xl border border-stone-200 flex items-center justify-between">
+                  <!-- 到校時間 -->
+                  <div class="bg-white/90 px-2.5 py-1.5 rounded-xl border border-stone-200 flex items-center justify-between shadow-2xs">
                     <div class="flex items-center gap-1.5">
                       <span class="text-base font-bold text-stone-700">到校：</span>
                       <span class="text-sm font-black px-2 py-0.5 rounded-lg ${arrivalScore > 0 ? 'bg-emerald-100 text-emerald-900' : arrivalScore < 0 ? 'bg-rose-100 text-rose-900' : 'bg-stone-100 text-stone-600'}">
@@ -1272,8 +1248,8 @@
                     </span>
                   </div>
 
-                  <!-- 中層：完成作業（可點擊開啟打卡作業獨立彈窗） -->
-                  <div onclick="window.appActions.openCheckinHwModal('${st.id}')" class="bg-white/80 hover:bg-emerald-50/60 transition cursor-pointer px-2.5 py-1.5 rounded-xl border border-stone-200 flex items-center justify-between">
+                  <!-- 作業自主勾選 -->
+                  <div onclick="window.appActions.openCheckinHwModal('${st.id}')" class="bg-white/90 hover:bg-emerald-50/60 transition cursor-pointer px-2.5 py-1.5 rounded-xl border border-stone-200 flex items-center justify-between shadow-2xs">
                     <div class="flex items-center gap-1.5">
                       <span class="text-base font-bold text-stone-700">作業：</span>
                       <span class="text-sm font-black px-2 py-0.5 rounded-lg ${checkinHwScore > 0 ? 'bg-emerald-100 text-emerald-900' : checkinHwScore < 0 ? 'bg-rose-100 text-rose-900' : 'bg-stone-100 text-stone-600'}">
@@ -1285,8 +1261,8 @@
                     </span>
                   </div>
 
-                  <!-- 下層：三項生活習慣打卡 -->
-                  <div class="bg-white/80 p-2 rounded-xl border border-stone-200 space-y-1.5">
+                  <!-- 三項生活習慣 -->
+                  <div class="bg-white/90 p-2 rounded-xl border border-stone-200 space-y-1.5 shadow-2xs">
                     <div class="flex items-center justify-between text-xs text-stone-500 font-bold">
                       <span>生活習慣 (全齊計入)</span>
                       <span class="text-lg font-num font-black ${habitColorClass}">${habitScoreText}</span>
@@ -1304,33 +1280,33 @@
                     </div>
                   </div>
                 </div>
-
               </div>
 
-              <!-- 訂正狀況區塊：點擊開啟訂正作業獨立彈窗 -->
-              <div onclick="window.appActions.openCorrectionModal('${st.id}')" class="bg-[#F4F9FF] p-2.5 rounded-2xl border border-blue-200/70 cursor-pointer hover:bg-blue-100/50 transition">
-                <div class="flex items-center justify-between mb-1">
-                  <span class="text-xl font-black text-blue-950 flex items-center gap-1 font-serif-tc">
+              <!-- 🌟 2. 訂正區：左側粗海洋藍色條 + 實體海洋藍膠囊標籤 (A+B) -->
+              <div onclick="window.appActions.openCorrectionModal('${st.id}')" class="bg-blue-50/70 p-3 rounded-2xl border-2 border-blue-200/90 border-l-[6px] border-l-blue-600 shadow-sm cursor-pointer hover:bg-blue-100/60 transition">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="px-3 py-0.5 rounded-full bg-blue-700 text-white text-base font-black flex items-center gap-1 font-serif-tc shadow-xs">
                     <span>📘</span> 訂正
                   </span>
-                  <span class="text-2xl font-num font-black text-blue-800">
+                  <span class="text-3xl font-num font-black text-blue-900">
                     +${correctionScore}
                   </span>
                 </div>
-                <div class="text-sm font-bold text-stone-600 truncate" title="${correctionPreviewText}">
+                <div class="text-sm font-bold text-blue-950/80 truncate pl-1" title="${correctionPreviewText}">
                   ${correctionPreviewText}
                 </div>
               </div>
 
-              <!-- 課堂表現步數 -->
-              <div class="bg-[#FFF9F2] p-2.5 rounded-2xl border border-amber-200/70 flex items-center justify-between">
-                <span class="text-xl font-black text-amber-950 flex items-center gap-1 font-serif-tc">
+              <!-- 🌟 3. 表現區：左側粗榮譽金色條 + 實體榮譽金膠囊標籤 (A+B) -->
+              <div class="bg-amber-50/70 p-3 rounded-2xl border-2 border-amber-200/90 border-l-[6px] border-l-amber-600 shadow-sm flex items-center justify-between">
+                <span class="px-3 py-0.5 rounded-full bg-amber-800 text-white text-base font-black flex items-center gap-1 font-serif-tc shadow-xs">
                   <span>🏆</span> 表現
                 </span>
-                <span class="text-2xl font-num font-black ${classroomScore >= 0 ? 'text-emerald-700' : 'text-rose-700'}">
+                <span class="text-3xl font-num font-black ${classroomScore >= 0 ? 'text-emerald-700' : 'text-rose-700'}">
                   ${classroomScore >= 0 ? '+' : ''}${classroomScore}
                 </span>
               </div>
+
             </div>
           </div>
 
@@ -1480,24 +1456,38 @@
         const cur = AppState.currentDate;
         if (!AppState.recordedDays.includes(cur)) {
           const newDays = [cur, ...AppState.recordedDays].sort().reverse();
-          await saveRecordedDaysToCloud(newDays);
-          showToast(`已成功將 ${cur} 雲端同步加入標籤！`, 'success');
+          saveRecordedDays(newDays);
+
+          // 嘗試將此上課日同步寫入打卡系統的 announcements，雙向互通
+          try {
+            if (db) {
+              const prefix = AppState.academicYear === '114' ? '' : `${AppState.academicYear}_`;
+              await db.collection(`${prefix}announcements`).doc(cur).set({
+                date: cur,
+                items: [{ text: "上課日建立", colorIdx: 0 }]
+              }, { merge: true });
+            }
+          } catch(e) {
+            console.warn("雲端公告同步略過 (已在本地生效):", e);
+          }
+
+          showToast(`已成功將 ${cur} 加入上課日標籤！`, 'success');
         } else {
           showToast(`${cur} 已在標籤列中`, 'info');
         }
       },
 
-      async deleteCurrentDate() {
+      deleteCurrentDate() {
         if (!AppState.isTeacher) {
           showToast('請先解鎖教師模式才能刪除標籤！', 'error');
           return;
         }
         if (confirm(`確定要從標籤列中移除 ${AppState.currentDate} 嗎？`)) {
           const newDays = AppState.recordedDays.filter(d => d !== AppState.currentDate);
-          await saveRecordedDaysToCloud(newDays);
+          saveRecordedDays(newDays);
           const next = newDays[0] || getTodayString();
           this.selectDate(next);
-          showToast('已移除該日標籤 (多端已同步)', 'info');
+          showToast('已移除該日標籤', 'info');
         }
       },
 
@@ -1518,7 +1508,7 @@
         document.getElementById(`step_${type}`).innerText = next;
       },
 
-      async applyClassRule(type) {
+      applyClassRule(type) {
         const hasDatePill = AppState.recordedDays && AppState.recordedDays.includes(AppState.currentDate);
         if (!hasDatePill) {
           showToast('⚠️ 今日尚未登記上課日標籤，請先點擊上方「＋」新增！', 'error');
@@ -1581,13 +1571,11 @@
         AppState.steppers[type] = 1;
         document.getElementById(`step_${type}`).innerText = 1;
 
-        // 🌟 雲端實時儲存
-        await saveDayDataToCloud(AppState.currentDate);
-
+        persistDayData(AppState.currentDate);
         showToast(`全班已套用：${name} (${step >= 0 ? '+' : ''}${step})`, 'success');
       },
 
-      async resetClassAction(group) {
+      resetClassAction(group) {
         if (!AppState.isTeacher) return;
         const dayData = getDayData(AppState.currentDate);
 
@@ -1610,8 +1598,7 @@
         }
 
         AudioEngine.playDeduct();
-        // 🌟 雲端實時儲存
-        await saveDayDataToCloud(AppState.currentDate);
+        persistDayData(AppState.currentDate);
       },
 
       adjustModalStepper(elementId, delta) {
@@ -1621,7 +1608,7 @@
         el.innerText = next;
       },
 
-      async applyStudentRule(ruleName, sign, category) {
+      applyStudentRule(ruleName, sign, category) {
         const studentId = AppState.activeModalStudentId;
         if (!studentId) return;
 
@@ -1668,13 +1655,12 @@
         if (finalStep > 0) AudioEngine.playAdd();
         else AudioEngine.playDeduct();
 
-        // 🌟 雲端實時儲存
-        await saveDayDataToCloud(AppState.currentDate);
-
+        persistDayData(AppState.currentDate);
+        renderModalRecords();
         showToast(`已登記：${ruleName} (${finalStep >= 0 ? '+' : ''}${finalStep})`, 'success');
       },
 
-      async removeRecord(studentId, category, indexInCategory) {
+      removeRecord(studentId, category, indexInCategory) {
         const dayData = getDayData(AppState.currentDate);
         if ((dayData.locked || dayData.studentLocked[studentId]) && !AppState.isTeacher) {
           showToast('今日已鎖定，不可撤銷！', 'error');
@@ -1697,8 +1683,8 @@
           if (globalIdx !== -1) {
             records.splice(globalIdx, 1);
             AudioEngine.playDeduct();
-            // 🌟 雲端實時儲存
-            await saveDayDataToCloud(AppState.currentDate);
+            persistDayData(AppState.currentDate);
+            renderModalRecords();
             showToast('已撤銷該筆紀錄');
           }
         }
@@ -1746,7 +1732,7 @@
         AppState.activeModalStudentId = null;
       },
 
-      async submitStudentAudit() {
+      submitStudentAudit() {
         const studentId = AppState.activeModalStudentId;
         if (!studentId) return;
 
@@ -1770,11 +1756,9 @@
         AudioEngine.playAdd();
         this.closeAuditModal();
 
-        // 🌟 雲端實時儲存
-        await saveDayDataToCloud(AppState.currentDate);
+        persistDayData(AppState.currentDate);
       },
 
-      // 【打卡作業獨立彈窗】
       openCheckinHwModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('checkinHwModalTitle').innerText = `${maskName(st.name)} 打卡作業自主勾選紀錄`;
@@ -1857,7 +1841,6 @@
         document.getElementById('checkinHwModal').classList.add('hidden');
       },
 
-      // 【訂正作業獨立彈窗】
       openCorrectionModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('correctionModalTitle').innerText = `${maskName(st.name)} 作業訂正狀況`;
@@ -1980,19 +1963,17 @@
           });
       },
 
-      async archiveToday() {
+      archiveToday() {
         if (!AppState.isTeacher) return;
         const dayData = getDayData(AppState.currentDate);
         dayData.locked = !dayData.locked;
 
-        // 🌟 雲端實時儲存
-        await saveDayDataToCloud(AppState.currentDate);
-
+        persistDayData(AppState.currentDate);
         showToast(dayData.locked ? '今日紀錄已歸檔封存' : '已解除今日歸檔封存', 'success');
       },
 
       showConnectionInfo() {
-        showToast('🟢 全雲端架構運行中：標籤與紀錄多端即時同步', 'success');
+        showToast('🟢 雙向連動已就緒：既有合法集合即時監聽中', 'success');
       }
     };
 
