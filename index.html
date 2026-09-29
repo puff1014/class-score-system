@@ -58,7 +58,7 @@
                 <line x1="7" y1="20" x2="27" y2="20" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
                 <line x1="9" y1="28" x2="25" y2="28" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
                 <rect x="7.5" y="44" width="19" height="18" rx="6" />
-                <line x1="9" y1="52" x2="25" y2="52" stroke="#FFFDF9" stroke-width="2" stroke-linecap="round"/>
+                <line x1="9" y1="52" x2="25" y2="52" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
               </g>
               <g transform="translate(56, 26) rotate(6)">
                 <rect x="6" y="4" width="22" height="34" rx="10" />
@@ -66,12 +66,12 @@
                 <line x1="7" y1="20" x2="27" y2="20" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
                 <line x1="9" y1="28" x2="25" y2="28" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
                 <rect x="7.5" y="44" width="19" height="18" rx="6" />
-                <line x1="9" y1="52" x2="25" y2="52" stroke="#FFFDF9" stroke-width="2" stroke-linecap="round"/>
+                <line x1="9" y1="52" x2="25" y2="52" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
               </g>
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v3.6
+            v3.8
           </span>
         </div>
 
@@ -488,9 +488,9 @@
     </div>
   </div>
 
-  <!-- 【打卡系統作業獨立彈窗】：單行寬版、三色狀態、純數字不帶步字 -->
-  <div id="checkinHwModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[95vw] max-w-5xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
+  <!-- 【打卡系統作業獨立彈窗】：極致寬版、左右雙列、文字完全不折行不省略、純數字 -->
+  <div id="checkinHwModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
+    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[98vw] max-w-[98vw] rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
       <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-4">
         <div class="flex items-center gap-3">
           <span class="text-4xl">📝</span>
@@ -511,8 +511,8 @@
         <span id="checkinHwSummaryBadge" class="text-2xl font-num font-black"></span>
       </div>
 
-      <!-- 單行不折行寬版列表容器 -->
-      <div id="checkinHwListContainer" class="space-y-2.5 overflow-y-auto custom-scrollbar flex-1 p-1">
+      <!-- 雙列並排網格：長字不裁切、單行不折行 -->
+      <div id="checkinHwListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 overflow-y-auto custom-scrollbar flex-1 p-1">
       </div>
 
       <div class="pt-4 mt-3 border-t-2 border-stone-100 flex justify-end">
@@ -523,9 +523,9 @@
     </div>
   </div>
 
-  <!-- 【訂正系統作業獨立彈窗】：單行寬版、黃色補訂正不加分(0)、右上角加總分 -->
-  <div id="correctionModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[95vw] max-w-5xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
+  <!-- 【訂正系統作業獨立彈窗】：極致寬版、左右雙列、文字完全不折行不省略、右上角加總分 -->
+  <div id="correctionModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
+    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[98vw] max-w-[98vw] rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
       
       <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-4">
         <div class="flex items-center gap-3">
@@ -545,7 +545,7 @@
         </div>
       </div>
 
-      <!-- 說明圖例：黃色補訂正不加分 (0) -->
+      <!-- 說明圖例：黃色補訂正不加分 (0)[cite: 1] -->
       <div class="flex flex-wrap items-center gap-4 px-3 py-2 mb-3 bg-stone-100 rounded-2xl border border-stone-200 text-sm font-black text-stone-700">
         <span class="text-stone-500">狀態圖例：</span>
         <span class="flex items-center gap-1 px-3 py-1 bg-emerald-100 border border-emerald-300 text-emerald-950 rounded-xl">🟢 當天完成 (+1)</span>
@@ -553,8 +553,8 @@
         <span class="flex items-center gap-1 px-3 py-1 bg-rose-100 border border-rose-300 text-rose-950 rounded-xl">🔴 還未訂正 (0)</span>
       </div>
 
-      <!-- 單行不折行寬版列表容器 -->
-      <div id="correctionListContainer" class="space-y-2.5 overflow-y-auto custom-scrollbar flex-1 p-1">
+      <!-- 雙列並排網格：長字不裁切、單行不折行 -->
+      <div id="correctionListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 overflow-y-auto custom-scrollbar flex-1 p-1">
       </div>
 
       <div class="pt-4 mt-3 border-t-2 border-stone-100 flex justify-end">
@@ -633,7 +633,7 @@
       selectedMonth: String(new Date().getMonth() + 1),
       activeModalStudentId: null,
       steppers: { clean_done: 1, clean_fail: 1, spec_perfect: 1, spec_fair: 1 },
-      recordedDays: JSON.parse(localStorage.getItem('six_grade_recorded_days') || '[]'),
+      recordedDays: [], // 改為純雲端同步，不再使用 localStorage
       dailyData: {},
       correctionTasks: {},
       correctionAttendance: {},
@@ -652,6 +652,7 @@
 
     let db = null;
     let auth = null;
+    let unsubRecordedDays = null;
 
     try {
       firebase.initializeApp(firebaseConfig);
@@ -667,6 +668,39 @@
       });
     } catch (e) {
       console.warn("Firebase 初始化警示:", e);
+    }
+
+    // 🌟 跨電腦核心功能：實時雙向監聽雲端日期標籤
+    function setupRecordedDaysSync() {
+      if (!db) return;
+      if (unsubRecordedDays) unsubRecordedDays();
+
+      const prefix = AppState.academicYear === '114' ? '114' : '115';
+      unsubRecordedDays = db.collection('system_config').doc(`${prefix}_recorded_days`)
+        .onSnapshot((docSnap) => {
+          if (docSnap.exists) {
+            AppState.recordedDays = docSnap.data().days || [];
+          } else {
+            AppState.recordedDays = [];
+          }
+          renderDatePills();
+          renderClassActionState();
+        }, (err) => console.error("雲端標籤同步失敗:", err));
+    }
+
+    // 🌟 寫入雲端 Firestore，讓所有電腦一秒同步
+    async function saveRecordedDaysToCloud(daysArr) {
+      if (!db) return;
+      const prefix = AppState.academicYear === '114' ? '114' : '115';
+      try {
+        await db.collection('system_config').doc(`${prefix}_recorded_days`).set({
+          days: daysArr,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      } catch (err) {
+        console.error("更新雲端日期標籤失敗:", err);
+        showToast("標籤雲端同步失敗", "error");
+      }
     }
 
     function setTeacherModeUI(isT) {
@@ -687,10 +721,6 @@
       renderDatePills();
       renderStudentCards();
       renderClassActionState();
-    }
-
-    function saveRecordedDays() {
-      localStorage.setItem('six_grade_recorded_days', JSON.stringify(AppState.recordedDays));
     }
 
     function getDayData(dateStr) {
@@ -785,12 +815,11 @@
       return totalS >= (7 * 3600 + 40 * 60 + 1) ? 'late' : 'on-time';
     }
 
-    // 打卡系統單項作業三色判定（綠：齊全，黃：遲交，紅：缺交）
+    // 打卡系統單項作業三色判定
     function getCheckinTaskDetailStatus(studentId, taskName, dateStr) {
       const d = (AppState.checkinAttendance[dateStr] && AppState.checkinAttendance[dateStr][studentId]) || {};
       const cleanName = taskName.trim();
       
-      // 手動覆寫優先
       if (d.manualTasks && d.manualTasks[cleanName]) {
         const m = d.manualTasks[cleanName];
         if (m === 'done') return 'green';
@@ -801,7 +830,6 @@
       const hw = d.completedTasks || {};
       if (!hw[cleanName]) return 'red';
 
-      // 檢查是否逾時完成
       const actionTime = d.lastActionTime;
       if (actionTime) {
         const [h, m, s] = actionTime.split(':').map(Number);
@@ -1099,17 +1127,15 @@
           arrivalColorClass = 'text-orange-600';
         }
 
-        // 2. 打卡中層：完成作業（全交 +2 / 缺交每項扣 1）
+        // 2. 打卡中層：完成作業
         let missingHwCount = 0;
         let lateHwCount = 0;
-        let doneHwCount = 0;
 
         if (assignedHwList.length > 0) {
           assignedHwList.forEach(tName => {
             const detailStat = getCheckinTaskDetailStatus(st.id, tName, curDate);
             if (detailStat === 'red') missingHwCount++;
             else if (detailStat === 'yellow') lateHwCount++;
-            else if (detailStat === 'green') doneHwCount++;
           });
         }
 
@@ -1129,20 +1155,18 @@
           checkinHwScoreText = `${checkinHwScore}`;
           checkinHwColorClass = 'text-rose-600';
         } else if (lateHwCount > 0) {
-          // 有遲交但無缺交：不扣分，但也無法獲得全齊 +2
           checkinHwScore = 0;
           checkinHwLabel = '遲交完成';
           checkinHwScoreText = '0';
           checkinHwColorClass = 'text-yellow-600';
         } else {
-          // 全部準時完成 (全綠)
           checkinHwScore = 2;
           checkinHwLabel = '完成';
           checkinHwScoreText = '+2';
           checkinHwColorClass = 'text-emerald-600';
         }
 
-        // 3. 打卡下層：三項生活習慣打卡（全齊計入 +1）
+        // 3. 打卡下層：生活習慣
         const previewDone = !!completedTasks['複習+預習'] || !!completedTasks['預習複習'];
         const suppliesDone = !!completedTasks['帶學用品'];
         const checkinDone = !!completedTasks['訂正功課'];
@@ -1151,7 +1175,6 @@
         const habitScoreText = habitScore > 0 ? '+1' : '0';
         const habitColorClass = habitScore > 0 ? 'text-emerald-600' : 'text-stone-400';
 
-        // 打卡區小計
         const checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
 
         // 4. 訂正狀況：僅「當天完成（綠色）」給 +1，補訂正（黃色）與未訂正不給分
@@ -1179,7 +1202,6 @@
           <div>
             <div class="flex items-center justify-between pb-2 border-b border-stone-100 gap-1">
               <span class="text-3xl sm:text-4xl font-black font-serif-tc text-stone-900 whitespace-nowrap tracking-tight">${maskName(st.name)}</span>
-              <!-- 右上角彩色旗子 + 純數字總計（不帶步字） -->
               <div class="flex items-center gap-2 ${isStudentLocked ? 'bg-[#EFE8DF] border-[#8C6D52]/40' : 'bg-amber-50 border-amber-200'} px-3 py-1 rounded-2xl border shrink-0">
                 <i class="fa-solid fa-flag text-5xl sm:text-6xl drop-shadow-sm ${
                   ['text-rose-600', 'text-amber-500', 'text-yellow-500', 'text-emerald-500', 'text-teal-500', 'text-sky-500', 'text-indigo-600', 'text-purple-600', 'text-pink-500', 'text-orange-600'][(st.no - 1) % 10]
@@ -1192,7 +1214,6 @@
               <!-- 首頁打卡區：上中下三層（純數字、不帶步字） -->
               <div class="bg-[#FAF7F2] p-3 rounded-2xl border border-stone-200/80 shadow-xs relative">
                 
-                <!-- 標題列與加大字體純數字小計 -->
                 <div class="flex items-center justify-between pb-2 mb-2 border-b border-stone-200/70">
                   <span class="text-xl font-black text-stone-800 flex items-center gap-1.5 font-serif-tc">
                     <span>⌛</span> 打卡
@@ -1398,6 +1419,7 @@
     window.appActions = {
       changeAcademicYear(val) {
         AppState.academicYear = val;
+        setupRecordedDaysSync();
         fetchRealFirebaseData(AppState.currentDate);
       },
 
@@ -1418,37 +1440,32 @@
         this.selectDate(nextDate);
       },
 
-      promptAddNewDate() {
+      async promptAddNewDate() {
         if (!AppState.isTeacher) {
           showToast('請先解鎖教師模式才能新增日期標籤！', 'error');
           return;
         }
         const cur = AppState.currentDate;
         if (!AppState.recordedDays.includes(cur)) {
-          AppState.recordedDays.unshift(cur);
-          AppState.recordedDays.sort().reverse();
-          saveRecordedDays();
-          renderDatePills();
-          showToast(`已成功將 ${cur} 加入上課日標籤！`, 'success');
+          const newDays = [cur, ...AppState.recordedDays].sort().reverse();
+          await saveRecordedDaysToCloud(newDays);
+          showToast(`已成功將 ${cur} 雲端同步加入標籤！`, 'success');
         } else {
           showToast(`${cur} 已在標籤列中`, 'info');
         }
       },
 
-      deleteCurrentDate() {
+      async deleteCurrentDate() {
         if (!AppState.isTeacher) {
           showToast('請先解鎖教師模式才能刪除標籤！', 'error');
           return;
         }
         if (confirm(`確定要從標籤列中移除 ${AppState.currentDate} 嗎？`)) {
-          const idx = AppState.recordedDays.indexOf(AppState.currentDate);
-          if (idx !== -1) {
-            AppState.recordedDays.splice(idx, 1);
-            saveRecordedDays();
-          }
-          const next = AppState.recordedDays[0] || getTodayString();
+          const newDays = AppState.recordedDays.filter(d => d !== AppState.currentDate);
+          await saveRecordedDaysToCloud(newDays);
+          const next = newDays[0] || getTodayString();
           this.selectDate(next);
-          showToast('已移除該日標籤', 'info');
+          showToast('已移除該日標籤 (已即時同步)', 'info');
         }
       },
 
@@ -1721,7 +1738,7 @@
         renderStudentCards();
       },
 
-      // 【打卡作業獨立彈窗】：單行寬版、三色狀態、純數字不帶步字
+      // 【打卡作業獨立彈窗】：雙列並排、文字不裁切不折行、純數字
       openCheckinHwModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('checkinHwModalTitle').innerText = `${maskName(st.name)} 打卡作業自主勾選紀錄`;
@@ -1735,7 +1752,7 @@
         let lateCount = 0;
 
         if (assignedHwList.length === 0) {
-          container.innerHTML = '<div class="text-stone-400 font-bold text-2xl text-center py-10">本日航海日誌無作業任務</div>';
+          container.innerHTML = '<div class="col-span-1 md:col-span-2 text-stone-400 font-bold text-2xl text-center py-10">本日航海日誌無作業任務</div>';
           document.getElementById('checkinHwSummaryBadge').innerText = '0';
           document.getElementById('checkinHwSummaryBadge').className = 'text-2xl font-num font-black text-stone-500';
         } else {
@@ -1747,7 +1764,7 @@
             let iconColor = 'text-emerald-600';
             let badgeBg = 'bg-emerald-100 border-emerald-300 text-emerald-900';
             let labelText = '齊全';
-            let scoreText = ''; // 綠色齊全不顯示數字
+            let scoreText = '';
 
             if (detailStat === 'red') {
               missingCount++;
@@ -1756,7 +1773,7 @@
               iconColor = 'text-rose-600';
               badgeBg = 'bg-rose-100 border-rose-300 text-rose-900';
               labelText = '缺交';
-              scoreText = '-1'; // 紅色缺交顯示 -1
+              scoreText = '-1';
             } else if (detailStat === 'yellow') {
               lateCount++;
               rowBg = 'bg-amber-50/80 border-amber-300 text-amber-950';
@@ -1764,27 +1781,26 @@
               iconColor = 'text-amber-600';
               badgeBg = 'bg-yellow-100 border-yellow-300 text-yellow-900';
               labelText = '遲交';
-              scoreText = ''; // 黃色遲交不顯示數字
+              scoreText = '';
             }
 
             const row = document.createElement('div');
-            row.className = `p-3.5 sm:p-4 rounded-2xl border-2 flex items-center justify-between gap-4 whitespace-nowrap shadow-xs ${rowBg}`;
+            row.className = `p-3.5 sm:p-4 rounded-2xl border-2 flex items-center justify-between gap-3 shadow-xs ${rowBg}`;
             row.innerHTML = `
-              <div class="flex items-center gap-3 min-w-0 flex-1">
+              <div class="flex items-center gap-2.5 min-w-0">
                 <span class="text-3xl font-black ${iconColor} shrink-0">${iconText}</span>
-                <span class="text-2xl sm:text-3xl font-black font-serif-tc truncate text-stone-900">${tName}</span>
+                <span class="text-xl sm:text-2xl font-black font-serif-tc text-stone-900 whitespace-nowrap shrink-0">${tName}</span>
               </div>
-              <div class="flex items-center gap-3 shrink-0">
-                <span class="px-3.5 py-1.5 rounded-xl border text-lg sm:text-xl font-black ${badgeBg}">
+              <div class="flex items-center gap-2.5 shrink-0 ml-auto">
+                <span class="px-3.5 py-1.5 rounded-xl border text-lg sm:text-xl font-black whitespace-nowrap ${badgeBg}">
                   ${labelText}
                 </span>
-                ${scoreText ? `<span class="text-2xl sm:text-3xl font-num font-black text-rose-600">${scoreText}</span>` : ''}
+                ${scoreText ? `<span class="text-2xl sm:text-3xl font-num font-black text-rose-600 whitespace-nowrap">${scoreText}</span>` : ''}
               </div>
             `;
             container.appendChild(row);
           });
 
-          // 總結算標籤
           const badge = document.getElementById('checkinHwSummaryBadge');
           if (missingCount > 0) {
             badge.innerText = `結算：-${missingCount}`;
@@ -1805,7 +1821,7 @@
         document.getElementById('checkinHwModal').classList.add('hidden');
       },
 
-      // 【訂正作業獨立彈窗】：黃色補訂正不加分(0)、右上角加總分
+      // 【訂正作業獨立彈窗】：雙列並排、文字不裁切不折行、右上角加總分
       openCorrectionModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('correctionModalTitle').innerText = `${maskName(st.name)} 作業訂正狀況`;
@@ -1818,7 +1834,7 @@
         let totalCorrectionScore = 0;
 
         if (correctionTasks.length === 0) {
-          container.innerHTML = '<div class="text-stone-400 font-bold text-2xl text-center py-10">本日訂正系統尚未指派任何作業項目</div>';
+          container.innerHTML = '<div class="col-span-1 md:col-span-2 text-stone-400 font-bold text-2xl text-center py-10">本日訂正系統尚未指派任何作業項目</div>';
           document.getElementById('correctionTotalScoreBadge').innerText = '0';
         } else {
           correctionTasks.forEach(tName => {
@@ -1840,7 +1856,7 @@
               labelText = '當天完成';
               scoreText = '+1';
             } else if (status === 'yellow') {
-              // 補訂正不加分，顯示 0
+              // 補訂正不加分，顯示 0[cite: 1]
               statusBg = 'bg-amber-50/80 border-amber-300 text-amber-950';
               iconText = '✓';
               iconColor = 'text-amber-600';
@@ -1850,17 +1866,17 @@
             }
 
             const row = document.createElement('div');
-            row.className = `p-3.5 sm:p-4 rounded-2xl border-2 flex items-center justify-between gap-4 whitespace-nowrap shadow-xs ${statusBg}`;
+            row.className = `p-3.5 sm:p-4 rounded-2xl border-2 flex items-center justify-between gap-3 shadow-xs ${statusBg}`;
             row.innerHTML = `
-              <div class="flex items-center gap-3 min-w-0 flex-1">
+              <div class="flex items-center gap-2.5 min-w-0">
                 <span class="text-3xl font-black ${iconColor} shrink-0">${iconText}</span>
-                <span class="text-2xl sm:text-3xl font-black font-serif-tc truncate text-stone-900">${tName}</span>
+                <span class="text-xl sm:text-2xl font-black font-serif-tc text-stone-900 whitespace-nowrap shrink-0">${tName}</span>
               </div>
-              <div class="flex items-center gap-3 shrink-0">
-                <span class="px-3.5 py-1.5 rounded-xl border text-lg sm:text-xl font-black ${badgeBg}">
+              <div class="flex items-center gap-2.5 shrink-0 ml-auto">
+                <span class="px-3.5 py-1.5 rounded-xl border text-lg sm:text-xl font-black whitespace-nowrap ${badgeBg}">
                   ${labelText}
                 </span>
-                <span class="text-2xl sm:text-3xl font-num font-black ${status === 'green' ? 'text-emerald-700' : 'text-stone-400'}">
+                <span class="text-2xl sm:text-3xl font-num font-black whitespace-nowrap ${status === 'green' ? 'text-emerald-700' : 'text-stone-400'}">
                   ${scoreText}
                 </span>
               </div>
@@ -1868,7 +1884,7 @@
             container.appendChild(row);
           });
 
-          // 更新右上角總分
+          // 更新右上角總分[cite: 1]
           document.getElementById('correctionTotalScoreBadge').innerText = totalCorrectionScore > 0 ? `+${totalCorrectionScore}` : `${totalCorrectionScore}`;
         }
 
@@ -1962,7 +1978,7 @@
     window.onload = function() {
       updateClock();
       setInterval(updateClock, 1000);
-      renderDatePills();
+      setupRecordedDaysSync();
       fetchRealFirebaseData(AppState.currentDate);
     };
   </script>
