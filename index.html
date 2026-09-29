@@ -58,7 +58,7 @@
                 <line x1="7" y1="20" x2="27" y2="20" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
                 <line x1="9" y1="28" x2="25" y2="28" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
                 <rect x="7.5" y="44" width="19" height="18" rx="6" />
-                <line x1="9" y1="52" x2="25" y2="52" stroke="#FFFDF9" stroke-width="2" stroke-linecap="round"/>
+                <line x1="9" y1="52" x2="25" y2="52" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
               </g>
               <g transform="translate(56, 26) rotate(6)">
                 <rect x="6" y="4" width="22" height="34" rx="10" />
@@ -66,12 +66,12 @@
                 <line x1="7" y1="20" x2="27" y2="20" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
                 <line x1="9" y1="28" x2="25" y2="28" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
                 <rect x="7.5" y="44" width="19" height="18" rx="6" />
-                <line x1="9" y1="52" x2="25" y2="52" stroke="#FFFDF9" stroke-width="2" stroke-linecap="round"/>
+                <line x1="9" y1="52" x2="25" y2="52" stroke="#FFFDF9" stroke-width="2.5" stroke-linecap="round"/>
               </g>
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v4.1
+            v4.2
           </span>
         </div>
 
@@ -629,7 +629,6 @@
       selectedMonth: String(new Date().getMonth() + 1),
       activeModalStudentId: null,
       steppers: { clean_done: 1, clean_fail: 1, spec_perfect: 1, spec_fair: 1 },
-      // 雙軌備援：優先讀取本地既有標籤
       recordedDays: JSON.parse(localStorage.getItem('six_grade_recorded_days') || '[]'),
       dailyData: {},
       correctionTasks: {},
@@ -677,7 +676,6 @@
 
       unsubRecordedDays = db.collection(annColName).onSnapshot((snap) => {
         const cloudDates = snap.docs.map(d => d.id).filter(Boolean);
-        // 合併本地與雲端，確保就算沒連上雲端也 100% 能看見標籤
         const localDays = JSON.parse(localStorage.getItem('six_grade_recorded_days') || '[]');
         const mergedSet = new Set([...cloudDates, ...localDays, ...AppState.recordedDays]);
         AppState.recordedDays = Array.from(mergedSet).sort().reverse();
@@ -717,7 +715,6 @@
 
     function getDayData(dateStr) {
       if (!AppState.dailyData[dateStr]) {
-        // 先看 localStorage 是否有此日紀錄
         const localStored = localStorage.getItem(`daily_data_${dateStr}`);
         if (localStored) {
           try {
@@ -748,7 +745,6 @@
       renderClassActionState();
     }
 
-    // 核心資料讀取：精準對接《打卡系統》與《訂正系統》
     async function fetchRealFirebaseData(dateStr) {
       if (!db) return;
       try {
@@ -1088,7 +1084,7 @@
       }
     }
 
-    // 🌟 核心渲染：學生卡片（A+B 融合版：左側色條 + 實體膠囊標題）
+    // 🌟 核心渲染：學生卡片（大地行者風：靈動大圖騰在前 ＋ 質樸石印文字膠囊）
     function renderStudentCards() {
       const grid = document.getElementById('studentCardsContainer');
       grid.innerHTML = '';
@@ -1220,15 +1216,18 @@
 
             <div class="mt-4 space-y-3.5">
               
-              <!-- 🌟 1. 打卡區：左側粗琥珀色條 + 實體深色膠囊標籤 (A+B) -->
-              <div class="bg-[#FAF7F2] p-3 rounded-2xl border-2 border-stone-200/90 border-l-[6px] border-l-amber-700 shadow-sm relative">
-                <div class="flex items-center justify-between pb-2 mb-2 border-b border-stone-200/80">
-                  <span class="px-3 py-0.5 rounded-full bg-stone-800 text-white text-base font-black flex items-center gap-1 font-serif-tc shadow-xs">
-                    <span>⌛</span> 打卡
-                  </span>
-                  <div class="flex items-center gap-1">
+              <!-- 🌟 1. 打卡：古道陶土（赭紅古拙石印） -->
+              <div class="bg-[#FAF6EE] p-3 rounded-2xl border-2 border-[#D9C8B4] shadow-xs relative">
+                <div class="flex items-center justify-between pb-2 mb-2 border-b border-[#E8DEC8]">
+                  <div class="flex items-center gap-2">
+                    <span class="text-3xl filter drop-shadow-xs">⏳</span>
+                    <span class="px-3.5 py-0.5 rounded-xl bg-[#8C5E3C] text-[#FFFDF9] text-xl sm:text-2xl font-black font-serif-tc tracking-wider shadow-xs">
+                      打卡
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
                     <span class="text-xs font-bold text-stone-400">小計</span>
-                    <span class="text-3xl font-num font-black ${checkinSubtotal >= 0 ? 'text-emerald-700' : 'text-rose-700'}">
+                    <span class="text-3xl font-num font-black ${checkinSubtotal >= 0 ? 'text-[#8C5E3C]' : 'text-rose-700'}">
                       ${checkinSubtotal >= 0 ? '+' : ''}${checkinSubtotal}
                     </span>
                   </div>
@@ -1236,7 +1235,7 @@
 
                 <div class="space-y-2">
                   <!-- 到校時間 -->
-                  <div class="bg-white/90 px-2.5 py-1.5 rounded-xl border border-stone-200 flex items-center justify-between shadow-2xs">
+                  <div class="bg-white/90 px-2.5 py-1.5 rounded-xl border border-[#E5DAC8] flex items-center justify-between shadow-2xs">
                     <div class="flex items-center gap-1.5">
                       <span class="text-base font-bold text-stone-700">到校：</span>
                       <span class="text-sm font-black px-2 py-0.5 rounded-lg ${arrivalScore > 0 ? 'bg-emerald-100 text-emerald-900' : arrivalScore < 0 ? 'bg-rose-100 text-rose-900' : 'bg-stone-100 text-stone-600'}">
@@ -1249,7 +1248,7 @@
                   </div>
 
                   <!-- 作業自主勾選 -->
-                  <div onclick="window.appActions.openCheckinHwModal('${st.id}')" class="bg-white/90 hover:bg-emerald-50/60 transition cursor-pointer px-2.5 py-1.5 rounded-xl border border-stone-200 flex items-center justify-between shadow-2xs">
+                  <div onclick="window.appActions.openCheckinHwModal('${st.id}')" class="bg-white/90 hover:bg-emerald-50/60 transition cursor-pointer px-2.5 py-1.5 rounded-xl border border-[#E5DAC8] flex items-center justify-between shadow-2xs">
                     <div class="flex items-center gap-1.5">
                       <span class="text-base font-bold text-stone-700">作業：</span>
                       <span class="text-sm font-black px-2 py-0.5 rounded-lg ${checkinHwScore > 0 ? 'bg-emerald-100 text-emerald-900' : checkinHwScore < 0 ? 'bg-rose-100 text-rose-900' : 'bg-stone-100 text-stone-600'}">
@@ -1262,7 +1261,7 @@
                   </div>
 
                   <!-- 三項生活習慣 -->
-                  <div class="bg-white/90 p-2 rounded-xl border border-stone-200 space-y-1.5 shadow-2xs">
+                  <div class="bg-white/90 p-2 rounded-xl border border-[#E5DAC8] space-y-1.5 shadow-2xs">
                     <div class="flex items-center justify-between text-xs text-stone-500 font-bold">
                       <span>生活習慣 (全齊計入)</span>
                       <span class="text-lg font-num font-black ${habitColorClass}">${habitScoreText}</span>
@@ -1282,27 +1281,33 @@
                 </div>
               </div>
 
-              <!-- 🌟 2. 訂正區：左側粗海洋藍色條 + 實體海洋藍膠囊標籤 (A+B) -->
-              <div onclick="window.appActions.openCorrectionModal('${st.id}')" class="bg-blue-50/70 p-3 rounded-2xl border-2 border-blue-200/90 border-l-[6px] border-l-blue-600 shadow-sm cursor-pointer hover:bg-blue-100/60 transition">
+              <!-- 🌟 2. 訂正：高山青石（冷冽靛藍石印） -->
+              <div onclick="window.appActions.openCorrectionModal('${st.id}')" class="bg-[#F0F6FA] p-3 rounded-2xl border-2 border-[#B8D3E6] shadow-xs cursor-pointer hover:bg-[#E5F0F7] transition">
                 <div class="flex items-center justify-between mb-1.5">
-                  <span class="px-3 py-0.5 rounded-full bg-blue-700 text-white text-base font-black flex items-center gap-1 font-serif-tc shadow-xs">
-                    <span>📘</span> 訂正
-                  </span>
-                  <span class="text-3xl font-num font-black text-blue-900">
+                  <div class="flex items-center gap-2">
+                    <span class="text-3xl filter drop-shadow-xs">📘</span>
+                    <span class="px-3.5 py-0.5 rounded-xl bg-[#1E4E79] text-[#F0F6FA] text-xl sm:text-2xl font-black font-serif-tc tracking-wider shadow-xs">
+                      訂正
+                    </span>
+                  </div>
+                  <span class="text-3xl font-num font-black text-[#1E4E79]">
                     +${correctionScore}
                   </span>
                 </div>
-                <div class="text-sm font-bold text-blue-950/80 truncate pl-1" title="${correctionPreviewText}">
+                <div class="text-sm font-bold text-[#3B6E8C] truncate pl-1" title="${correctionPreviewText}">
                   ${correctionPreviewText}
                 </div>
               </div>
 
-              <!-- 🌟 3. 表現區：左側粗榮譽金色條 + 實體榮譽金膠囊標籤 (A+B) -->
-              <div class="bg-amber-50/70 p-3 rounded-2xl border-2 border-amber-200/90 border-l-[6px] border-l-amber-600 shadow-sm flex items-center justify-between">
-                <span class="px-3 py-0.5 rounded-full bg-amber-800 text-white text-base font-black flex items-center gap-1 font-serif-tc shadow-xs">
-                  <span>🏆</span> 表現
-                </span>
-                <span class="text-3xl font-num font-black ${classroomScore >= 0 ? 'text-emerald-700' : 'text-rose-700'}">
+              <!-- 🌟 3. 表現：蒼松品格（沉穩黛綠石印） -->
+              <div class="bg-[#F2F7F4] p-3 rounded-2xl border-2 border-[#BCD4C6] shadow-xs flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="text-3xl filter drop-shadow-xs">🏆</span>
+                  <span class="px-3.5 py-0.5 rounded-xl bg-[#2D5A43] text-[#F2F7F4] text-xl sm:text-2xl font-black font-serif-tc tracking-wider shadow-xs">
+                    表現
+                  </span>
+                </div>
+                <span class="text-3xl font-num font-black ${classroomScore >= 0 ? 'text-[#2D5A43]' : 'text-rose-700'}">
                   ${classroomScore >= 0 ? '+' : ''}${classroomScore}
                 </span>
               </div>
@@ -1458,7 +1463,6 @@
           const newDays = [cur, ...AppState.recordedDays].sort().reverse();
           saveRecordedDays(newDays);
 
-          // 嘗試將此上課日同步寫入打卡系統的 announcements，雙向互通
           try {
             if (db) {
               const prefix = AppState.academicYear === '114' ? '' : `${AppState.academicYear}_`;
