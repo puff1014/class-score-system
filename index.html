@@ -780,7 +780,21 @@
     function renderClassActionState() {
       const dayData = getDayData(AppState.currentDate);
       const classApplied = dayData.classApplied || { clean: null, spec: null };
+      const hasDatePill = AppState.recordedDays && AppState.recordedDays.includes(AppState.currentDate);
+    const isLocked = dayData.locked && !AppState.isTeacher;
+    const isDisabled = !hasDatePill || isLocked;
 
+    const cleanGroup = document.getElementById('cleanActionGroup');
+    const specGroup = document.getElementById('specActionGroup');
+    if (cleanGroup && specGroup) {
+      if (isDisabled) {
+        cleanGroup.classList.add('opacity-40', 'pointer-events-none');
+        specGroup.classList.add('opacity-40', 'pointer-events-none');
+      } else {
+        cleanGroup.classList.remove('opacity-40', 'pointer-events-none');
+        specGroup.classList.remove('opacity-40', 'pointer-events-none');
+      }
+    }
       const cleanActionGroup = document.getElementById('cleanActionGroup');
       const cleanLockedBadge = document.getElementById('cleanLockedBadge');
       const cleanLockedText = document.getElementById('cleanLockedText');
@@ -1212,8 +1226,7 @@
 
       applyClassRule(type) {
       // 檢查是否已登記上課日標籤
-      const monthDays = (AppState.activeDatesByMonth && AppState.activeDatesByMonth[AppState.selectedMonth]) || [];
-      const hasDatePill = monthDays.includes(AppState.currentDate);
+      const hasDatePill = AppState.recordedDays && AppState.recordedDays.includes(AppState.currentDate);
       if (!hasDatePill) {
         showToast('⚠️ 今日尚未登記上課日標籤，請先點擊上方「＋」新增！', 'error');
         return;
@@ -1319,8 +1332,7 @@
         if (!studentId) return;
 
         // 檢查是否已登記上課日標籤
-      const monthDays = (AppState.activeDatesByMonth && AppState.activeDatesByMonth[AppState.selectedMonth]) || [];
-      const hasDatePill = monthDays.includes(AppState.currentDate);
+      const hasDatePill = AppState.recordedDays && AppState.recordedDays.includes(AppState.currentDate);
       if (!hasDatePill) {
         showToast('⚠️ 今日尚未登記上課日標籤，請先點擊上方「＋」新增！', 'error');
         return;
