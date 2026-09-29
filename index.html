@@ -1388,7 +1388,15 @@
         }
 
         const records = dayData.records[studentId];
-        const categoryRecords = records.filter(r => r.category === category);
+        // 依照顯示的排序規則同步排序，確保點選的序號 100% 精準對齊
+        const sortRecords = (arr) => {
+          return [...arr].sort((a, b) => {
+            if (a.isClass && !b.isClass) return 1;
+            if (!a.isClass && b.isClass) return -1;
+            return 0;
+          });
+        };
+        const categoryRecords = sortRecords(records.filter(r => r.category === category));
         const target = categoryRecords[indexInCategory];
 
         if (target && !target.isClass && target.name !== '結算後修改') {
