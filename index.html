@@ -23,7 +23,6 @@
       -webkit-font-smoothing: antialiased;
     }
     .font-serif-tc { font-family: 'Noto Serif TC', serif; }
-    /* 🌟 移除卡通圓體 Fredoka，全面回歸端莊挺拔的行者黑體數字 */
     .font-num { 
       font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
       font-feature-settings: "tnum"; 
@@ -76,7 +75,7 @@
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v4.6
+            v5.0
           </span>
         </div>
 
@@ -201,7 +200,7 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-4 sm:gap-8 flex-1 justify-end">
-        <!-- 整潔打掃 -->
+        <!-- 整潔打掃：綠色加步 + 紅色扣步 -->
         <div class="flex items-center gap-3 bg-[#FAF6F0] p-2 sm:p-2.5 rounded-2xl border border-stone-200">
           <span class="text-xl sm:text-2xl font-black text-stone-800 flex items-center gap-1.5 shrink-0 font-serif-tc">
             <span>🧹</span> 整潔打掃
@@ -240,13 +239,14 @@
           </div>
         </div>
 
-        <!-- 科任表現 -->
+        <!-- 全班科任表現：維持老師圖案 🧑‍🏫，文字改為「全班科任表現」，按鈕為藍色加步 + 橙黃色扣步 -->
         <div class="flex items-center gap-3 bg-[#FAF6F0] p-2 sm:p-2.5 rounded-2xl border border-stone-200">
           <span class="text-xl sm:text-2xl font-black text-stone-800 flex items-center gap-1.5 shrink-0 font-serif-tc">
-            <span>🧑‍🏫</span> 科任表現
+            <span>🧑‍🏫</span> 全班科任表現
           </span>
 
           <div id="specActionGroup" class="flex items-center gap-2">
+            <!-- 藍色滿分加步 -->
             <div class="flex items-center gap-1.5 bg-blue-50 border-2 border-blue-300 rounded-2xl p-1 shadow-xs">
               <button onclick="window.appActions.applyClassRule('spec_perfect')" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-3xl font-black flex items-center justify-center stone-btn" title="科任表現滿分套用加步">
                 <span>😀</span>
@@ -257,10 +257,16 @@
                 <button onclick="window.appActions.adjustClassStepper('spec_perfect', 1)" class="w-7 h-7 text-blue-800 text-xl font-black hover:bg-blue-100 rounded">+</button>
               </div>
             </div>
-            <div class="flex items-center gap-1.5 bg-amber-50 border-2 border-amber-300 rounded-2xl p-1 shadow-xs">
-              <button onclick="window.appActions.adjustClassStepper('spec_fair', -1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-100 rounded">-</button>
-              <span id="step_spec_fair" class="w-6 text-center text-2xl font-num font-black text-amber-900">1</span>
-              <button onclick="window.appActions.adjustClassStepper('spec_fair', 1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-100 rounded">+</button>
+            <!-- 橙黃色扣步（補上 ☹️ 按鈕，與整潔紅色嚴格區分） -->
+            <div class="flex items-center gap-1.5 bg-amber-50 border-2 border-amber-400 rounded-2xl p-1 shadow-xs">
+              <button onclick="window.appActions.applyClassRule('spec_fair')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-3xl font-black flex items-center justify-center stone-btn" title="科任課堂表現尚可套用扣步">
+                <span>☹️</span>
+              </button>
+              <div class="flex items-center gap-1 bg-white rounded-xl px-2 py-1 border border-amber-300">
+                <button onclick="window.appActions.adjustClassStepper('spec_fair', -1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-100 rounded">-</button>
+                <span id="step_spec_fair" class="w-6 text-center text-2xl font-num font-black text-amber-900">1</span>
+                <button onclick="window.appActions.adjustClassStepper('spec_fair', 1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-100 rounded">+</button>
+              </div>
             </div>
           </div>
 
@@ -292,8 +298,8 @@
           <span id="modalDateBadge" class="bg-amber-100 text-amber-900 border border-amber-300 font-black text-2xl px-5 py-1.5 rounded-2xl font-num">
             實踐檢核
           </span>
-          <span id="modalLockBadge" class="hidden bg-stone-200 text-stone-800 border border-stone-400 font-black text-2xl px-5 py-1.5 rounded-2xl">
-            🔒 今日已結算鎖定 (僅供查閱)
+          <span id="modalLockBadge" class="hidden bg-stone-300 text-stone-900 border-2 border-stone-500 font-black text-2xl px-5 py-1.5 rounded-2xl shadow-xs">
+            🔒【今日已結算鎖定】(僅供查閱)
           </span>
           <span id="modalReEditNotice" class="hidden bg-rose-100 text-rose-900 border border-rose-300 font-black text-xl px-4 py-1.5 rounded-2xl">
             ⚠️ 結算後修改模式 (送出將扣 1 成本)
@@ -305,7 +311,7 @@
       </div>
 
       <div class="flex-1 p-4 grid grid-cols-1 md:grid-cols-3 gap-4 overflow-hidden">
-        <!-- 左欄：履行責任 -->
+        <!-- 左欄：履行責任（所有圖示唯一不重複，科任好表現採用 🌟） -->
         <div class="bg-emerald-50/70 border-2 border-emerald-200 rounded-3xl p-3 sm:p-4 flex flex-col justify-between overflow-hidden shadow-xs">
           <div>
             <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b-2 border-emerald-200">
@@ -337,8 +343,8 @@
               </div>
 
               <div id="card_rule_good_3" class="bg-white py-1.5 px-2.5 rounded-2xl border border-emerald-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_good_3" onclick="window.appActions.applyStudentRule('科任表現滿分', 1, 'good')" class="text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
-                  <span>🧑‍🏫</span> 科任表現滿分
+                <button id="btn_rule_good_3" onclick="window.appActions.applyStudentRule('科任課好表現', 1, 'good')" class="text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+                  <span>🌟</span> 科任課好表現
                 </button>
                 <div class="flex items-center gap-1 bg-emerald-50 rounded-xl p-1 border border-emerald-200 shrink-0">
                   <button onclick="window.appActions.adjustModalStepper('btn_step_good_3', -1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-200 rounded">-</button>
@@ -415,7 +421,7 @@
           </div>
         </div>
 
-        <!-- 右欄：學習自律 -->
+        <!-- 右欄：學習自律（科任待加油改為 📉 科任課待加油） -->
         <div class="bg-amber-50/70 border-2 border-amber-200 rounded-3xl p-3 sm:p-4 flex flex-col justify-between overflow-hidden shadow-xs">
           <div>
             <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b-2 border-amber-200">
@@ -447,8 +453,8 @@
               </div>
 
               <div id="card_rule_att_3" class="bg-white py-1.5 px-2.5 rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_att_3" onclick="window.appActions.applyStudentRule('科任表現不佳', -1, 'attitude')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left">
-                  <span>📉</span> 科任表現不佳
+                <button id="btn_rule_att_3" onclick="window.appActions.applyStudentRule('科任課待加油', -1, 'attitude')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left">
+                  <span>📉</span> 科任課待加油
                 </button>
                 <div class="flex items-center gap-1 bg-amber-50 rounded-xl p-1 border border-amber-200 shrink-0">
                   <button onclick="window.appActions.adjustModalStepper('btn_step_att_3', -1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">-</button>
@@ -488,7 +494,7 @@
     </div>
   </div>
 
-  <!-- 【全新彈窗：千里足跡・個人修行歷程簿】 -->
+  <!-- 【千里足跡・個人修行歷程簿】 -->
   <div id="mileageModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-5">
     <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[95vw] max-w-3xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[90vh]">
       <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-4 shrink-0">
@@ -496,7 +502,6 @@
           <span class="text-4xl">👣</span>
           <div>
             <h3 id="mileageModalTitle" class="text-3xl sm:text-4xl font-black text-stone-900 font-serif-tc">千里足跡歷程</h3>
-            <!-- 🌟 題詞：合抱之木，生於毫末；九層之臺，起於累土；千里之行，始於足下 -->
             <p class="text-sm sm:text-base font-bold text-amber-950 font-serif-tc tracking-wide mt-1">
               合抱之木，生於毫末；九層之臺，起於累土；千里之行，始於足下。
             </p>
@@ -536,7 +541,7 @@
     </div>
   </div>
 
-  <!-- 【打卡系統作業獨立彈窗】：極致寬版、左右雙列、文字完全不折行不省略、純數字 -->
+  <!-- 【打卡系統作業獨立彈窗】 -->
   <div id="checkinHwModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
     <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[98vw] max-w-[98vw] rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
       <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-4">
@@ -570,7 +575,7 @@
     </div>
   </div>
 
-  <!-- 【訂正系統作業獨立彈窗】：極致寬版、左右雙列、文字完全不折行不省略、右上角加總分 -->
+  <!-- 【訂正系統作業獨立彈窗】：綠色與黃色皆 +1 -->
   <div id="correctionModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
     <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[98vw] max-w-[98vw] rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
       
@@ -594,7 +599,7 @@
       <div class="flex flex-wrap items-center gap-4 px-3 py-2 mb-3 bg-stone-100 rounded-2xl border border-stone-200 text-sm font-black text-stone-700">
         <span class="text-stone-500">狀態圖例：</span>
         <span class="flex items-center gap-1 px-3 py-1 bg-emerald-100 border border-emerald-300 text-emerald-950 rounded-xl">🟢 當天完成 (+1)</span>
-        <span class="flex items-center gap-1 px-3 py-1 bg-yellow-100 border border-yellow-300 text-yellow-950 rounded-xl">🟡 補訂正 (0)</span>
+        <span class="flex items-center gap-1 px-3 py-1 bg-yellow-100 border border-yellow-300 text-yellow-950 rounded-xl">🟡 補訂正 (+1)</span>
         <span class="flex items-center gap-1 px-3 py-1 bg-rose-100 border border-rose-300 text-rose-950 rounded-xl">🔴 還未訂正 (0)</span>
       </div>
 
@@ -697,6 +702,7 @@
     let db = null;
     let auth = null;
     let unsubRecordedDays = null;
+    let unsubDailyRecord = null;
     let unsubCheckin = null;
     let unsubCorrection = null;
 
@@ -716,7 +722,11 @@
       console.warn("Firebase 初始化警示:", e);
     }
 
-    // 透過《打卡系統》原本合法授權的 announcements 集合監聽上課日
+    function getDailyRecordsColName() {
+      const prefix = AppState.academicYear === '114' ? '' : `${AppState.academicYear}_`;
+      return `${prefix}daily_records`;
+    }
+
     function setupRecordedDaysSync() {
       if (!db) return;
       if (unsubRecordedDays) unsubRecordedDays();
@@ -778,7 +788,7 @@
             locked: false,
             studentLocked: {},
             classApplied: { clean: null, spec: null },
-            snapshot: null, // 歸檔快照固化結構
+            snapshot: null,
             records: {
               '1': [], '2': [], '3': [], '4': [], '5': [],
               '6': [], '7': [], '8': [], '9': [], '10': []
@@ -789,11 +799,21 @@
       return AppState.dailyData[dateStr];
     }
 
-    function persistDayData(dateStr) {
+    // 🌟 將當日表現雙向同步儲存至 Firestore 與本地
+    async function persistDayData(dateStr) {
       const data = getDayData(dateStr);
       localStorage.setItem(`daily_data_${dateStr}`, JSON.stringify(data));
       renderStudentCards();
       renderClassActionState();
+
+      if (db) {
+        try {
+          const colName = getDailyRecordsColName();
+          await db.collection(colName).doc(dateStr).set(data, { merge: true });
+        } catch (e) {
+          console.warn("Firestore 即時推播存檔略過 (已在本地生效):", e);
+        }
+      }
     }
 
     // 計算每位學生歷來所有「已封存日期」的累計總里程
@@ -819,16 +839,34 @@
       return { totalMileage, historyList };
     }
 
-    // 全自動雙向即時監聽（onSnapshot）：打卡全欄位 ＋ 訂正全欄位
+    // 📡 全自動多設備雙向即時監聽（onSnapshot）：日常表現 ＋ 打卡全欄位 ＋ 訂正全欄位
     function setupRealtimeSync(dateStr) {
       if (!db) return;
 
+      if (unsubDailyRecord) unsubDailyRecord();
       if (unsubCheckin) unsubCheckin();
       if (unsubCorrection) unsubCorrection();
 
       const prefix = AppState.academicYear === '114' ? '' : `${AppState.academicYear}_`;
 
-      // 📡【即時監聽 1：打卡系統所有欄位】
+      // 📡【即時監聽 1：日常表現資料庫 115_daily_records】
+      const dailyColName = getDailyRecordsColName();
+      unsubDailyRecord = db.collection(dailyColName).doc(dateStr).onSnapshot((doc) => {
+        if (doc.exists) {
+          const cloudData = doc.data();
+          AppState.dailyData[dateStr] = cloudData;
+          localStorage.setItem(`daily_data_${dateStr}`, JSON.stringify(cloudData));
+          renderStudentCards();
+          renderClassActionState();
+          renderDatePills();
+
+          if (!document.getElementById('auditModal').classList.contains('hidden') && AppState.activeModalStudentId) {
+            renderModalRecords();
+          }
+        }
+      }, (err) => console.warn("日常表現即時監聽提示:", err));
+
+      // 📡【即時監聽 2：打卡系統所有欄位】
       const attColName = prefix ? `${prefix}attendance_${dateStr}` : `attendance_${dateStr}`;
       unsubCheckin = db.collection(attColName).onSnapshot((snap) => {
         AppState.checkinAttendance[dateStr] = {};
@@ -865,7 +903,7 @@
         })
         .catch(err => console.warn("日誌任務讀取提示:", err));
 
-      // 📡【即時監聽 2：訂正系統作業狀態】
+      // 📡【即時監聽 3：訂正系統作業狀態】
       const assignmentsPath = '/artifacts/class-5a-app/public/data/assignments';
       unsubCorrection = db.collection(assignmentsPath)
         .where('assignmentDate', '==', dateStr)
@@ -1072,7 +1110,7 @@
         const s = classApplied.spec.step;
         specLockedText.innerText = `${s >= 0 ? '+' : ''}${s}`;
         specLockedText.className = `px-4 py-1.5 rounded-2xl text-2xl font-black font-num shadow-xs border-2 ${
-          s >= 0 ? 'bg-blue-100 text-blue-950 border-blue-300' : 'bg-amber-100 text-amber-950 border-amber-300'
+          s >= 0 ? 'bg-blue-100 text-blue-950 border-blue-300' : 'bg-amber-100 text-amber-950 border-amber-400'
         }`;
         if (AppState.isTeacher) specResetBtn.classList.remove('hidden');
         else specResetBtn.classList.add('hidden');
@@ -1171,7 +1209,7 @@
       }
     }
 
-    // 🌟 核心渲染：學生卡片（四大正色：打卡赭紅、訂正青石、表現蒼綠、檢核玄墨）
+    // 🌟 核心渲染：學生卡片
     function renderStudentCards() {
       const grid = document.getElementById('studentCardsContainer');
       grid.innerHTML = '';
@@ -1193,7 +1231,7 @@
         let checkinSubtotal, correctionScore, correctionPreviewText, classroomScore, totalScore;
 
         if (isDayLocked && dayData.snapshot && dayData.snapshot[st.id]) {
-          // 🔒 已封存：100% 讀取固化快照數據
+          // 🔒 已封存：100% 讀取固化快照數據，切斷外部干擾
           const snap = dayData.snapshot[st.id];
           arrivalScore = snap.arrivalScore;
           arrivalLabel = snap.arrivalLabel;
@@ -1218,7 +1256,7 @@
           classroomScore = snap.classroomScore;
           totalScore = snap.totalScore;
         } else {
-          // 🟢 未封存：動態計算
+          // 🟢 未封存：動態即時計算
           const studentDoc = studentCheckinMap[st.id] || {};
           const completedTasks = studentDoc.completedTasks || {};
 
@@ -1267,14 +1305,15 @@
 
           checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
 
-          // 4. 訂正
-          const greenCorrectionCount = correctionTasks.filter(tName => {
-            return getCorrectionStatus(tName, st.id, curDate) === 'green';
+          // 4. 訂正：綠色 ＆ 黃色補訂正均加分 (+1)
+          const doneCorrectionCount = correctionTasks.filter(tName => {
+            const stat = getCorrectionStatus(tName, st.id, curDate);
+            return stat === 'green' || stat === 'yellow';
           }).length;
-          correctionScore = greenCorrectionCount;
+          correctionScore = doneCorrectionCount;
           correctionPreviewText = correctionTasks.length === 0
             ? '0 / 0 完成'
-            : `${greenCorrectionCount} / ${correctionTasks.length} 完成`;
+            : `${doneCorrectionCount} / ${correctionTasks.length} 完成`;
 
           // 5. 表現
           const records = dayData.records[st.id] || [];
@@ -1283,7 +1322,6 @@
           totalScore = checkinSubtotal + correctionScore + classroomScore;
         }
 
-        // 讀取該生歷史所有已封存總步數
         const { totalMileage } = getStudentCumulativeMileage(st.id);
 
         const card = document.createElement('div');
@@ -1304,7 +1342,7 @@
               </div>
             </div>
 
-            <!-- 🌟 千里足跡行者橫條（首頁顯示，點擊開歷程存摺） -->
+            <!-- 千里足跡行者橫條 -->
             <div onclick="window.appActions.openMileageModal('${st.id}')" class="mt-3 bg-gradient-to-r from-[#FAF4EA] to-[#F5ECE0] hover:from-[#F4E9D8] hover:to-[#EFE0CB] transition cursor-pointer p-2.5 rounded-2xl border-2 border-[#DFCDB7] flex items-center justify-between shadow-2xs">
               <div class="flex items-center gap-2">
                 <span class="text-2xl filter drop-shadow-xs">👣</span>
@@ -1319,7 +1357,7 @@
 
             <div class="mt-3 space-y-3">
               
-              <!-- 🌟 1. 打卡：陶土赭紅（暖色日晷印） -->
+              <!-- 1. 打卡：陶土赭紅 -->
               <div class="bg-[#FAF6EE] p-3 rounded-2xl border-2 border-[#D9C8B4] shadow-xs relative">
                 <div class="flex items-center justify-between pb-2 mb-2 border-b border-[#E8DEC8]">
                   <div class="flex items-center gap-2">
@@ -1366,7 +1404,7 @@
                   <!-- 三項生活習慣 -->
                   <div class="bg-white/90 p-2 rounded-xl border border-[#E5DAC8] space-y-1.5 shadow-2xs">
                     <div class="flex items-center justify-between text-xs text-stone-500 font-bold">
-                      <span>生活習慣 (全齊計入)</span>
+                      <span>生活習慣</span>
                       <span class="text-lg font-num font-black ${habitColorClass}">${habitScoreText}</span>
                     </div>
                     <div class="flex items-center justify-between gap-1 text-xs sm:text-sm font-black whitespace-nowrap">
@@ -1384,7 +1422,7 @@
                 </div>
               </div>
 
-              <!-- 🌟 2. 訂正：高山青石（冷冽靛藍石印）＋ 幾分之幾移至膠囊旁並放大 -->
+              <!-- 2. 訂正：高山青石 -->
               <div onclick="window.appActions.openCorrectionModal('${st.id}')" class="bg-[#F0F6FA] p-3 rounded-2xl border-2 border-[#B8D3E6] shadow-xs cursor-pointer hover:bg-[#E5F0F7] transition">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2 flex-wrap min-w-0">
@@ -1402,7 +1440,7 @@
                 </div>
               </div>
 
-              <!-- 🌟 3. 表現：蒼松黛綠（古松墨綠石印，青翠常青） -->
+              <!-- 3. 表現：蒼松黛綠 -->
               <div class="bg-[#F0F7F3] p-3 rounded-2xl border-2 border-[#BCD4C6] shadow-xs flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <span class="text-3xl filter drop-shadow-xs">🏆</span>
@@ -1419,14 +1457,14 @@
           </div>
 
           <div class="mt-4 pt-3 border-t border-stone-100">
-            <!-- 🌟 4. 實踐檢核：玄武墨石大按鈕（方案 A，厚重壓陣，不搶色） -->
+            <!-- 4. 實踐檢核：已結算改為鋼鐵岩灰（高對比、不模糊） -->
             <button onclick="window.appActions.openAuditModal('${st.id}')" class="w-full py-2.5 rounded-2xl text-xl font-black transition flex items-center justify-center gap-2 shadow-xs stone-btn ${
               (isStudentLocked || isDayLocked)
-                ? 'bg-[#EFE8DF] hover:bg-[#E5DDD2] text-[#5C4028] border-2 border-[#8C6D52]'
+                ? 'bg-stone-300 hover:bg-stone-400 text-stone-900 border-2 border-stone-500'
                 : 'bg-[#2D2926] hover:bg-[#1A1816] text-[#F7F4EE] border-2 border-[#2D2926]'
             }">
               <i class="${(isStudentLocked || isDayLocked) ? 'fa-solid fa-lock' : 'fa-regular fa-clipboard'}"></i>
-              <span>${(isStudentLocked || isDayLocked) ? '查看明細 (已結算)' : '實踐檢核'}</span>
+              <span>${(isStudentLocked || isDayLocked) ? '🔒【已結算】查閱明細' : '實踐檢核'}</span>
             </button>
           </div>
         `;
@@ -1435,6 +1473,7 @@
       });
     }
 
+    // 🌟 檢核紀錄明細：各項圖案徹底唯一不重複（全班科任顯示 👥、全班整潔顯示 🧹）
     function renderModalRecords() {
       const studentId = AppState.activeModalStudentId;
       if (!studentId) return;
@@ -1454,6 +1493,25 @@
         });
       };
 
+      const getRuleIcon = (ruleName, isClass, defaultSign) => {
+        if (isClass) {
+          if (ruleName.includes('打掃')) return '🧹';
+          if (ruleName.includes('科任')) return '👥';
+          return '🏛️';
+        }
+        if (ruleName === '準時繳交簿本') return '🎒';
+        if (ruleName === '個人工作完成') return '🎖️';
+        if (ruleName === '科任課好表現') return '🌟';
+        if (ruleName === '未準時繳交簿本') return '⏰';
+        if (ruleName === '中午未準時回位') return '🔔';
+        if (ruleName === '個人工作未完成') return '⚠️';
+        if (ruleName === '慢吞吞') return '🐢';
+        if (ruleName === '不細心') return '👀';
+        if (ruleName === '科任課待加油') return '📉';
+        if (ruleName === '結算後修改') return '🚨';
+        return defaultSign;
+      };
+
       const goodRecords = sortRecords(records.filter(r => r.category === 'good'));
       const badRecords = sortRecords(records.filter(r => r.category === 'bad'));
       const attRecords = sortRecords(records.filter(r => r.category === 'attitude'));
@@ -1468,10 +1526,11 @@
       } else {
         listGood.innerHTML = goodRecords.map((r, i) => {
           const isClassRecord = r.isClass === true;
+          const icon = getRuleIcon(r.name, isClassRecord, '✓');
           return `
             <div class="bg-white py-1.5 px-3 rounded-xl border-2 border-emerald-500 flex items-center justify-between text-2xl sm:text-3xl font-black shadow-xs whitespace-nowrap">
               <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
-                ${isClassRecord ? '<span class="text-emerald-700 shrink-0">🏛️</span>' : '<span class="text-emerald-600 shrink-0">✓</span>'}
+                <span class="shrink-0 text-2xl">${icon}</span>
                 <span class="truncate">${r.name}</span>
               </span>
               <div class="flex items-center gap-2 shrink-0">
@@ -1491,10 +1550,11 @@
         listBad.innerHTML = badRecords.map((r, i) => {
           const isClassRecord = r.isClass === true;
           const isReEditCost = r.name === '結算後修改';
+          const icon = getRuleIcon(r.name, isClassRecord, '✗');
           return `
             <div class="bg-white py-1.5 px-3 rounded-xl border-2 ${isReEditCost ? 'border-rose-600 bg-rose-50/50' : 'border-rose-500'} flex items-center justify-between text-2xl sm:text-3xl font-black shadow-xs whitespace-nowrap">
               <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
-                ${isReEditCost ? '<span class="text-rose-700 shrink-0">🚨</span>' : isClassRecord ? '<span class="text-rose-700 shrink-0">🏛️</span>' : '<span class="text-rose-600 shrink-0">✗</span>'}
+                <span class="shrink-0 text-2xl">${icon}</span>
                 <span class="truncate">${r.name}</span>
               </span>
               <div class="flex items-center gap-2 shrink-0">
@@ -1513,10 +1573,11 @@
       } else {
         listAtt.innerHTML = attRecords.map((r, i) => {
           const isClassRecord = r.isClass === true;
+          const icon = getRuleIcon(r.name, isClassRecord, '⚠️');
           return `
             <div class="bg-white py-1.5 px-3 rounded-xl border-2 border-amber-500 flex items-center justify-between text-2xl sm:text-3xl font-black shadow-xs whitespace-nowrap">
               <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
-                ${isClassRecord ? '<span class="text-amber-800 shrink-0">🏛️</span>' : '<span class="text-amber-600 shrink-0">⚠️</span>'}
+                <span class="shrink-0 text-2xl">${icon}</span>
                 <span class="truncate">${r.name}</span>
               </span>
               <div class="flex items-center gap-2 shrink-0">
@@ -1637,7 +1698,7 @@
           return;
         }
         if (isSpec && dayData.classApplied.spec) {
-          showToast('今日科任表現已登記過！', 'error');
+          showToast('今日全班科任表現已登記過！', 'error');
           return;
         }
 
@@ -1658,13 +1719,13 @@
           dayData.classApplied.clean = { type, step };
           AudioEngine.playDeduct();
         } else if (type === 'spec_perfect') {
-          name = '科任課堂表現滿分';
+          name = '全班科任表現滿分';
           step = AppState.steppers.spec_perfect;
           category = 'good';
           dayData.classApplied.spec = { type, step };
           AudioEngine.playAdd();
         } else if (type === 'spec_fair') {
-          name = '科任課堂表現尚可';
+          name = '全班科任表現尚可';
           step = -AppState.steppers.spec_fair;
           category = 'attitude';
           dayData.classApplied.spec = { type, step };
@@ -1697,12 +1758,12 @@
           showToast('已重設今日整潔打掃紀錄', 'info');
         } else if (group === 'spec' && dayData.classApplied.spec) {
           const appliedType = dayData.classApplied.spec.type;
-          const targetName = appliedType === 'spec_perfect' ? '科任課堂表現滿分' : '科任課堂表現尚可';
+          const targetName = appliedType === 'spec_perfect' ? '全班科任表現滿分' : '全班科任表現尚可';
           STUDENTS.forEach(st => {
             dayData.records[st.id] = dayData.records[st.id].filter(r => !(r.isClass && r.name === targetName));
           });
           dayData.classApplied.spec = null;
-          showToast('已重設今日科任表現紀錄', 'info');
+          showToast('已重設今日全班科任表現紀錄', 'info');
         }
 
         AudioEngine.playDeduct();
@@ -1739,13 +1800,13 @@
 
         let stepperId = 'btn_step_good_1';
         if (ruleName === '個人工作完成') stepperId = 'btn_step_good_2';
-        else if (ruleName === '科任表現滿分') stepperId = 'btn_step_good_3';
+        else if (ruleName === '科任課好表現') stepperId = 'btn_step_good_3';
         else if (ruleName === '未準時繳交簿本') stepperId = 'btn_step_bad_1';
         else if (ruleName === '中午未準時回位') stepperId = 'btn_step_bad_2';
         else if (ruleName === '個人工作未完成') stepperId = 'btn_step_bad_3';
         else if (ruleName === '慢吞吞') stepperId = 'btn_step_att_1';
         else if (ruleName === '不細心') stepperId = 'btn_step_att_2';
-        else if (ruleName === '科任表現不佳') stepperId = 'btn_step_att_3';
+        else if (ruleName === '科任課待加油') stepperId = 'btn_step_att_3';
 
         const stepVal = parseInt(document.getElementById(stepperId).innerText, 10) || 1;
         const finalStep = sign * stepVal;
@@ -1867,7 +1928,6 @@
         persistDayData(AppState.currentDate);
       },
 
-      // 開啟「千里足跡存摺」彈窗
       openMileageModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('mileageModalTitle').innerText = `${maskName(st.name)} 的千里足跡`;
@@ -1995,6 +2055,7 @@
         document.getElementById('checkinHwModal').classList.add('hidden');
       },
 
+      // 🌟 作業訂正狀況彈窗：綠色當天完成 (+1) ＆ 黃色補訂正 (+1) 均計入加分
       openCorrectionModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('correctionModalTitle').innerText = `${maskName(st.name)} 作業訂正狀況`;
@@ -2029,12 +2090,13 @@
               labelText = '當天完成';
               scoreText = '+1';
             } else if (status === 'yellow') {
+              totalCorrectionScore += 1;
               statusBg = 'bg-amber-50/80 border-amber-300 text-amber-950';
               iconText = '✓';
               iconColor = 'text-amber-600';
               badgeBg = 'bg-yellow-100 border-yellow-300 text-yellow-950';
               labelText = '補訂正';
-              scoreText = '0';
+              scoreText = '+1';
             }
 
             const row = document.createElement('div');
@@ -2048,7 +2110,7 @@
                 <span class="px-3.5 py-1.5 rounded-xl border text-lg sm:text-xl font-black whitespace-nowrap ${badgeBg}">
                   ${labelText}
                 </span>
-                <span class="text-2xl sm:text-3xl font-num font-black whitespace-nowrap ${status === 'green' ? 'text-emerald-700' : 'text-stone-400'}">
+                <span class="text-2xl sm:text-3xl font-num font-black whitespace-nowrap ${(status === 'green' || status === 'yellow') ? 'text-emerald-700' : 'text-stone-400'}">
                   ${scoreText}
                 </span>
               </div>
@@ -2117,8 +2179,8 @@
           });
       },
 
-      // 今日歸檔封存：執行「Snapshot 拍照固化入帳」
-      archiveToday() {
+      // 🌟 今日歸檔封存：完整快照（Snapshot）拍照固化入帳，切斷日後打卡/訂正變更干擾
+      async archiveToday() {
         if (!AppState.isTeacher) return;
         const curDate = AppState.currentDate;
         const dayData = getDayData(curDate);
@@ -2166,10 +2228,13 @@
 
             const checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
 
-            // 4. 訂正
-            const greenCorrectionCount = correctionTasks.filter(tName => getCorrectionStatus(tName, st.id, curDate) === 'green').length;
-            const correctionScore = greenCorrectionCount;
-            const correctionPreviewText = correctionTasks.length === 0 ? '0 / 0 完成' : `${greenCorrectionCount} / ${correctionTasks.length} 完成`;
+            // 4. 訂正：綠色 ＆ 黃色補訂正均加分 (+1)
+            const doneCorrectionCount = correctionTasks.filter(tName => {
+              const stat = getCorrectionStatus(tName, st.id, curDate);
+              return stat === 'green' || stat === 'yellow';
+            }).length;
+            const correctionScore = doneCorrectionCount;
+            const correctionPreviewText = correctionTasks.length === 0 ? '0 / 0 完成' : `${doneCorrectionCount} / ${correctionTasks.length} 完成`;
 
             // 5. 表現
             const records = dayData.records[st.id] || [];
@@ -2197,13 +2262,13 @@
           showToast('已解除歸檔封存，恢復動態連動', 'info');
         }
 
-        persistDayData(curDate);
+        await persistDayData(curDate);
         renderDatePills();
         renderStudentCards();
       },
 
       showConnectionInfo() {
-        showToast('🟢 雙向即時連動中：打卡與訂正異動即時同步', 'success');
+        showToast('🟢 雙向即時連動中：打卡、訂正、加扣步即時全軌同步', 'success');
       }
     };
 
