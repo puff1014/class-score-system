@@ -36,7 +36,7 @@
       50% { transform: scale(1.04); opacity: 1; }
     }
     .footstep-anim { animation: footstep-pulse 3.6s ease-in-out infinite; }
-    .custom-scrollbar::-webkit-scrollbar { height: 5px; width: 5px; }
+    .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: #EFECE6; border-radius: 9999px; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #D3CDC2; border-radius: 9999px; }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #B5AD9F; }
@@ -71,7 +71,7 @@
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v3.3
+            v3.5
           </span>
         </div>
 
@@ -103,7 +103,7 @@
         </button>
 
         <div class="hidden sm:flex items-center bg-stone-100 px-3 py-2 rounded-2xl border-2 border-stone-200">
-          <select id="academicYearSelect" class="bg-transparent text-lg font-black text-stone-700 cursor-pointer outline-none">
+          <select id="academicYearSelect" onchange="window.appActions.changeAcademicYear(this.value)" class="bg-transparent text-lg font-black text-stone-700 cursor-pointer outline-none">
             <option value="115" selected>115學年度 (六甲)</option>
             <option value="114">114學年度 (五甲)</option>
           </select>
@@ -124,7 +124,6 @@
 
     <!-- 日期導航列 -->
     <div class="flex items-center justify-between gap-3 pt-4 mt-3 border-t-2 border-stone-100 flex-nowrap w-full">
-      
       <div class="flex items-center gap-1.5 bg-stone-100 px-3 py-1.5 rounded-2xl border-2 border-stone-200 shrink-0">
         <span class="text-lg sm:text-xl font-black text-stone-700 font-serif-tc whitespace-nowrap">實踐月：</span>
         <select id="practiceMonthSelect" onchange="window.appActions.changeMonth(this.value)" class="bg-white text-lg sm:text-xl font-black text-stone-800 border border-stone-300 rounded-xl px-2.5 py-0.5 cursor-pointer">
@@ -143,7 +142,6 @@
         </select>
       </div>
       
-      <!-- 中間標籤容器：完全受控，只有手動按 ＋ 才出現標籤 -->
       <div id="datePillsContainer" class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto custom-scrollbar flex-nowrap px-2 flex-1 min-w-0">
       </div>
 
@@ -162,7 +160,6 @@
           </button>
         </div>
 
-        <!-- ＋號：僅教師模式可見，點擊手動新增標籤 -->
         <button id="addDayBtn" onclick="window.appActions.promptAddNewDate()" class="hidden w-11 h-11 bg-emerald-50 border-2 border-emerald-300 hover:bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center text-2xl font-black shadow-xs stone-btn" title="將目前日期納入上課日清單">
           <i class="fa-solid fa-plus"></i>
         </button>
@@ -188,7 +185,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </header>
 
@@ -353,7 +349,6 @@
             </div>
           </div>
 
-          <!-- 左欄明細區（質感米灰石板底座） -->
           <div class="mt-3 p-3 bg-stone-200/90 border-2 border-stone-300 rounded-2xl flex-1 flex flex-col justify-start overflow-hidden shadow-inner">
             <span class="text-2xl font-black text-stone-700 mb-2 flex items-center justify-between">
               <span>📋 檢核紀錄明細</span>
@@ -373,7 +368,6 @@
                 <span>🚨</span> 持續進步
               </span>
             </div>
-            <!-- 按鈕尺寸完全對齊綠欄 text-2xl -->
             <div class="space-y-1">
               <div id="card_rule_bad_1" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
                 <button id="btn_rule_bad_1" onclick="window.appActions.applyStudentRule('未準時繳交簿本', -1, 'bad')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left">
@@ -410,7 +404,6 @@
             </div>
           </div>
 
-          <!-- 中欄明細區（質感米灰石板底座） -->
           <div class="mt-3 p-3 bg-stone-200/90 border-2 border-stone-300 rounded-2xl flex-1 flex flex-col justify-start overflow-hidden shadow-inner">
             <span class="text-2xl font-black text-stone-700 mb-2 flex items-center justify-between">
               <span>📋 檢核紀錄明細</span>
@@ -430,7 +423,6 @@
                 <span>🎯</span> 學習自律
               </span>
             </div>
-            <!-- 按鈕尺寸完全對齊綠欄 text-2xl -->
             <div class="space-y-1">
               <div id="card_rule_att_1" class="bg-white py-1.5 px-2.5 rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
                 <button id="btn_rule_att_1" onclick="window.appActions.applyStudentRule('慢吞吞', -1, 'attitude')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left">
@@ -467,7 +459,6 @@
             </div>
           </div>
 
-          <!-- 右欄明細區（質感米灰石板底座） -->
           <div class="mt-3 p-3 bg-stone-200/90 border-2 border-stone-300 rounded-2xl flex-1 flex flex-col justify-start overflow-hidden shadow-inner">
             <span class="text-2xl font-black text-stone-700 mb-2 flex items-center justify-between">
               <span>📋 檢核紀錄明細</span>
@@ -497,22 +488,64 @@
     </div>
   </div>
 
-  <!-- 訂正作業彈出視窗（對接訂正系統） -->
-  <div id="homeworkModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-full max-w-4xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col">
-      <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-6">
+  <!-- 【打卡系統作業獨立彈窗】：單行寬版、純數字不帶步字 -->
+  <div id="checkinHwModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[95vw] max-w-5xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
+      <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-4">
         <div class="flex items-center gap-3">
-          <span class="text-4xl">📘</span>
-          <h3 id="hwModalTitle" class="text-3xl sm:text-4xl font-black text-stone-900 font-serif-tc">作業訂正狀況</h3>
+          <span class="text-4xl">📝</span>
+          <h3 id="checkinHwModalTitle" class="text-3xl sm:text-4xl font-black text-stone-900 font-serif-tc">打卡作業繳交紀錄</h3>
         </div>
-        <button onclick="window.appActions.closeHomeworkModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
+        <button onclick="window.appActions.closeCheckinHwModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-      <div id="hwGridContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 max-h-[60vh] overflow-y-auto custom-scrollbar p-1">
+
+      <div class="flex items-center justify-between px-3 py-2 mb-3 bg-stone-100 rounded-2xl border border-stone-200 text-sm font-black text-stone-700">
+        <span>全交：+2 ｜ 每缺 1 項：-1</span>
+        <span id="checkinHwSummaryBadge" class="text-xl font-num font-black"></span>
       </div>
-      <div class="pt-4 border-t-2 border-stone-100 flex justify-end">
-        <button onclick="window.appActions.closeHomeworkModal()" class="px-8 py-3 bg-stone-900 hover:bg-stone-800 text-white font-black text-2xl rounded-2xl stone-btn shadow-md">
+
+      <!-- 單行不折行寬版列表容器 -->
+      <div id="checkinHwListContainer" class="space-y-2.5 overflow-y-auto custom-scrollbar flex-1 p-1">
+      </div>
+
+      <div class="pt-4 mt-3 border-t-2 border-stone-100 flex justify-end">
+        <button onclick="window.appActions.closeCheckinHwModal()" class="px-8 py-3 bg-stone-900 hover:bg-stone-800 text-white font-black text-2xl rounded-2xl stone-btn shadow-md">
+          關閉
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 【訂正系統作業獨立彈窗】：單行寬版、純數字不帶步字、對齊三色 -->
+  <div id="correctionModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[95vw] max-w-5xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
+      
+      <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-4">
+        <div class="flex items-center gap-3">
+          <span class="text-4xl">📘</span>
+          <h3 id="correctionModalTitle" class="text-3xl sm:text-4xl font-black text-stone-900 font-serif-tc">作業訂正狀況</h3>
+        </div>
+        <button onclick="window.appActions.closeCorrectionModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- 說明圖例 -->
+      <div class="flex flex-wrap items-center gap-4 px-3 py-2 mb-3 bg-stone-100 rounded-2xl border border-stone-200 text-sm font-black text-stone-700">
+        <span class="text-stone-500">狀態圖例：</span>
+        <span class="flex items-center gap-1 px-3 py-1 bg-emerald-100 border border-emerald-300 text-emerald-950 rounded-xl">🟢 當天完成 (+1)</span>
+        <span class="flex items-center gap-1 px-3 py-1 bg-yellow-100 border border-yellow-300 text-yellow-950 rounded-xl">🟡 補訂正已完成 (+1)</span>
+        <span class="flex items-center gap-1 px-3 py-1 bg-rose-100 border border-rose-300 text-rose-950 rounded-xl">🔴 還未訂正 (0)</span>
+      </div>
+
+      <!-- 單行不折行寬版列表容器 -->
+      <div id="correctionListContainer" class="space-y-2.5 overflow-y-auto custom-scrollbar flex-1 p-1">
+      </div>
+
+      <div class="pt-4 mt-3 border-t-2 border-stone-100 flex justify-end">
+        <button onclick="window.appActions.closeCorrectionModal()" class="px-8 py-3 bg-stone-900 hover:bg-stone-800 text-white font-black text-2xl rounded-2xl stone-btn shadow-md">
           關閉視窗
         </button>
       </div>
@@ -568,6 +601,7 @@
       { id: '9', no: 9, name: '周筱涵' },
       { id: '10', no: 10, name: '李婕妤' }
     ];
+    const SPECIAL_IDS = ['5', '7', '8'];
 
     function maskName(n) {
       if (!n) return '';
@@ -581,15 +615,19 @@
 
     const AppState = {
       isTeacher: false,
+      academicYear: '115',
       currentDate: getTodayString(),
       selectedMonth: String(new Date().getMonth() + 1),
       activeModalStudentId: null,
       steppers: { clean_done: 1, clean_fail: 1, spec_perfect: 1, spec_fair: 1 },
-      // 標籤絕對由 localStorage 儲存紀錄控管，絕不自動新增今日或明日
       recordedDays: JSON.parse(localStorage.getItem('six_grade_recorded_days') || '[]'),
       dailyData: {},
-      remoteTasks: {},       // 訂正系統中當天指派的作業清單
-      remoteAttendance: {}   // 訂正/打卡系統中的學生紀錄
+      // 訂正系統數據
+      correctionTasks: {},
+      correctionAttendance: {},
+      // 打卡系統數據
+      checkinAttendance: {},
+      checkinTasksAssigned: {} // 當天學生應繳交的任務（來自前一上課日航海日誌）
     };
 
     const firebaseConfig = {
@@ -659,11 +697,41 @@
       return AppState.dailyData[dateStr];
     }
 
-    // 核心邏輯：同時讀取《訂正作業表》與《打卡網頁》
+    // 核心讀取：同時精準抓取《打卡系統》與《訂正系統》
     async function fetchRealFirebaseData(dateStr) {
       if (!db) return;
       try {
-        // 1. 讀取《訂正作業表》
+        const prefix = AppState.academicYear === '114' ? '' : `${AppState.academicYear}_`;
+
+        // 1. 讀取《打卡系統》當日出席與自主勾選狀況
+        const attColName = prefix ? `${prefix}attendance_${dateStr}` : `attendance_${dateStr}`;
+        const attSnap = await db.collection(attColName).get();
+        AppState.checkinAttendance[dateStr] = {};
+        attSnap.forEach(d => {
+          AppState.checkinAttendance[dateStr][d.id] = d.data();
+        });
+
+        // 2. 讀取《打卡系統》前一上課日的航海日誌（得到當天應繳作業清單）
+        const annColName = `${prefix}announcements`;
+        const prevLogSnap = await db.collection(annColName)
+          .where("date", "<", dateStr)
+          .orderBy("date", "desc")
+          .limit(1)
+          .get();
+
+        const taskNames = [];
+        if (!prevLogSnap.empty) {
+          const rawItems = prevLogSnap.docs[0].data().items || [];
+          rawItems.forEach(t => {
+            const text = (typeof t === 'string' ? t : (t?.text || '')).trim();
+            if (text && !text.startsWith('※') && !text.startsWith(' ') && !text.includes('新航程開始')) {
+              taskNames.push(text);
+            }
+          });
+        }
+        AppState.checkinTasksAssigned[dateStr] = taskNames;
+
+        // 3. 讀取《訂正系統》當日派發作業與訂正狀態
         const assignmentsPath = '/artifacts/class-5a-app/public/data/assignments';
         const qSnapshot = await db.collection(assignmentsPath)
           .where('assignmentDate', '==', dateStr)
@@ -671,7 +739,6 @@
 
         const currentTasks = [];
         const currentSubmissionStatus = {};
-
         qSnapshot.forEach((doc) => {
           const data = doc.data();
           const assignName = data.assignmentName;
@@ -679,17 +746,8 @@
           currentSubmissionStatus[assignName] = data.submissionStatus || {};
         });
 
-        AppState.remoteTasks[dateStr] = currentTasks;
-        AppState.remoteAttendance[dateStr] = currentSubmissionStatus;
-
-        // 2. 同步讀取《打卡網頁》的生活習慣資料 (115_attendance_日期)
-        const attColl = db.collection(`115_attendance_${dateStr}`);
-        const attSnap = await attColl.get();
-        AppState.checkinAttendance = AppState.checkinAttendance || {};
-        AppState.checkinAttendance[dateStr] = {};
-        attSnap.forEach(d => {
-          AppState.checkinAttendance[dateStr][d.id] = d.data();
-        });
+        AppState.correctionTasks[dateStr] = currentTasks;
+        AppState.correctionAttendance[dateStr] = currentSubmissionStatus;
 
         renderStudentCards();
       } catch (err) {
@@ -697,10 +755,36 @@
       }
     }
 
-    // 判定單項作業是否為綠色勾勾（true 為綠勾/已訂正，false 為紅叉/缺交）
-    function isTaskDone(taskName, stAttDoc) {
-      if (!stAttDoc) return false;
-      return stAttDoc[taskName] === true;
+    // 打卡系統出席狀態判定邏輯
+    function getStudentCheckinStatus(studentId, dateStr) {
+      const doc = (AppState.checkinAttendance[dateStr] && AppState.checkinAttendance[dateStr][studentId]) || null;
+      if (!doc) return 'absent';
+      if (doc.manualAtt) return doc.manualAtt;
+      if (doc.status === 'sick') return 'sick';
+      if (doc.status === 'personal') return 'personal';
+
+      const time = doc.checkinTime;
+      if (!time) return 'absent';
+
+      const [h, m, s] = time.split(':').map(Number);
+      const totalS = h * 3600 + m * 60 + (s || 0);
+
+      // 特殊號 5, 7, 8 門檻為 08:10:30，一般生為 07:40:01
+      if (SPECIAL_IDS.includes(studentId)) {
+        return totalS >= (8 * 3600 + 10 * 60 + 30) ? 'late' : 'on-time';
+      }
+      return totalS >= (7 * 3600 + 40 * 60 + 1) ? 'late' : 'on-time';
+    }
+
+    // 訂正系統狀態判定：'green'（當天完成）, 'yellow'（補訂正已完成）, 'red'（還未訂正）
+    function getCorrectionStatus(taskName, studentId, dateStr) {
+      const attMap = AppState.correctionAttendance[dateStr] || {};
+      const statusMap = attMap[taskName] || {};
+      const val = statusMap[studentId];
+
+      if (val === true) return 'green';
+      if (val === 'late') return 'yellow';
+      return 'red';
     }
 
     const AudioEngine = {
@@ -781,20 +865,20 @@
       const dayData = getDayData(AppState.currentDate);
       const classApplied = dayData.classApplied || { clean: null, spec: null };
       const hasDatePill = AppState.recordedDays && AppState.recordedDays.includes(AppState.currentDate);
-    const isLocked = dayData.locked && !AppState.isTeacher;
-    const isDisabled = !hasDatePill || isLocked;
+      const isLocked = dayData.locked && !AppState.isTeacher;
+      const isDisabled = !hasDatePill || isLocked;
 
-    const cleanGroup = document.getElementById('cleanActionGroup');
-    const specGroup = document.getElementById('specActionGroup');
-    if (cleanGroup && specGroup) {
-      if (isDisabled) {
-        cleanGroup.classList.add('opacity-40', 'pointer-events-none');
-        specGroup.classList.add('opacity-40', 'pointer-events-none');
-      } else {
-        cleanGroup.classList.remove('opacity-40', 'pointer-events-none');
-        specGroup.classList.remove('opacity-40', 'pointer-events-none');
+      const cleanGroup = document.getElementById('cleanActionGroup');
+      const specGroup = document.getElementById('specActionGroup');
+      if (cleanGroup && specGroup) {
+        if (isDisabled) {
+          cleanGroup.classList.add('opacity-40', 'pointer-events-none');
+          specGroup.classList.add('opacity-40', 'pointer-events-none');
+        } else {
+          cleanGroup.classList.remove('opacity-40', 'pointer-events-none');
+          specGroup.classList.remove('opacity-40', 'pointer-events-none');
+        }
       }
-    }
       const cleanActionGroup = document.getElementById('cleanActionGroup');
       const cleanLockedBadge = document.getElementById('cleanLockedBadge');
       const cleanLockedText = document.getElementById('cleanLockedText');
@@ -929,6 +1013,7 @@
       }
     }
 
+    // 核心渲染：學生卡片
     function renderStudentCards() {
       const grid = document.getElementById('studentCardsContainer');
       grid.innerHTML = '';
@@ -937,40 +1022,106 @@
       const dayData = getDayData(curDate);
       const isDayLocked = dayData.locked;
 
-      const dayTasks = AppState.remoteTasks[curDate] || [];
-      const dayAttendance = AppState.remoteAttendance[curDate] || {};
+      // 打卡系統相關資料
+      const assignedHwList = AppState.checkinTasksAssigned[curDate] || [];
+      const studentCheckinMap = AppState.checkinAttendance[curDate] || {};
+
+      // 訂正系統相關資料
+      const correctionTasks = AppState.correctionTasks[curDate] || [];
 
       STUDENTS.forEach(st => {
         const isStudentLocked = !!dayData.studentLocked[st.id];
-        // 整理該學生在當天各作業的訂正狀況
-        const stAttDoc = {};
-        dayTasks.forEach(tName => {
-          stAttDoc[tName] = (dayAttendance[tName] && dayAttendance[tName][st.id] !== undefined)
-            ? dayAttendance[tName][st.id]
-            : false;
-        });
-        const studentCheckinDoc = (AppState.checkinAttendance && AppState.checkinAttendance[curDate])
-          ? (AppState.checkinAttendance[curDate][st.id] || {})
-          : {};
-        const completedTasks = studentCheckinDoc.completedTasks || {};
-        
-        // 1. 打卡網頁：自由心證勾選的三項習慣
-        const previewDone = !!completedTasks['複習+預習'];
+        const studentDoc = studentCheckinMap[st.id] || {};
+        const completedTasks = studentDoc.completedTasks || {};
+
+        // 1. 打卡上層：到校時間（準時綠色 +1 / 遲到紅色 -2）
+        const attStatus = getStudentCheckinStatus(st.id, curDate);
+        let arrivalScore = 0;
+        let arrivalLabel = '未到校';
+        let arrivalScoreText = '--';
+        let arrivalColorClass = 'text-stone-400';
+
+        if (attStatus === 'on-time') {
+          arrivalScore = 1;
+          arrivalLabel = '準時';
+          arrivalScoreText = '+1';
+          arrivalColorClass = 'text-emerald-600';
+        } else if (attStatus === 'late') {
+          arrivalScore = -2;
+          arrivalLabel = '遲到';
+          arrivalScoreText = '-2';
+          arrivalColorClass = 'text-rose-600';
+        } else if (attStatus === 'sick') {
+          arrivalScore = 0;
+          arrivalLabel = '病假';
+          arrivalScoreText = '0';
+          arrivalColorClass = 'text-purple-600';
+        } else if (attStatus === 'personal') {
+          arrivalScore = 0;
+          arrivalLabel = '事假';
+          arrivalScoreText = '0';
+          arrivalColorClass = 'text-orange-600';
+        }
+
+        // 2. 打卡中層：完成作業（自主勾選：全交綠色 完成 +2 / 缺交紅色 缺交 -n，每缺一項扣 1）
+        let missingHwCount = 0;
+        if (assignedHwList.length > 0) {
+          assignedHwList.forEach(tName => {
+            const isChecked = !!completedTasks[tName];
+            if (!isChecked) missingHwCount++;
+          });
+        }
+
+        let checkinHwScore = 0;
+        let checkinHwLabel = '作業';
+        let checkinHwScoreText = '0';
+        let checkinHwColorClass = 'text-stone-400';
+
+        if (assignedHwList.length === 0) {
+          checkinHwScore = 0;
+          checkinHwLabel = '本日無作業';
+          checkinHwScoreText = '0';
+          checkinHwColorClass = 'text-stone-500';
+        } else if (missingHwCount === 0) {
+          checkinHwScore = 2;
+          checkinHwLabel = '完成';
+          checkinHwScoreText = '+2';
+          checkinHwColorClass = 'text-emerald-600';
+        } else {
+          checkinHwScore = -missingHwCount;
+          checkinHwLabel = `缺交 -${missingHwCount}`;
+          checkinHwScoreText = `${checkinHwScore}`;
+          checkinHwColorClass = 'text-rose-600';
+        }
+
+        // 3. 打卡下層：三項生活習慣打卡（預習複習、帶學用品、訂正功課，三項全齊右上小計計入 +1）
+        const previewDone = !!completedTasks['複習+預習'] || !!completedTasks['預習複習'];
         const suppliesDone = !!completedTasks['帶學用品'];
         const checkinDone = !!completedTasks['訂正功課'];
-        const isAllCheckedIn = (previewDone && suppliesDone && checkinDone);
-        const checkinStep = isAllCheckedIn ? 1 : 0;
+        const isAllHabitsDone = (previewDone && suppliesDone && checkinDone);
+        const habitScore = isAllHabitsDone ? 1 : 0;
+        const habitScoreText = habitScore > 0 ? '+1' : '0';
+        const habitColorClass = habitScore > 0 ? 'text-emerald-600' : 'text-stone-400';
 
-        // 2. 訂正網頁：當天派發作業中「綠色勾勾（齊全）」的項目數量
-        const greenTasks = dayTasks.filter(tName => isTaskDone(tName, stAttDoc));
-        const hwDoneCount = greenTasks.length;
-        const hwTextPreview = greenTasks.join('、') || (dayTasks.length === 0 ? '本日未指派作業' : '尚無已訂正項目');
+        // 打卡區右上角純數字小計（到校 + 作業 + 習慣）
+        const checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
 
-        // 3. 表現步數
+        // 4. 訂正系統點擊統計（當天完成綠 + 補訂正黃各 +1，純數字展示）
+        const correctedCount = correctionTasks.filter(tName => {
+          const s = getCorrectionStatus(tName, st.id, curDate);
+          return s === 'green' || s === 'yellow';
+        }).length;
+        const correctionScore = correctedCount;
+        const correctionPreviewText = correctionTasks.length === 0
+          ? '本日未指派作業'
+          : `${correctedCount} / ${correctionTasks.length} 完成`;
+
+        // 5. 課堂表現步數
         const records = dayData.records[st.id] || [];
         const classroomScore = records.reduce((acc, r) => acc + r.step, 0);
 
-        const totalSteps = checkinStep + hwDoneCount + classroomScore;
+        // 總步數（純數字展示，不帶步字）
+        const totalScore = checkinSubtotal + correctionScore + classroomScore;
 
         const card = document.createElement('div');
         card.className = `bg-[#FFFDF9] rounded-3xl border-2 ${
@@ -980,63 +1131,104 @@
         card.innerHTML = `
           <div>
             <div class="flex items-center justify-between pb-2 border-b border-stone-100 gap-1">
-              <!-- 姓名縮至3xl~4xl並強制單行不折行 -->
               <span class="text-3xl sm:text-4xl font-black font-serif-tc text-stone-900 whitespace-nowrap tracking-tight">${maskName(st.name)}</span>
-              <!-- 右側膠囊移除「步」字，超大彩色旗子 + 超大步數 -->
+              <!-- 右上角彩色旗子 + 純數字總計（不帶步字） -->
               <div class="flex items-center gap-2 ${isStudentLocked ? 'bg-[#EFE8DF] border-[#8C6D52]/40' : 'bg-amber-50 border-amber-200'} px-3 py-1 rounded-2xl border shrink-0">
                 <i class="fa-solid fa-flag text-5xl sm:text-6xl drop-shadow-sm ${
                   ['text-rose-600', 'text-amber-500', 'text-yellow-500', 'text-emerald-500', 'text-teal-500', 'text-sky-500', 'text-indigo-600', 'text-purple-600', 'text-pink-500', 'text-orange-600'][(st.no - 1) % 10]
                 }"></i>
-                <span class="text-5xl sm:text-6xl font-num font-black ${isStudentLocked ? 'text-[#5C4028]' : 'text-amber-950'}">${totalSteps}</span>
+                <span class="text-5xl sm:text-6xl font-num font-black ${isStudentLocked ? 'text-[#5C4028]' : 'text-amber-950'}">${totalScore}</span>
               </div>
             </div>
 
             <div class="mt-4 space-y-3">
-              <!-- 打卡習慣：3項落實才+1步 -->
-              <div class="bg-[#FAF7F2] p-2.5 rounded-2xl border border-stone-200/70">
-                <div class="flex items-center justify-between mb-2">
-                  <span class="text-xl font-black text-stone-700 flex items-center gap-1">
+              <!-- 首頁打卡區：上中下三層（純數字、不帶步字） -->
+              <div class="bg-[#FAF7F2] p-3 rounded-2xl border border-stone-200/80 shadow-xs relative">
+                
+                <!-- 標題列與加大字體純數字小計 -->
+                <div class="flex items-center justify-between pb-2 mb-2 border-b border-stone-200/70">
+                  <span class="text-xl font-black text-stone-800 flex items-center gap-1.5 font-serif-tc">
                     <span>⌛</span> 打卡
                   </span>
-                  <span class="text-2xl font-num font-black ${checkinStep > 0 ? 'text-emerald-700' : 'text-stone-400'}">
-                    +${checkinStep} 步
-                  </span>
+                  <div class="flex items-center gap-1">
+                    <span class="text-xs font-bold text-stone-400">小計</span>
+                    <span class="text-3xl font-num font-black ${checkinSubtotal >= 0 ? 'text-emerald-700' : 'text-rose-700'}">
+                      ${checkinSubtotal >= 0 ? '+' : ''}${checkinSubtotal}
+                    </span>
+                  </div>
                 </div>
-                <div class="flex items-center justify-between gap-1 text-sm font-black whitespace-nowrap">
-                  <span class="px-2.5 py-1 rounded-lg ${previewDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200 text-stone-500'}">
-                    預習複習
-                  </span>
-                  <span class="px-2.5 py-1 rounded-lg ${suppliesDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200 text-stone-500'}">
-                    帶學用品
-                  </span>
-                  <span class="px-2.5 py-1 rounded-lg ${checkinDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200 text-stone-500'}">
-                    訂正功課
-                  </span>
+
+                <div class="space-y-2">
+                  <!-- 上層：到校時間 -->
+                  <div class="bg-white/80 px-2.5 py-1.5 rounded-xl border border-stone-200 flex items-center justify-between">
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-base font-bold text-stone-700">到校：</span>
+                      <span class="text-sm font-black px-2 py-0.5 rounded-lg ${arrivalScore > 0 ? 'bg-emerald-100 text-emerald-900' : arrivalScore < 0 ? 'bg-rose-100 text-rose-900' : 'bg-stone-100 text-stone-600'}">
+                        ${arrivalLabel}
+                      </span>
+                    </div>
+                    <span class="text-2xl font-num font-black ${arrivalColorClass}">
+                      ${arrivalScoreText}
+                    </span>
+                  </div>
+
+                  <!-- 中層：完成作業（可點擊開啟打卡作業獨立彈窗） -->
+                  <div onclick="window.appActions.openCheckinHwModal('${st.id}')" class="bg-white/80 hover:bg-emerald-50/60 transition cursor-pointer px-2.5 py-1.5 rounded-xl border border-stone-200 flex items-center justify-between">
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-base font-bold text-stone-700">作業：</span>
+                      <span class="text-sm font-black px-2 py-0.5 rounded-lg ${checkinHwScore > 0 ? 'bg-emerald-100 text-emerald-900' : checkinHwScore < 0 ? 'bg-rose-100 text-rose-900' : 'bg-stone-100 text-stone-600'}">
+                        ${checkinHwLabel}
+                      </span>
+                    </div>
+                    <span class="text-2xl font-num font-black ${checkinHwColorClass}">
+                      ${checkinHwScoreText}
+                    </span>
+                  </div>
+
+                  <!-- 下層：三項生活習慣打卡 -->
+                  <div class="bg-white/80 p-2 rounded-xl border border-stone-200 space-y-1.5">
+                    <div class="flex items-center justify-between text-xs text-stone-500 font-bold">
+                      <span>生活習慣 (全齊計入)</span>
+                      <span class="text-lg font-num font-black ${habitColorClass}">${habitScoreText}</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-1 text-xs sm:text-sm font-black whitespace-nowrap">
+                      <span class="px-2 py-1 rounded-lg flex-1 text-center ${previewDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-100 text-stone-400 border border-stone-200'}">
+                        預習複習
+                      </span>
+                      <span class="px-2 py-1 rounded-lg flex-1 text-center ${suppliesDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-100 text-stone-400 border border-stone-200'}">
+                        帶學用品
+                      </span>
+                      <span class="px-2 py-1 rounded-lg flex-1 text-center ${checkinDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-100 text-stone-400 border border-stone-200'}">
+                        訂正功課
+                      </span>
+                    </div>
+                  </div>
                 </div>
+
               </div>
 
-              <!-- 訂正狀況：綠色勾勾一項+1步 -->
-              <div onclick="window.appActions.openHomeworkModal('${st.id}')" class="bg-[#F4F9FF] p-2.5 rounded-2xl border border-blue-200/70 cursor-pointer hover:bg-blue-100/50 transition">
+              <!-- 訂正狀況區塊：點擊開啟訂正作業獨立彈窗 -->
+              <div onclick="window.appActions.openCorrectionModal('${st.id}')" class="bg-[#F4F9FF] p-2.5 rounded-2xl border border-blue-200/70 cursor-pointer hover:bg-blue-100/50 transition">
                 <div class="flex items-center justify-between mb-1">
-                  <span class="text-xl font-black text-blue-950 flex items-center gap-1">
+                  <span class="text-xl font-black text-blue-950 flex items-center gap-1 font-serif-tc">
                     <span>📘</span> 訂正
                   </span>
                   <span class="text-2xl font-num font-black text-blue-800">
-                    +${hwDoneCount} 步
+                    +${correctionScore}
                   </span>
                 </div>
-                <div class="text-base font-bold text-stone-600 truncate" title="${hwTextPreview}">
-                  ${hwTextPreview}
+                <div class="text-sm font-bold text-stone-600 truncate" title="${correctionPreviewText}">
+                  ${correctionPreviewText}
                 </div>
               </div>
 
               <!-- 課堂表現步數 -->
               <div class="bg-[#FFF9F2] p-2.5 rounded-2xl border border-amber-200/70 flex items-center justify-between">
-                <span class="text-xl font-black text-amber-950 flex items-center gap-1">
+                <span class="text-xl font-black text-amber-950 flex items-center gap-1 font-serif-tc">
                   <span>🏆</span> 表現
                 </span>
                 <span class="text-2xl font-num font-black ${classroomScore >= 0 ? 'text-emerald-700' : 'text-rose-700'}">
-                  ${classroomScore >= 0 ? '+' : ''}${classroomScore} 步
+                  ${classroomScore >= 0 ? '+' : ''}${classroomScore}
                 </span>
               </div>
             </div>
@@ -1086,76 +1278,82 @@
       document.getElementById('count_att_records').innerText = `${attRecords.length}筆`;
 
       const listGood = document.getElementById('list_good_records');
-    if (goodRecords.length === 0) {
-      listGood.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4 font-bold">今日尚未加步數</div>';
-    } else {
-      listGood.innerHTML = goodRecords.map((r, i) => {
-        const isClassRecord = r.isClass === true;
-        return `
-          <div class="bg-white py-1.5 px-3 rounded-xl border-2 border-emerald-500 flex items-center justify-between text-2xl sm:text-3xl font-black shadow-xs whitespace-nowrap">
-            <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
-              ${isClassRecord ? '<span class="text-emerald-700 shrink-0">🏛️</span>' : '<span class="text-emerald-600 shrink-0">✓</span>'}
-              <span class="truncate">${r.name}</span>
-            </span>
-            <div class="flex items-center gap-2 shrink-0">
-              <span class="text-stone-400 text-sm font-num font-normal tracking-tight">${r.time || ''}</span>
-              <span class="text-emerald-700 font-num text-2xl sm:text-3xl font-black">+${r.step}步</span>
-              ${!isFullyDisabled && !isClassRecord ? `<button onclick="window.appActions.removeRecord('${studentId}', 'good',${i})" class="text-stone-400 hover:text-rose-600 text-2xl font-black px-1 leading-none">✕</button>` : ''}
+      if (goodRecords.length === 0) {
+        listGood.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4 font-bold">今日尚未加步數</div>';
+      } else {
+        listGood.innerHTML = goodRecords.map((r, i) => {
+          const isClassRecord = r.isClass === true;
+          return `
+            <div class="bg-white py-1.5 px-3 rounded-xl border-2 border-emerald-500 flex items-center justify-between text-2xl sm:text-3xl font-black shadow-xs whitespace-nowrap">
+              <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
+                ${isClassRecord ? '<span class="text-emerald-700 shrink-0">🏛️</span>' : '<span class="text-emerald-600 shrink-0">✓</span>'}
+                <span class="truncate">${r.name}</span>
+              </span>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-stone-400 text-sm font-num font-normal tracking-tight">${r.time || ''}</span>
+                <span class="text-emerald-700 font-num text-2xl sm:text-3xl font-black">+${r.step}</span>
+                ${!isFullyDisabled && !isClassRecord ? `<button onclick="window.appActions.removeRecord('${studentId}', 'good',${i})" class="text-stone-400 hover:text-rose-600 text-2xl font-black px-1 leading-none">✕</button>` : ''}
+              </div>
             </div>
-          </div>
-        `;
-      }).join('');
+          `;
+        }).join('');
+      }
+
+      const listBad = document.getElementById('list_bad_records');
+      if (badRecords.length === 0) {
+        listBad.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4 font-bold">今日無扣減步數</div>';
+      } else {
+        listBad.innerHTML = badRecords.map((r, i) => {
+          const isClassRecord = r.isClass === true;
+          const isReEditCost = r.name === '結算後修改';
+          return `
+            <div class="bg-white py-1.5 px-3 rounded-xl border-2 ${isReEditCost ? 'border-rose-600 bg-rose-50/50' : 'border-rose-500'} flex items-center justify-between text-2xl sm:text-3xl font-black shadow-xs whitespace-nowrap">
+              <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
+                ${isReEditCost ? '<span class="text-rose-700 shrink-0">🚨</span>' : isClassRecord ? '<span class="text-rose-700 shrink-0">🏛️</span>' : '<span class="text-rose-600 shrink-0">✗</span>'}
+                <span class="truncate">${r.name}</span>
+              </span>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-stone-400 text-sm font-num font-normal tracking-tight">${r.time || ''}</span>
+                <span class="text-rose-700 font-num text-2xl sm:text-3xl font-black">${r.step}</span>
+                ${!isFullyDisabled && !isClassRecord && !isReEditCost ? `<button onclick="window.appActions.removeRecord('${studentId}', 'bad',${i})" class="text-stone-400 hover:text-rose-600 text-2xl font-black px-1 leading-none">✕</button>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const listAtt = document.getElementById('list_att_records');
+      if (attRecords.length === 0) {
+        listAtt.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4 font-bold">今日無自律扣步</div>';
+      } else {
+        listAtt.innerHTML = attRecords.map((r, i) => {
+          const isClassRecord = r.isClass === true;
+          return `
+            <div class="bg-white py-1.5 px-3 rounded-xl border-2 border-amber-500 flex items-center justify-between text-2xl sm:text-3xl font-black shadow-xs whitespace-nowrap">
+              <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
+                ${isClassRecord ? '<span class="text-amber-800 shrink-0">🏛️</span>' : '<span class="text-amber-600 shrink-0">⚠️</span>'}
+                <span class="truncate">${r.name}</span>
+              </span>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-stone-400 text-sm font-num font-normal tracking-tight">${r.time || ''}</span>
+                <span class="text-amber-800 font-num text-2xl sm:text-3xl font-black">${r.step}</span>
+                ${!isFullyDisabled && !isClassRecord ? `<button onclick="window.appActions.removeRecord('${studentId}', 'attitude',${i})" class="text-stone-400 hover:text-rose-600 text-2xl font-black px-1 leading-none">✕</button>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const totalModalClassroom = records.reduce((acc, r) => acc + r.step, 0);
+      document.getElementById('modalCurrentScore').innerText = `🚩 ${totalModalClassroom >= 0 ? '+' : ''}${totalModalClassroom}`;
     }
 
-    const listBad = document.getElementById('list_bad_records');
-    if (badRecords.length === 0) {
-      listBad.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4 font-bold">今日無扣減步數</div>';
-    } else {
-      listBad.innerHTML = badRecords.map((r, i) => {
-        const isClassRecord = r.isClass === true;
-        const isReEditCost = r.name === '結算後修改';
-        return `
-          <div class="bg-white py-1.5 px-3 rounded-xl border-2 ${isReEditCost ? 'border-rose-600 bg-rose-50/50' : 'border-rose-500'} flex items-center justify-between text-2xl sm:text-3xl font-black shadow-xs whitespace-nowrap">
-            <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
-              ${isReEditCost ? '<span class="text-rose-700 shrink-0">🚨</span>' : isClassRecord ? '<span class="text-rose-700 shrink-0">🏛️</span>' : '<span class="text-rose-600 shrink-0">✗</span>'}
-              <span class="truncate">${r.name}</span>
-            </span>
-            <div class="flex items-center gap-2 shrink-0">
-              <span class="text-stone-400 text-sm font-num font-normal tracking-tight">${r.time || ''}</span>
-              <span class="text-rose-700 font-num text-2xl sm:text-3xl font-black">${r.step}步</span>
-              ${!isFullyDisabled && !isClassRecord && !isReEditCost ? `<button onclick="window.appActions.removeRecord('${studentId}', 'bad',${i})" class="text-stone-400 hover:text-rose-600 text-2xl font-black px-1 leading-none">✕</button>` : ''}
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    const listAtt = document.getElementById('list_att_records');
-    if (attRecords.length === 0) {
-      listAtt.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4 font-bold">今日無自律扣步</div>';
-    } else {
-      listAtt.innerHTML = attRecords.map((r, i) => {
-        const isClassRecord = r.isClass === true;
-        return `
-          <div class="bg-white py-1.5 px-3 rounded-xl border-2 border-amber-500 flex items-center justify-between text-2xl sm:text-3xl font-black shadow-xs whitespace-nowrap">
-            <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
-              ${isClassRecord ? '<span class="text-amber-800 shrink-0">🏛️</span>' : '<span class="text-amber-600 shrink-0">⚠️</span>'}
-              <span class="truncate">${r.name}</span>
-            </span>
-            <div class="flex items-center gap-2 shrink-0">
-              <span class="text-stone-400 text-sm font-num font-normal tracking-tight">${r.time || ''}</span>
-              <span class="text-amber-800 font-num text-2xl sm:text-3xl font-black">${r.step}步</span>
-              ${!isFullyDisabled && !isClassRecord ? `<button onclick="window.appActions.removeRecord('${studentId}', 'attitude',${i})" class="text-stone-400 hover:text-rose-600 text-2xl font-black px-1 leading-none">✕</button>` : ''}
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    const totalModalClassroom = records.reduce((acc, r) => acc + r.step, 0);
-    document.getElementById('modalCurrentScore').innerText = `🚩 ${totalModalClassroom >= 0 ? '+' : ''}${totalModalClassroom} 步`;
-  }
     window.appActions = {
+      changeAcademicYear(val) {
+        AppState.academicYear = val;
+        fetchRealFirebaseData(AppState.currentDate);
+      },
+
       selectDate(dateStr) {
         AppState.currentDate = dateStr;
         const monthNum = String(parseInt(dateStr.split('-')[1], 10));
@@ -1225,18 +1423,17 @@
       },
 
       applyClassRule(type) {
-      // 檢查是否已登記上課日標籤
-      const hasDatePill = AppState.recordedDays && AppState.recordedDays.includes(AppState.currentDate);
-      if (!hasDatePill) {
-        showToast('⚠️ 今日尚未登記上課日標籤，請先點擊上方「＋」新增！', 'error');
-        return;
-      }
+        const hasDatePill = AppState.recordedDays && AppState.recordedDays.includes(AppState.currentDate);
+        if (!hasDatePill) {
+          showToast('⚠️ 今日尚未登記上課日標籤，請先點擊上方「＋」新增！', 'error');
+          return;
+        }
 
-      const dayData = getDayData(AppState.currentDate);
-      if (dayData.locked && !AppState.isTeacher) {
-        showToast('今日已歸檔鎖定，無法加扣步數！', 'error');
-        return;
-      }
+        const dayData = getDayData(AppState.currentDate);
+        if (dayData.locked && !AppState.isTeacher) {
+          showToast('今日已歸檔鎖定，無法加扣分！', 'error');
+          return;
+        }
 
         const isClean = type.startsWith('clean_');
         const isSpec = type.startsWith('spec_');
@@ -1288,7 +1485,7 @@
         AppState.steppers[type] = 1;
         document.getElementById(`step_${type}`).innerText = 1;
 
-        showToast(`全班已套用：${name} (${step >= 0 ? '+' : ''}${step}步)`, 'success');
+        showToast(`全班已套用：${name} (${step >= 0 ? '+' : ''}${step})`, 'success');
         renderStudentCards();
         renderClassActionState();
       },
@@ -1331,18 +1528,17 @@
         const studentId = AppState.activeModalStudentId;
         if (!studentId) return;
 
-        // 檢查是否已登記上課日標籤
-      const hasDatePill = AppState.recordedDays && AppState.recordedDays.includes(AppState.currentDate);
-      if (!hasDatePill) {
-        showToast('⚠️ 今日尚未登記上課日標籤，請先點擊上方「＋」新增！', 'error');
-        return;
-      }
+        const hasDatePill = AppState.recordedDays && AppState.recordedDays.includes(AppState.currentDate);
+        if (!hasDatePill) {
+          showToast('⚠️ 今日尚未登記上課日標籤，請先點擊上方「＋」新增！', 'error');
+          return;
+        }
 
-      const dayData = getDayData(AppState.currentDate);
-      if ((dayData.locked || dayData.studentLocked[studentId]) && !AppState.isTeacher) {
-        showToast('今日紀錄已鎖定，無法更改！', 'error');
-        return;
-      }
+        const dayData = getDayData(AppState.currentDate);
+        if ((dayData.locked || dayData.studentLocked[studentId]) && !AppState.isTeacher) {
+          showToast('今日紀錄已鎖定，無法更改！', 'error');
+          return;
+        }
         const records = dayData.records[studentId];
         if (records.some(r => r.name === ruleName && !r.isClass)) {
           showToast(`此項「${ruleName}」今日已登記過！`, 'error');
@@ -1377,7 +1573,7 @@
 
         renderModalRecords();
         renderStudentCards();
-        showToast(`已登記：${ruleName} (${finalStep >= 0 ? '+' : ''}${finalStep}步)`, 'success');
+        showToast(`已登記：${ruleName} (${finalStep >= 0 ? '+' : ''}${finalStep})`, 'success');
       },
 
       removeRecord(studentId, category, indexInCategory) {
@@ -1388,7 +1584,6 @@
         }
 
         const records = dayData.records[studentId];
-        // 依照顯示的排序規則同步排序，確保點選的序號 100% 精準對齊
         const sortRecords = (arr) => {
           return [...arr].sort((a, b) => {
             if (a.isClass && !b.isClass) return 1;
@@ -1431,7 +1626,7 @@
             lockBadge.classList.add('hidden');
             reEditNotice.classList.remove('hidden');
             submitBtn.classList.remove('hidden');
-            submitText.innerText = '完成修訂並重新鎖定 (-1步)';
+            submitText.innerText = '完成修訂並重新鎖定 (-1)';
           } else {
             lockBadge.classList.remove('hidden');
             reEditNotice.classList.add('hidden');
@@ -1468,7 +1663,7 @@
             category: 'bad',
             isClass: false
           });
-          showToast('已完成重審修訂（套用手續費 -1步）', 'info');
+          showToast('已完成重審修訂（套用手續費 -1）', 'info');
         } else {
           showToast('已完成結算並鎖定紀錄！', 'success');
         }
@@ -1479,50 +1674,127 @@
         renderStudentCards();
       },
 
-      // 訂正彈窗：清楚呈現當天作業是綠色勾勾（齊全）還是紅色叉叉（缺交）
-      openHomeworkModal(studentId) {
+      // 【打卡作業獨立彈窗】：單行寬版、純數字不帶步字
+      openCheckinHwModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
-        document.getElementById('hwModalTitle').innerText = `${maskName(st.name)} 作業訂正狀況`;
-        const container = document.getElementById('hwGridContainer');
+        document.getElementById('checkinHwModalTitle').innerText = `${maskName(st.name)} 打卡作業自主勾選紀錄`;
+        const container = document.getElementById('checkinHwListContainer');
         container.innerHTML = '';
 
         const curDate = AppState.currentDate;
-        const dayTasks = AppState.remoteTasks[curDate] || [];
-        const dayAttendance = AppState.remoteAttendance[curDate] || {};
-        const stAttDoc = {};
-        dayTasks.forEach(tName => {
-          stAttDoc[tName] = (dayAttendance[tName] && dayAttendance[tName][studentId] !== undefined)
-            ? dayAttendance[tName][studentId]
-            : false;
-        });
+        const assignedHwList = AppState.checkinTasksAssigned[curDate] || [];
+        const studentDoc = (AppState.checkinAttendance[curDate] && AppState.checkinAttendance[curDate][studentId]) || {};
+        const completedTasks = studentDoc.completedTasks || {};
 
-        if (dayTasks.length === 0) {
-          container.innerHTML = '<div class="col-span-2 text-stone-400 font-black text-2xl text-center py-8">本日訂正系統尚未指派任何作業項目</div>';
+        let missingCount = 0;
+
+        if (assignedHwList.length === 0) {
+          container.innerHTML = '<div class="text-stone-400 font-bold text-2xl text-center py-10">本日航海日誌無作業任務</div>';
+          document.getElementById('checkinHwSummaryBadge').innerText = '0';
+          document.getElementById('checkinHwSummaryBadge').className = 'text-xl font-num font-black text-stone-500';
         } else {
-          dayTasks.forEach(tName => {
-            const isDone = isTaskDone(tName, stAttDoc);
-            const div = document.createElement('div');
-            div.className = `p-4 sm:p-5 rounded-2xl border-2 flex items-center justify-between text-2xl sm:text-3xl font-black ${
-              isDone ? 'bg-emerald-50 text-emerald-950 border-emerald-300' : 'bg-rose-50 text-rose-950 border-rose-300'
+          assignedHwList.forEach(tName => {
+            const isDone = !!completedTasks[tName];
+            if (!isDone) missingCount++;
+
+            const row = document.createElement('div');
+            row.className = `p-3.5 sm:p-4 rounded-2xl border-2 flex items-center justify-between gap-4 whitespace-nowrap shadow-xs ${
+              isDone ? 'bg-emerald-50 border-emerald-300 text-emerald-950' : 'bg-rose-50 border-rose-300 text-rose-950'
             }`;
-            div.innerHTML = `
-              <div class="flex items-center gap-3">
-                <span class="text-3xl ${isDone ? 'text-emerald-600' : 'text-rose-600'}">${isDone ? '✓' : '✗'}</span>
-                <span>${tName}</span>
+            row.innerHTML = `
+              <div class="flex items-center gap-3 min-w-0 flex-1">
+                <span class="text-3xl font-black ${isDone ? 'text-emerald-600' : 'text-rose-600'} shrink-0">${isDone ? '✓' : '✗'}</span>
+                <span class="text-2xl sm:text-3xl font-black font-serif-tc truncate text-stone-900">${tName}</span>
               </div>
-              <span class="text-xl font-num px-3 py-1 rounded-xl ${isDone ? 'bg-emerald-200/80 text-emerald-900' : 'bg-rose-200/80 text-rose-900'}">
-                ${isDone ? '+1 步 (齊全)' : '+0 步 (未訂正)'}
-              </span>
+              <div class="flex items-center gap-3 shrink-0">
+                <span class="px-3.5 py-1.5 rounded-xl border text-lg sm:text-xl font-black ${isDone ? 'bg-emerald-100 border-emerald-300 text-emerald-900' : 'bg-rose-100 border-rose-300 text-rose-900'}">
+                  ${isDone ? '已完成' : '缺交'}
+                </span>
+                <span class="text-2xl sm:text-3xl font-num font-black ${isDone ? 'text-emerald-700' : 'text-rose-600'}">
+                  ${isDone ? '+0' : '-1'}
+                </span>
+              </div>
             `;
-            container.appendChild(div);
+            container.appendChild(row);
+          });
+
+          const finalScore = missingCount === 0 ? '+2' : `-${missingCount}`;
+          const badge = document.getElementById('checkinHwSummaryBadge');
+          badge.innerText = `總結算：${finalScore}`;
+          badge.className = `text-xl font-num font-black ${missingCount === 0 ? 'text-emerald-700' : 'text-rose-700'}`;
+        }
+
+        document.getElementById('checkinHwModal').classList.remove('hidden');
+      },
+
+      closeCheckinHwModal() {
+        document.getElementById('checkinHwModal').classList.add('hidden');
+      },
+
+      // 【訂正作業獨立彈窗】：單行寬版、純數字不帶步字、對齊三色
+      openCorrectionModal(studentId) {
+        const st = STUDENTS.find(s => s.id === studentId);
+        document.getElementById('correctionModalTitle').innerText = `${maskName(st.name)} 作業訂正狀況`;
+        const container = document.getElementById('correctionListContainer');
+        container.innerHTML = '';
+
+        const curDate = AppState.currentDate;
+        const correctionTasks = AppState.correctionTasks[curDate] || [];
+
+        if (correctionTasks.length === 0) {
+          container.innerHTML = '<div class="text-stone-400 font-bold text-2xl text-center py-10">本日訂正系統尚未指派任何作業項目</div>';
+        } else {
+          correctionTasks.forEach(tName => {
+            const status = getCorrectionStatus(tName, studentId, curDate);
+
+            let statusBg = 'bg-rose-50 border-rose-300 text-rose-950';
+            let iconText = '✗';
+            let iconColor = 'text-rose-600';
+            let badgeBg = 'bg-rose-100 border-rose-300 text-rose-900';
+            let labelText = '還未訂正';
+            let scoreText = '0';
+
+            if (status === 'green') {
+              statusBg = 'bg-emerald-50 border-emerald-300 text-emerald-950';
+              iconText = '✓';
+              iconColor = 'text-emerald-600';
+              badgeBg = 'bg-emerald-100 border-emerald-300 text-emerald-950';
+              labelText = '當天完成';
+              scoreText = '+1';
+            } else if (status === 'yellow') {
+              statusBg = 'bg-amber-50/80 border-amber-300 text-amber-950';
+              iconText = '✓';
+              iconColor = 'text-amber-600';
+              badgeBg = 'bg-yellow-100 border-yellow-300 text-yellow-950';
+              labelText = '補訂正已完成';
+              scoreText = '+1';
+            }
+
+            const row = document.createElement('div');
+            row.className = `p-3.5 sm:p-4 rounded-2xl border-2 flex items-center justify-between gap-4 whitespace-nowrap shadow-xs ${statusBg}`;
+            row.innerHTML = `
+              <div class="flex items-center gap-3 min-w-0 flex-1">
+                <span class="text-3xl font-black ${iconColor} shrink-0">${iconText}</span>
+                <span class="text-2xl sm:text-3xl font-black font-serif-tc truncate text-stone-900">${tName}</span>
+              </div>
+              <div class="flex items-center gap-3 shrink-0">
+                <span class="px-3.5 py-1.5 rounded-xl border text-lg sm:text-xl font-black ${badgeBg}">
+                  ${labelText}
+                </span>
+                <span class="text-2xl sm:text-3xl font-num font-black ${status === 'red' ? 'text-rose-600' : 'text-emerald-700'}">
+                  ${scoreText}
+                </span>
+              </div>
+            `;
+            container.appendChild(row);
           });
         }
 
-        document.getElementById('homeworkModal').classList.remove('hidden');
+        document.getElementById('correctionModal').classList.remove('hidden');
       },
 
-      closeHomeworkModal() {
-        document.getElementById('homeworkModal').classList.add('hidden');
+      closeCorrectionModal() {
+        document.getElementById('correctionModal').classList.add('hidden');
       },
 
       toggleAuthModal() {
