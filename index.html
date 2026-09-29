@@ -75,7 +75,7 @@
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v5.2
+            v5.3
           </span>
         </div>
 
@@ -258,7 +258,7 @@
             </div>
             <div class="flex items-center gap-1.5 bg-amber-50 border-2 border-amber-400 rounded-2xl p-1 shadow-xs">
               <button onclick="window.appActions.applyClassRule('spec_fair')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-3xl font-black flex items-center justify-center stone-btn" title="全班科任課表現尚可套用扣步">
-                <span>☹️</span>
+                <span>☹️️</span>
               </button>
               <div class="flex items-center gap-1 bg-white rounded-xl px-2 py-1 border border-amber-300">
                 <button onclick="window.appActions.adjustClassStepper('spec_fair', -1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-100 rounded">-</button>
@@ -359,7 +359,7 @@
               <span id="count_good_records" class="font-num text-2xl text-emerald-800 font-bold">0筆</span>
             </span>
             <div id="list_good_records" class="space-y-2 overflow-hidden flex-1">
-              <div class="text-stone-400 text-3xl text-center py-4 font-bold">今日尚未加步數</div>
+              <div class="text-stone-400 text-3xl text-center py-4 font-bold font-serif-tc">今日尚未加步數</div>
             </div>
           </div>
         </div>
@@ -414,7 +414,7 @@
               <span id="count_bad_records" class="font-num text-2xl text-rose-800 font-bold">0筆</span>
             </span>
             <div id="list_bad_records" class="space-y-2 overflow-hidden flex-1">
-              <div class="text-stone-400 text-3xl text-center py-4 font-bold">今日無扣減步數</div>
+              <div class="text-stone-400 text-3xl text-center py-4 font-bold font-serif-tc">今日無扣減步數</div>
             </div>
           </div>
         </div>
@@ -469,19 +469,25 @@
               <span id="count_att_records" class="font-num text-2xl text-amber-800 font-bold">0筆</span>
             </span>
             <div id="list_att_records" class="space-y-2 overflow-hidden flex-1">
-              <div class="text-stone-400 text-3xl text-center py-4 font-bold">今日無自律扣步</div>
+              <div class="text-stone-400 text-3xl text-center py-4 font-bold font-serif-tc">今日無自律扣步</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 彈窗底部結算列 -->
-      <div class="px-8 py-3 bg-stone-100/90 border-t-2 border-stone-200 flex flex-wrap items-center justify-between gap-4 shrink-0">
+      <!-- 🌟 彈窗底部結算列：加入教師專屬「🔓 解除結算鎖定」按鈕 -->
+      <div class="px-8 py-3.5 bg-stone-100/90 border-t-2 border-stone-200 flex flex-wrap items-center justify-between gap-4 shrink-0">
         <div class="flex items-center gap-4">
           <span class="text-3xl font-black text-stone-700 font-serif-tc">當前表現結算：</span>
           <span id="modalCurrentScore" class="text-5xl font-black font-num text-stone-900">🚩 0</span>
         </div>
         <div class="flex items-center gap-3">
+          <!-- 老師專屬：一鍵解除鎖定按鈕 -->
+          <button id="modalUnlockBtn" onclick="window.appActions.unlockStudentAudit()" class="hidden px-6 py-3 bg-stone-300 hover:bg-stone-400 text-stone-900 border-2 border-stone-500 text-2xl sm:text-3xl font-black rounded-2xl shadow-xs stone-btn flex items-center gap-2">
+            <span>🔓</span>
+            <span>解除結算鎖定</span>
+          </button>
+          
           <button id="modalSubmitBtn" onclick="window.appActions.submitStudentAudit()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-3xl font-black rounded-2xl shadow-md stone-btn flex items-center gap-2">
             <i class="fa-solid fa-check-to-slot"></i>
             <span id="modalSubmitText">完成並送出結算</span>
@@ -1222,7 +1228,6 @@
         let checkinSubtotal, correctionScore, correctionPreviewText, classroomScore, totalScore;
 
         if (isDayLocked && dayData.snapshot && dayData.snapshot[st.id]) {
-          // 🔒 已封存：100% 讀取固化快照數據
           const snap = dayData.snapshot[st.id];
           arrivalScore = snap.arrivalScore;
           arrivalLabel = snap.arrivalLabel;
@@ -1244,7 +1249,6 @@
           classroomScore = snap.classroomScore;
           totalScore = snap.totalScore;
         } else {
-          // 🟢 未封存：動態即時計算
           const studentDoc = studentCheckinMap[st.id] || {};
           const completedTasks = studentDoc.completedTasks || {};
 
@@ -1292,13 +1296,12 @@
 
           checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
 
-          // 4. 訂正：綠色 ＆ 黃色補訂正均加步 (+1)
+          // 4. 訂正
           const doneCorrectionCount = correctionTasks.filter(tName => {
             const stat = getCorrectionStatus(tName, st.id, curDate);
             return stat === 'green' || stat === 'yellow';
           }).length;
           correctionScore = doneCorrectionCount;
-          // 🌟 移除「完成」二字，精簡為 X / Y
           correctionPreviewText = correctionTasks.length === 0
             ? '0 / 0'
             : `${doneCorrectionCount} / ${correctionTasks.length}`;
@@ -1410,7 +1413,7 @@
                 </div>
               </div>
 
-              <!-- 🌟 2. 訂正：幾分之幾緊貼膠囊右側，純單行不折行 -->
+              <!-- 2. 訂正：幾分之幾緊貼膠囊右側，純單行不折行 -->
               <div onclick="window.appActions.openCorrectionModal('${st.id}')" class="bg-[#F0F6FA] p-3 rounded-2xl border-2 border-[#B8D3E6] shadow-xs cursor-pointer hover:bg-[#E5F0F7] transition">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2.5 flex-nowrap min-w-0">
@@ -1733,7 +1736,6 @@
         showToast(`全班已套用：${name} (${step >= 0 ? '+' : ''}${step})`, 'success');
       },
 
-      // 🌟 重設全班紀錄：同時相容新舊名稱，徹底消滅殘留紀錄
       resetClassAction(group) {
         if (!AppState.isTeacher) return;
         const dayData = getDayData(AppState.currentDate);
@@ -1815,7 +1817,6 @@
         showToast(`已登記：${ruleName} (${finalStep >= 0 ? '+' : ''}${finalStep})`, 'success');
       },
 
-      // 🌟 刪除單筆紀錄：教師模式具備最高權限，可刪除彈窗內任何指定項目
       removeRecord(studentId, category, indexInCategory) {
         const dayData = getDayData(AppState.currentDate);
         const isLocked = dayData.locked || dayData.studentLocked[studentId];
@@ -1861,6 +1862,7 @@
         const reEditNotice = document.getElementById('modalReEditNotice');
         const submitBtn = document.getElementById('modalSubmitBtn');
         const submitText = document.getElementById('modalSubmitText');
+        const unlockBtn = document.getElementById('modalUnlockBtn');
 
         if (isStudentLocked || isDayLocked) {
           if (AppState.isTeacher) {
@@ -1868,16 +1870,20 @@
             reEditNotice.classList.remove('hidden');
             submitBtn.classList.remove('hidden');
             submitText.innerText = '完成修訂並重新鎖定 (-1)';
+            // 🌟 教師模式下且處於鎖定時，顯示一鍵解鎖按鈕
+            unlockBtn.classList.remove('hidden');
           } else {
             lockBadge.classList.remove('hidden');
             reEditNotice.classList.add('hidden');
             submitBtn.classList.add('hidden');
+            unlockBtn.classList.add('hidden');
           }
         } else {
           lockBadge.classList.add('hidden');
           reEditNotice.classList.add('hidden');
           submitBtn.classList.remove('hidden');
           submitText.innerText = '完成並送出結算';
+          unlockBtn.classList.add('hidden');
         }
 
         renderModalRecords();
@@ -1914,6 +1920,25 @@
         this.closeAuditModal();
 
         persistDayData(AppState.currentDate);
+      },
+
+      // 🌟 教師專屬：一鍵「🔓 解除結算鎖定」退回未結算狀態（不扣手續費）
+      unlockStudentAudit() {
+        if (!AppState.isTeacher) return;
+        const studentId = AppState.activeModalStudentId;
+        if (!studentId) return;
+
+        const st = STUDENTS.find(s => s.id === studentId);
+        if (confirm(`確定要為【${st.name}】解除今日結算鎖定，恢復為未結算草稿狀態嗎？`)) {
+          const dayData = getDayData(AppState.currentDate);
+          dayData.studentLocked[studentId] = false;
+          
+          AudioEngine.playAdd();
+          this.closeAuditModal();
+
+          persistDayData(AppState.currentDate);
+          showToast(`已解除【${st.name}】的結算鎖定，恢復未結算狀態！`, 'success');
+        }
       },
 
       openMileageModal(studentId) {
