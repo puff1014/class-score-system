@@ -75,7 +75,7 @@
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v5.5
+            v5.6
           </span>
         </div>
 
@@ -239,7 +239,7 @@
           </div>
         </div>
 
-        <!-- 全班科任表現：扣步按鈕全面採用典雅紫雲石 #7B4B94，對比極致鮮明 -->
+        <!-- 全班科任表現：扣步按鈕採用典雅紫雲石 #7B4B94 -->
         <div class="flex items-center gap-3 bg-[#FAF6F0] p-2 sm:p-2.5 rounded-2xl border border-stone-200">
           <span class="text-xl sm:text-2xl font-black text-stone-800 flex items-center gap-1.5 shrink-0 font-serif-tc">
             <span>🧑‍🏫</span> 全班科任表現
@@ -257,7 +257,6 @@
               </div>
             </div>
             
-            <!-- 🌟 科任扣步：#7B4B94 專屬底色與邊框 -->
             <div class="flex items-center gap-1.5 bg-[#FAF5FC] border-2 border-[#7B4B94]/40 rounded-2xl p-1 shadow-xs">
               <button onclick="window.appActions.applyClassRule('spec_fair')" class="px-3.5 py-1.5 bg-[#7B4B94] hover:bg-[#683D7E] text-white rounded-xl text-3xl font-black flex items-center justify-center stone-btn" title="全班科任課表現尚可套用扣步">
                 <span>☹️</span>
@@ -399,7 +398,7 @@
 
               <div id="card_rule_bad_3" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
                 <button id="btn_rule_bad_3" onclick="window.appActions.applyStudentRule('個人工作未完成', -1, 'bad')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left">
-                  <span>⚠️</span> 個人工作未完成
+                  <span>⚠️️</span> 個人工作未完成
                 </button>
                 <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
                   <button onclick="window.appActions.adjustModalStepper('btn_step_bad_3', -1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">-</button>
@@ -499,7 +498,7 @@
     </div>
   </div>
 
-  <!-- 🌟 【千里足跡・個人修行歷程簿】：極致寬版 max-w-5xl ＋ 存摺式表格排版 -->
+  <!-- 【千里足跡・個人修行歷程簿】：極致寬版 max-w-5xl ＋ 存摺式表格排版 -->
   <div id="mileageModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-5">
     <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[96vw] max-w-5xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
       <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-4 shrink-0">
@@ -546,7 +545,7 @@
     </div>
   </div>
 
-  <!-- 🌟 【打卡系統作業獨立彈窗】：先分數、後理由，全固定寬度工整排版，免交不扣分 -->
+  <!-- 【打卡系統作業獨立彈窗】：先分數、後理由，全固定寬度工整排版，免交不扣分 -->
   <div id="checkinHwModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
     <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[98vw] max-w-[98vw] rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
       <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-4">
@@ -581,7 +580,7 @@
     </div>
   </div>
 
-  <!-- 🌟 【訂正系統作業獨立彈窗】：先分數、後理由，全固定寬度工整排版 -->
+  <!-- 【訂正系統作業獨立彈窗】：先分數、後理由，全固定寬度工整排版 -->
   <div id="correctionModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
     <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[98vw] max-w-[98vw] rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
       
@@ -884,7 +883,6 @@
         }
       }, (err) => console.warn("打卡即時同步提示:", err));
 
-      // 讀取前一上課日之航海日誌任務（排除生活習慣項目）
       const annColName = `${prefix}announcements`;
       db.collection(annColName)
         .where("date", "<", dateStr)
@@ -951,7 +949,6 @@
       return totalS >= (7 * 3600 + 40 * 60 + 1) ? 'late' : 'on-time';
     }
 
-    // 🌟 打卡作業狀態判定：完整支援「免交 (exempt)」不扣分、不計缺交
     function getCheckinTaskDetailStatus(studentId, taskName, dateStr) {
       const d = (AppState.checkinAttendance[dateStr] && AppState.checkinAttendance[dateStr][studentId]) || {};
       const cleanName = taskName.trim();
@@ -1215,6 +1212,7 @@
       }
     }
 
+    // 🌟 核心渲染：學生卡片（支援病假/事假豁免，不倒扣作業與習慣）
     function renderStudentCards() {
       const grid = document.getElementById('studentCardsContainer');
       grid.innerHTML = '';
@@ -1262,45 +1260,61 @@
 
           // 1. 到校
           const attStatus = getStudentCheckinStatus(st.id, curDate);
+          const isLeave = (attStatus === 'sick' || attStatus === 'personal');
+
           if (attStatus === 'on-time') {
             arrivalScore = 1; arrivalLabel = '準時'; arrivalBadgeClass = 'bg-emerald-100 text-emerald-950 border-emerald-300';
           } else if (attStatus === 'late') {
             arrivalScore = -2; arrivalLabel = '遲到'; arrivalBadgeClass = 'bg-rose-100 text-rose-950 border-rose-300';
           } else if (attStatus === 'sick') {
-            arrivalScore = 0; arrivalLabel = '病假'; arrivalBadgeClass = 'bg-purple-100 text-purple-950 border-purple-300';
+            arrivalScore = 0; arrivalLabel = '病假'; arrivalBadgeClass = 'bg-stone-200 text-stone-700 border-stone-300';
           } else if (attStatus === 'personal') {
-            arrivalScore = 0; arrivalLabel = '事假'; arrivalBadgeClass = 'bg-orange-100 text-orange-950 border-orange-300';
+            arrivalScore = 0; arrivalLabel = '事假'; arrivalBadgeClass = 'bg-stone-200 text-stone-700 border-stone-300';
           } else {
             arrivalScore = 0; arrivalLabel = '未到校'; arrivalBadgeClass = 'bg-stone-100 text-stone-600 border-stone-200';
           }
 
-          // 2. 作業（🌟 排除免交，免交不計入缺交、不扣分）
-          let missingHwCount = 0;
-          let lateHwCount = 0;
-          if (assignedHwList.length > 0) {
-            assignedHwList.forEach(tName => {
-              const detailStat = getCheckinTaskDetailStatus(st.id, tName, curDate);
-              if (detailStat === 'red') missingHwCount++;
-              else if (detailStat === 'yellow') lateHwCount++;
-            });
-          }
-
-          if (assignedHwList.length === 0) {
-            checkinHwScore = 0; checkinHwLabel = '本日無作業'; checkinHwBadgeClass = 'bg-stone-100 text-stone-600 border-stone-200';
-          } else if (missingHwCount > 0) {
-            checkinHwScore = -missingHwCount; checkinHwLabel = `缺交 -${missingHwCount}`; checkinHwBadgeClass = 'bg-rose-100 text-rose-950 border-rose-300';
-          } else if (lateHwCount > 0) {
-            checkinHwScore = 0; checkinHwLabel = '遲交完成'; checkinHwBadgeClass = 'bg-amber-100 text-amber-950 border-amber-300';
+          // 2. 作業（🌟 病假/事假豁免：不扣分、不計缺交）
+          if (isLeave) {
+            checkinHwScore = 0;
+            checkinHwLabel = attStatus === 'sick' ? '病假免計' : '事假免計';
+            checkinHwBadgeClass = 'bg-stone-100 text-stone-600 border-stone-300';
           } else {
-            checkinHwScore = 2; checkinHwLabel = '完成'; checkinHwBadgeClass = 'bg-emerald-100 text-emerald-950 border-emerald-300';
+            let missingHwCount = 0;
+            let lateHwCount = 0;
+            if (assignedHwList.length > 0) {
+              assignedHwList.forEach(tName => {
+                const detailStat = getCheckinTaskDetailStatus(st.id, tName, curDate);
+                if (detailStat === 'red') missingHwCount++;
+                else if (detailStat === 'yellow') lateHwCount++;
+              });
+            }
+
+            if (assignedHwList.length === 0) {
+              checkinHwScore = 0; checkinHwLabel = '本日無作業'; checkinHwBadgeClass = 'bg-stone-100 text-stone-600 border-stone-200';
+            } else if (missingHwCount > 0) {
+              checkinHwScore = -missingHwCount; checkinHwLabel = `缺交 -${missingHwCount}`; checkinHwBadgeClass = 'bg-rose-100 text-rose-950 border-rose-300';
+            } else if (lateHwCount > 0) {
+              checkinHwScore = 0; checkinHwLabel = '遲交完成'; checkinHwBadgeClass = 'bg-amber-100 text-amber-950 border-amber-300';
+            } else {
+              checkinHwScore = 2; checkinHwLabel = '完成'; checkinHwBadgeClass = 'bg-emerald-100 text-emerald-950 border-emerald-300';
+            }
           }
 
-          // 3. 習慣
-          previewDone = !!completedTasks['複習+預習'] || !!completedTasks['預習複習'] || !!completedTasks['預習'] || !!completedTasks['複習'];
-          suppliesDone = !!completedTasks['帶學用品'] || !!completedTasks['學用品'];
-          checkinDone = !!completedTasks['訂正功課'] || !!completedTasks['訂正作業'];
-          habitScore = (previewDone && suppliesDone && checkinDone) ? 1 : 0;
-          habitBadgeClass = habitScore > 0 ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-stone-100 text-stone-500 border-stone-200';
+          // 3. 習慣（病假/事假不扣不獎）
+          if (isLeave) {
+            previewDone = false;
+            suppliesDone = false;
+            checkinDone = false;
+            habitScore = 0;
+            habitBadgeClass = 'bg-stone-100 text-stone-500 border-stone-200';
+          } else {
+            previewDone = !!completedTasks['複習+預習'] || !!completedTasks['預習複習'] || !!completedTasks['預習'] || !!completedTasks['複習'];
+            suppliesDone = !!completedTasks['帶學用品'] || !!completedTasks['學用品'];
+            checkinDone = !!completedTasks['訂正功課'] || !!completedTasks['訂正作業'];
+            habitScore = (previewDone && suppliesDone && checkinDone) ? 1 : 0;
+            habitBadgeClass = habitScore > 0 ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-stone-100 text-stone-500 border-stone-200';
+          }
 
           checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
 
@@ -1472,6 +1486,7 @@
       });
     }
 
+    // 🌟 檢核紀錄明細：未結算時允許學生撤回個人加扣分，全班項目與手續費由老師守門
     function renderModalRecords() {
       const studentId = AppState.activeModalStudentId;
       if (!studentId) return;
@@ -1479,7 +1494,6 @@
       const dayData = getDayData(AppState.currentDate);
       const isDayLocked = dayData.locked;
       const isStudentLocked = !!dayData.studentLocked[studentId];
-      const canDelete = AppState.isTeacher || (!isDayLocked && !isStudentLocked);
 
       const records = dayData.records[studentId] || [];
 
@@ -1502,7 +1516,7 @@
         if (ruleName === '科任課好表現') return '🌟';
         if (ruleName === '未準時繳交簿本') return '⏰';
         if (ruleName === '中午未準時回位') return '🔔';
-        if (ruleName === '個人工作未完成') return '⚠️';
+        if (ruleName === '個人工作未完成') return '⚠️️';
         if (ruleName === '慢吞吞') return '🐢';
         if (ruleName === '不細心') return '👀';
         if (ruleName === '科任課待加油') return '📉';
@@ -1524,7 +1538,17 @@
       } else {
         listGood.innerHTML = goodRecords.map((r, i) => {
           const isClassRecord = r.isClass === true;
+          const isReEditCost = r.name === '結算後修改';
           const icon = getRuleIcon(r.name, isClassRecord, '✓');
+          
+          // 判斷刪除權限：老師可全刪；學生在未結算時可刪除個人項目（不可刪全班與手續費）
+          let canDelete = false;
+          if (AppState.isTeacher) {
+            canDelete = true;
+          } else if (!isDayLocked && !isStudentLocked) {
+            canDelete = !isClassRecord && !isReEditCost;
+          }
+
           return `
             <div class="bg-white py-1.5 px-3 rounded-xl border-2 border-emerald-500 flex items-center justify-between text-2xl sm:text-3xl font-black shadow-xs whitespace-nowrap">
               <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
@@ -1549,6 +1573,14 @@
           const isClassRecord = r.isClass === true;
           const isReEditCost = r.name === '結算後修改';
           const icon = getRuleIcon(r.name, isClassRecord, '✗');
+
+          let canDelete = false;
+          if (AppState.isTeacher) {
+            canDelete = true;
+          } else if (!isDayLocked && !isStudentLocked) {
+            canDelete = !isClassRecord && !isReEditCost;
+          }
+
           return `
             <div class="bg-white py-1.5 px-3 rounded-xl border-2 ${isReEditCost ? 'border-rose-600 bg-rose-50/50' : 'border-rose-500'} flex items-center justify-between text-2xl sm:text-3xl font-black shadow-xs whitespace-nowrap">
               <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
@@ -1571,7 +1603,16 @@
       } else {
         listAtt.innerHTML = attRecords.map((r, i) => {
           const isClassRecord = r.isClass === true;
-          const icon = getRuleIcon(r.name, isClassRecord, '⚠️');
+          const isReEditCost = r.name === '結算後修改';
+          const icon = getRuleIcon(r.name, isClassRecord, '⚠️️');
+
+          let canDelete = false;
+          if (AppState.isTeacher) {
+            canDelete = true;
+          } else if (!isDayLocked && !isStudentLocked) {
+            canDelete = !isClassRecord && !isReEditCost;
+          }
+
           return `
             <div class="bg-white py-1.5 px-3 rounded-xl border-2 border-amber-500 flex items-center justify-between text-2xl sm:text-3xl font-black shadow-xs whitespace-nowrap">
               <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
@@ -1945,7 +1986,6 @@
         }
       },
 
-      // 🌟 個人存摺：表格化三大正色獨立欄位，絕不折行
       openMileageModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('mileageModalTitle').innerText = `${maskName(st.name)} 的千里足跡`;
@@ -1995,20 +2035,28 @@
         document.getElementById('mileageModal').classList.add('hidden');
       },
 
-      // 🌟 作業彈窗渲染：先加扣分、後理由，雙固定寬度絕對對齊；免交不扣分
       openCheckinHwModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
-        document.getElementById('checkinHwModalTitle').innerText = `${maskName(st.name)} 打卡作業自主勾選紀錄`;
+        document.getElementById('checkinHwModalTitle').innerText = `${maskName(st.name)} 打卡作業繳交紀錄`;
         const container = document.getElementById('checkinHwListContainer');
         container.innerHTML = '';
 
         const curDate = AppState.currentDate;
         const assignedHwList = AppState.checkinTasksAssigned[curDate] || [];
 
+        // 🌟 判定請假狀態
+        const attStatus = getStudentCheckinStatus(studentId, curDate);
+        const isLeave = (attStatus === 'sick' || attStatus === 'personal');
+
         let missingCount = 0;
         let lateCount = 0;
 
-        if (assignedHwList.length === 0) {
+        if (isLeave) {
+          container.innerHTML = `<div class="col-span-1 md:col-span-2 text-stone-500 font-bold text-2xl text-center py-10 font-serif-tc">本日登記為【${attStatus === 'sick' ? '病假' : '事假'}】，作業紀錄全面豁免免計</div>`;
+          const badge = document.getElementById('checkinHwSummaryBadge');
+          badge.innerText = `結算：0 (${attStatus === 'sick' ? '病假' : '事假'}免計)`;
+          badge.className = 'text-2xl font-num font-black text-stone-600';
+        } else if (assignedHwList.length === 0) {
           container.innerHTML = '<div class="col-span-1 md:col-span-2 text-stone-400 font-bold text-2xl text-center py-10 font-serif-tc">本日航海日誌無作業任務</div>';
           document.getElementById('checkinHwSummaryBadge').innerText = '0';
           document.getElementById('checkinHwSummaryBadge').className = 'text-2xl font-num font-black text-stone-500';
@@ -2060,11 +2108,9 @@
                 <span class="text-xl sm:text-2xl font-black font-serif-tc text-stone-900 whitespace-nowrap truncate">${tName}</span>
               </div>
               <div class="flex items-center gap-3 shrink-0 ml-auto">
-                <!-- 🌟 先分數 (固定寬度 w-14) -->
                 <span class="w-14 text-center text-2xl sm:text-3xl font-num font-black ${scoreColor}">
                   ${scoreText ? (scoreText > 0 ? `+${scoreText}` : scoreText) : ''}
                 </span>
-                <!-- 🌟 後理由 (固定寬度 w-28) -->
                 <span class="w-28 text-center px-3 py-1.5 rounded-xl border text-lg sm:text-xl font-black whitespace-nowrap ${badgeBg}">
                   ${labelText}
                 </span>
@@ -2093,7 +2139,6 @@
         document.getElementById('checkinHwModal').classList.add('hidden');
       },
 
-      // 🌟 訂正彈窗渲染：先加扣分、後理由，雙固定寬度絕對對齊
       openCorrectionModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('correctionModalTitle').innerText = `${maskName(st.name)} 作業訂正狀況`;
@@ -2148,11 +2193,9 @@
                 <span class="text-xl sm:text-2xl font-black font-serif-tc text-stone-900 whitespace-nowrap truncate">${tName}</span>
               </div>
               <div class="flex items-center gap-3 shrink-0 ml-auto">
-                <!-- 🌟 先分數 (固定寬度 w-14) -->
                 <span class="w-14 text-center text-2xl sm:text-3xl font-num font-black ${scoreColor}">
                   ${scoreText}
                 </span>
-                <!-- 🌟 後理由 (固定寬度 w-28) -->
                 <span class="w-28 text-center px-3 py-1.5 rounded-xl border text-lg sm:text-xl font-black whitespace-nowrap ${badgeBg}">
                   ${labelText}
                 </span>
@@ -2239,32 +2282,42 @@
 
             // 1. 到校
             const attStatus = getStudentCheckinStatus(st.id, curDate);
+            const isLeave = (attStatus === 'sick' || attStatus === 'personal');
+
             let arrivalScore = 0, arrivalLabel = '未到校';
             if (attStatus === 'on-time') { arrivalScore = 1; arrivalLabel = '準時'; }
             else if (attStatus === 'late') { arrivalScore = -2; arrivalLabel = '遲到'; }
             else if (attStatus === 'sick') { arrivalScore = 0; arrivalLabel = '病假'; }
             else if (attStatus === 'personal') { arrivalScore = 0; arrivalLabel = '事假'; }
 
-            // 2. 作業（免交不扣分）
-            let missingHwCount = 0, lateHwCount = 0;
-            if (assignedHwList.length > 0) {
-              assignedHwList.forEach(tName => {
-                const detailStat = getCheckinTaskDetailStatus(st.id, tName, curDate);
-                if (detailStat === 'red') missingHwCount++;
-                else if (detailStat === 'yellow') lateHwCount++;
-              });
-            }
+            // 2. 作業（病假/事假豁免不倒扣）
             let checkinHwScore = 0, checkinHwLabel = '作業';
-            if (assignedHwList.length === 0) { checkinHwScore = 0; checkinHwLabel = '本日無作業'; }
-            else if (missingHwCount > 0) { checkinHwScore = -missingHwCount; checkinHwLabel = `缺交 -${missingHwCount}`; }
-            else if (lateHwCount > 0) { checkinHwScore = 0; checkinHwLabel = '遲交完成'; }
-            else { checkinHwScore = 2; checkinHwLabel = '完成'; }
+            if (isLeave) {
+              checkinHwScore = 0;
+              checkinHwLabel = attStatus === 'sick' ? '病假免計' : '事假免計';
+            } else {
+              let missingHwCount = 0, lateHwCount = 0;
+              if (assignedHwList.length > 0) {
+                assignedHwList.forEach(tName => {
+                  const detailStat = getCheckinTaskDetailStatus(st.id, tName, curDate);
+                  if (detailStat === 'red') missingHwCount++;
+                  else if (detailStat === 'yellow') lateHwCount++;
+                });
+              }
+              if (assignedHwList.length === 0) { checkinHwScore = 0; checkinHwLabel = '本日無作業'; }
+              else if (missingHwCount > 0) { checkinHwScore = -missingHwCount; checkinHwLabel = `缺交 -${missingHwCount}`; }
+              else if (lateHwCount > 0) { checkinHwScore = 0; checkinHwLabel = '遲交完成'; }
+              else { checkinHwScore = 2; checkinHwLabel = '完成'; }
+            }
 
             // 3. 習慣
-            const previewDone = !!completedTasks['複習+預習'] || !!completedTasks['預習複習'] || !!completedTasks['預習'] || !!completedTasks['複習'];
-            const suppliesDone = !!completedTasks['帶學用品'] || !!completedTasks['學用品'];
-            const checkinDone = !!completedTasks['訂正功課'] || !!completedTasks['訂正作業'];
-            const habitScore = (previewDone && suppliesDone && checkinDone) ? 1 : 0;
+            let previewDone = false, suppliesDone = false, checkinDone = false, habitScore = 0;
+            if (!isLeave) {
+              previewDone = !!completedTasks['複習+預習'] || !!completedTasks['預習複習'] || !!completedTasks['預習'] || !!completedTasks['複習'];
+              suppliesDone = !!completedTasks['帶學用品'] || !!completedTasks['學用品'];
+              checkinDone = !!completedTasks['訂正功課'] || !!completedTasks['訂正作業'];
+              habitScore = (previewDone && suppliesDone && checkinDone) ? 1 : 0;
+            }
 
             const checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
 
