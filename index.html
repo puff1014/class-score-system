@@ -75,7 +75,7 @@
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v5.4
+            v5.5
           </span>
         </div>
 
@@ -239,7 +239,7 @@
           </div>
         </div>
 
-        <!-- 全班科任表現 -->
+        <!-- 全班科任表現：扣步按鈕全面採用典雅紫雲石 #7B4B94，對比極致鮮明 -->
         <div class="flex items-center gap-3 bg-[#FAF6F0] p-2 sm:p-2.5 rounded-2xl border border-stone-200">
           <span class="text-xl sm:text-2xl font-black text-stone-800 flex items-center gap-1.5 shrink-0 font-serif-tc">
             <span>🧑‍🏫</span> 全班科任表現
@@ -256,14 +256,16 @@
                 <button onclick="window.appActions.adjustClassStepper('spec_perfect', 1)" class="w-7 h-7 text-blue-800 text-xl font-black hover:bg-blue-100 rounded">+</button>
               </div>
             </div>
-            <div class="flex items-center gap-1.5 bg-amber-50 border-2 border-amber-400 rounded-2xl p-1 shadow-xs">
-              <button onclick="window.appActions.applyClassRule('spec_fair')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-3xl font-black flex items-center justify-center stone-btn" title="全班科任課表現尚可套用扣步">
+            
+            <!-- 🌟 科任扣步：#7B4B94 專屬底色與邊框 -->
+            <div class="flex items-center gap-1.5 bg-[#FAF5FC] border-2 border-[#7B4B94]/40 rounded-2xl p-1 shadow-xs">
+              <button onclick="window.appActions.applyClassRule('spec_fair')" class="px-3.5 py-1.5 bg-[#7B4B94] hover:bg-[#683D7E] text-white rounded-xl text-3xl font-black flex items-center justify-center stone-btn" title="全班科任課表現尚可套用扣步">
                 <span>☹️</span>
               </button>
-              <div class="flex items-center gap-1 bg-white rounded-xl px-2 py-1 border border-amber-300">
-                <button onclick="window.appActions.adjustClassStepper('spec_fair', -1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-100 rounded">-</button>
-                <span id="step_spec_fair" class="w-6 text-center text-2xl font-num font-black text-amber-900">1</span>
-                <button onclick="window.appActions.adjustClassStepper('spec_fair', 1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-100 rounded">+</button>
+              <div class="flex items-center gap-1 bg-white rounded-xl px-2 py-1 border border-[#7B4B94]/30">
+                <button onclick="window.appActions.adjustClassStepper('spec_fair', -1)" class="w-7 h-7 text-[#7B4B94] text-xl font-black hover:bg-[#F3E8F9] rounded">-</button>
+                <span id="step_spec_fair" class="w-6 text-center text-2xl font-num font-black text-[#5C2E75]">1</span>
+                <button onclick="window.appActions.adjustClassStepper('spec_fair', 1)" class="w-7 h-7 text-[#7B4B94] text-xl font-black hover:bg-[#F3E8F9] rounded">+</button>
               </div>
             </div>
           </div>
@@ -497,9 +499,9 @@
     </div>
   </div>
 
-  <!-- 【千里足跡・個人修行歷程簿】 -->
+  <!-- 🌟 【千里足跡・個人修行歷程簿】：極致寬版 max-w-5xl ＋ 存摺式表格排版 -->
   <div id="mileageModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-5">
-    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[95vw] max-w-4xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
+    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[96vw] max-w-5xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
       <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-4 shrink-0">
         <div class="flex items-center gap-4">
           <span class="text-5xl filter drop-shadow-sm">👣</span>
@@ -544,7 +546,7 @@
     </div>
   </div>
 
-  <!-- 【打卡系統作業獨立彈窗】 -->
+  <!-- 🌟 【打卡系統作業獨立彈窗】：先分數、後理由，全固定寬度工整排版，免交不扣分 -->
   <div id="checkinHwModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
     <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[98vw] max-w-[98vw] rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
       <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-4">
@@ -562,6 +564,7 @@
           <span class="text-stone-500">圖例：</span>
           <span class="px-2.5 py-0.5 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-900">🟢 齊全 (全齊+2)</span>
           <span class="px-2.5 py-0.5 rounded-lg bg-yellow-100 border border-yellow-300 text-yellow-900">🟡 遲交</span>
+          <span class="px-2.5 py-0.5 rounded-lg bg-stone-200 border border-stone-300 text-stone-800">⚪ 免交 (不扣步)</span>
           <span class="px-2.5 py-0.5 rounded-lg bg-rose-100 border border-rose-300 text-rose-900">🔴 缺交 (-1)</span>
         </div>
         <span id="checkinHwSummaryBadge" class="text-2xl font-num font-black"></span>
@@ -578,7 +581,7 @@
     </div>
   </div>
 
-  <!-- 【訂正系統作業獨立彈窗】：綠色與黃色皆 +1 -->
+  <!-- 🌟 【訂正系統作業獨立彈窗】：先分數、後理由，全固定寬度工整排版 -->
   <div id="correctionModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
     <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[98vw] max-w-[98vw] rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
       
@@ -668,7 +671,7 @@
     ];
     const SPECIAL_IDS = ['5', '7', '8'];
 
-    // 🌟 生活習慣過濾關鍵字：確保這些不會被誤當成家庭作業
+    // 生活習慣過濾關鍵字：確保這些不會被誤當成家庭作業
     const HABIT_KEYWORDS = ['預習', '複習', '帶學用品', '學用品', '訂正功課', '訂正作業'];
 
     function maskName(n) {
@@ -881,7 +884,7 @@
         }
       }, (err) => console.warn("打卡即時同步提示:", err));
 
-      // 讀取前一上課日之航海日誌任務（🌟 排除生活習慣項目，作業清單只留下真正作業）
+      // 讀取前一上課日之航海日誌任務（排除生活習慣項目）
       const annColName = `${prefix}announcements`;
       db.collection(annColName)
         .where("date", "<", dateStr)
@@ -948,6 +951,7 @@
       return totalS >= (7 * 3600 + 40 * 60 + 1) ? 'late' : 'on-time';
     }
 
+    // 🌟 打卡作業狀態判定：完整支援「免交 (exempt)」不扣分、不計缺交
     function getCheckinTaskDetailStatus(studentId, taskName, dateStr) {
       const d = (AppState.checkinAttendance[dateStr] && AppState.checkinAttendance[dateStr][studentId]) || {};
       const cleanName = taskName.trim();
@@ -957,6 +961,7 @@
         if (m === 'done') return 'green';
         if (m === 'late') return 'yellow';
         if (m === 'missing') return 'red';
+        if (m === 'exempt' || m === 'waive' || m === 'free' || String(m).includes('免')) return 'exempt';
       }
 
       const hw = d.completedTasks || {};
@@ -1111,7 +1116,7 @@
         const s = classApplied.spec.step;
         specLockedText.innerText = `${s >= 0 ? '+' : ''}${s}`;
         specLockedText.className = `px-4 py-1.5 rounded-2xl text-2xl font-black font-num shadow-xs border-2 ${
-          s >= 0 ? 'bg-blue-100 text-blue-950 border-blue-300' : 'bg-amber-100 text-amber-950 border-amber-400'
+          s >= 0 ? 'bg-blue-100 text-blue-950 border-blue-300' : 'bg-[#FAF5FC] text-[#5C2E75] border-[#7B4B94]/40'
         }`;
         if (AppState.isTeacher) specResetBtn.classList.remove('hidden');
         else specResetBtn.classList.add('hidden');
@@ -1269,7 +1274,7 @@
             arrivalScore = 0; arrivalLabel = '未到校'; arrivalBadgeClass = 'bg-stone-100 text-stone-600 border-stone-200';
           }
 
-          // 2. 作業（純作業計算）
+          // 2. 作業（🌟 排除免交，免交不計入缺交、不扣分）
           let missingHwCount = 0;
           let lateHwCount = 0;
           if (assignedHwList.length > 0) {
@@ -1290,7 +1295,7 @@
             checkinHwScore = 2; checkinHwLabel = '完成'; checkinHwBadgeClass = 'bg-emerald-100 text-emerald-950 border-emerald-300';
           }
 
-          // 3. 習慣（專屬生活習慣判定）
+          // 3. 習慣
           previewDone = !!completedTasks['複習+預習'] || !!completedTasks['預習複習'] || !!completedTasks['預習'] || !!completedTasks['複習'];
           suppliesDone = !!completedTasks['帶學用品'] || !!completedTasks['學用品'];
           checkinDone = !!completedTasks['訂正功課'] || !!completedTasks['訂正作業'];
@@ -1940,6 +1945,7 @@
         }
       },
 
+      // 🌟 個人存摺：表格化三大正色獨立欄位，絕不折行
       openMileageModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('mileageModalTitle').innerText = `${maskName(st.name)} 的千里足跡`;
@@ -1958,19 +1964,23 @@
             const row = document.createElement('div');
             row.className = 'bg-white p-4 sm:p-5 rounded-2xl border-2 border-stone-200 flex items-center justify-between shadow-xs gap-4';
             row.innerHTML = `
-              <div class="flex items-center gap-4">
-                <span class="px-3.5 py-1.5 rounded-xl bg-stone-100 text-stone-800 font-num font-black text-xl sm:text-2xl border border-stone-300">
+              <div class="flex items-center gap-3 sm:gap-4 flex-nowrap min-w-0">
+                <span class="w-36 text-center px-3.5 py-1.5 rounded-xl bg-stone-100 text-stone-800 font-num font-black text-xl sm:text-2xl border border-stone-300 shrink-0">
                   ${item.date}
                 </span>
-                <div class="flex items-center gap-2.5 text-base sm:text-lg font-bold text-stone-600 font-serif-tc">
-                  <span>打卡 ${item.checkinScore >= 0 ? '+' : ''}${item.checkinScore}</span>
-                  <span class="text-stone-300">•</span>
-                  <span>訂正 +${item.correctionScore}</span>
-                  <span class="text-stone-300">•</span>
-                  <span>表現 ${item.classroomScore >= 0 ? '+' : ''}${item.classroomScore}</span>
+                <div class="flex items-center gap-2 sm:gap-3 flex-nowrap text-base sm:text-lg font-bold font-serif-tc">
+                  <span class="px-3 py-1 rounded-xl bg-[#FAF6EE] border border-[#D9C8B4] text-[#8C5E3C] whitespace-nowrap">
+                    打卡 ${item.checkinScore >= 0 ? '+' : ''}${item.checkinScore}
+                  </span>
+                  <span class="px-3 py-1 rounded-xl bg-[#F0F6FA] border border-[#B8D3E6] text-[#1E4E79] whitespace-nowrap">
+                    訂正 +${item.correctionScore}
+                  </span>
+                  <span class="px-3 py-1 rounded-xl bg-[#F0F7F3] border border-[#BCD4C6] text-[#235C3E] whitespace-nowrap">
+                    表現 ${item.classroomScore >= 0 ? '+' : ''}${item.classroomScore}
+                  </span>
                 </div>
               </div>
-              <span class="text-3xl sm:text-4xl font-num font-black text-[#8C5E3C]">
+              <span class="text-3xl sm:text-4xl font-num font-black text-[#8C5E3C] shrink-0 text-right min-w-[70px]">
                 ${item.totalScore >= 0 ? '+' : ''}${item.totalScore}
               </span>
             `;
@@ -1985,6 +1995,7 @@
         document.getElementById('mileageModal').classList.add('hidden');
       },
 
+      // 🌟 作業彈窗渲染：先加扣分、後理由，雙固定寬度絕對對齊；免交不扣分
       openCheckinHwModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('checkinHwModalTitle').innerText = `${maskName(st.name)} 打卡作業自主勾選紀錄`;
@@ -2011,8 +2022,17 @@
             let badgeBg = 'bg-emerald-100 border-emerald-300 text-emerald-900';
             let labelText = '齊全';
             let scoreText = '';
+            let scoreColor = 'text-stone-400';
 
-            if (detailStat === 'red') {
+            if (detailStat === 'exempt') {
+              rowBg = 'bg-stone-50 border-stone-300 text-stone-700';
+              iconText = '—';
+              iconColor = 'text-stone-400';
+              badgeBg = 'bg-stone-200 border-stone-300 text-stone-800';
+              labelText = '免交';
+              scoreText = '0';
+              scoreColor = 'text-stone-500';
+            } else if (detailStat === 'red') {
               missingCount++;
               rowBg = 'bg-rose-50 border-rose-300 text-rose-950';
               iconText = '✗';
@@ -2020,6 +2040,7 @@
               badgeBg = 'bg-rose-100 border-rose-300 text-rose-900';
               labelText = '缺交';
               scoreText = '-1';
+              scoreColor = 'text-rose-600';
             } else if (detailStat === 'yellow') {
               lateCount++;
               rowBg = 'bg-amber-50/80 border-amber-300 text-amber-950';
@@ -2027,21 +2048,26 @@
               iconColor = 'text-amber-600';
               badgeBg = 'bg-yellow-100 border-yellow-300 text-yellow-900';
               labelText = '遲交';
-              scoreText = '';
+              scoreText = '0';
+              scoreColor = 'text-amber-700';
             }
 
             const row = document.createElement('div');
             row.className = `p-3.5 sm:p-4 rounded-2xl border-2 flex items-center justify-between gap-3 shadow-xs ${rowBg}`;
             row.innerHTML = `
-              <div class="flex items-center gap-2.5 min-w-0">
+              <div class="flex items-center gap-2.5 min-w-0 flex-1">
                 <span class="text-3xl font-black ${iconColor} shrink-0">${iconText}</span>
-                <span class="text-xl sm:text-2xl font-black font-serif-tc text-stone-900 whitespace-nowrap shrink-0">${tName}</span>
+                <span class="text-xl sm:text-2xl font-black font-serif-tc text-stone-900 whitespace-nowrap truncate">${tName}</span>
               </div>
-              <div class="flex items-center gap-2.5 shrink-0 ml-auto">
-                <span class="px-3.5 py-1.5 rounded-xl border text-lg sm:text-xl font-black whitespace-nowrap ${badgeBg}">
+              <div class="flex items-center gap-3 shrink-0 ml-auto">
+                <!-- 🌟 先分數 (固定寬度 w-14) -->
+                <span class="w-14 text-center text-2xl sm:text-3xl font-num font-black ${scoreColor}">
+                  ${scoreText ? (scoreText > 0 ? `+${scoreText}` : scoreText) : ''}
+                </span>
+                <!-- 🌟 後理由 (固定寬度 w-28) -->
+                <span class="w-28 text-center px-3 py-1.5 rounded-xl border text-lg sm:text-xl font-black whitespace-nowrap ${badgeBg}">
                   ${labelText}
                 </span>
-                ${scoreText ? `<span class="text-2xl sm:text-3xl font-num font-black text-rose-600 whitespace-nowrap">${scoreText}</span>` : ''}
               </div>
             `;
             container.appendChild(row);
@@ -2067,6 +2093,7 @@
         document.getElementById('checkinHwModal').classList.add('hidden');
       },
 
+      // 🌟 訂正彈窗渲染：先加扣分、後理由，雙固定寬度絕對對齊
       openCorrectionModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('correctionModalTitle').innerText = `${maskName(st.name)} 作業訂正狀況`;
@@ -2091,6 +2118,7 @@
             let badgeBg = 'bg-rose-100 border-rose-300 text-rose-900';
             let labelText = '還未訂正';
             let scoreText = '0';
+            let scoreColor = 'text-stone-400';
 
             if (status === 'green') {
               totalCorrectionScore += 1;
@@ -2100,6 +2128,7 @@
               badgeBg = 'bg-emerald-100 border-emerald-300 text-emerald-950';
               labelText = '當天完成';
               scoreText = '+1';
+              scoreColor = 'text-emerald-700';
             } else if (status === 'yellow') {
               totalCorrectionScore += 1;
               statusBg = 'bg-amber-50/80 border-amber-300 text-amber-950';
@@ -2108,21 +2137,24 @@
               badgeBg = 'bg-yellow-100 border-yellow-300 text-yellow-950';
               labelText = '補訂正';
               scoreText = '+1';
+              scoreColor = 'text-amber-700';
             }
 
             const row = document.createElement('div');
             row.className = `p-3.5 sm:p-4 rounded-2xl border-2 flex items-center justify-between gap-3 shadow-xs ${statusBg}`;
             row.innerHTML = `
-              <div class="flex items-center gap-2.5 min-w-0">
+              <div class="flex items-center gap-2.5 min-w-0 flex-1">
                 <span class="text-3xl font-black ${iconColor} shrink-0">${iconText}</span>
-                <span class="text-xl sm:text-2xl font-black font-serif-tc text-stone-900 whitespace-nowrap shrink-0">${tName}</span>
+                <span class="text-xl sm:text-2xl font-black font-serif-tc text-stone-900 whitespace-nowrap truncate">${tName}</span>
               </div>
-              <div class="flex items-center gap-2.5 shrink-0 ml-auto">
-                <span class="px-3.5 py-1.5 rounded-xl border text-lg sm:text-xl font-black whitespace-nowrap ${badgeBg}">
-                  ${labelText}
-                </span>
-                <span class="text-2xl sm:text-3xl font-num font-black whitespace-nowrap ${(status === 'green' || status === 'yellow') ? 'text-emerald-700' : 'text-stone-400'}">
+              <div class="flex items-center gap-3 shrink-0 ml-auto">
+                <!-- 🌟 先分數 (固定寬度 w-14) -->
+                <span class="w-14 text-center text-2xl sm:text-3xl font-num font-black ${scoreColor}">
                   ${scoreText}
+                </span>
+                <!-- 🌟 後理由 (固定寬度 w-28) -->
+                <span class="w-28 text-center px-3 py-1.5 rounded-xl border text-lg sm:text-xl font-black whitespace-nowrap ${badgeBg}">
+                  ${labelText}
                 </span>
               </div>
             `;
@@ -2213,7 +2245,7 @@
             else if (attStatus === 'sick') { arrivalScore = 0; arrivalLabel = '病假'; }
             else if (attStatus === 'personal') { arrivalScore = 0; arrivalLabel = '事假'; }
 
-            // 2. 作業
+            // 2. 作業（免交不扣分）
             let missingHwCount = 0, lateHwCount = 0;
             if (assignedHwList.length > 0) {
               assignedHwList.forEach(tName => {
@@ -2236,7 +2268,7 @@
 
             const checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
 
-            // 4. 訂正：綠色 ＆ 黃色補訂正均加步 (+1)
+            // 4. 訂正
             const doneCorrectionCount = correctionTasks.filter(tName => {
               const stat = getCorrectionStatus(tName, st.id, curDate);
               return stat === 'green' || stat === 'yellow';
