@@ -75,7 +75,7 @@
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v5.6
+            v5.7
           </span>
         </div>
 
@@ -239,7 +239,7 @@
           </div>
         </div>
 
-        <!-- 全班科任表現：扣步按鈕採用典雅紫雲石 #7B4B94 -->
+        <!-- 全班科任表現：扣步採用典雅紫雲石 #7B4B94 -->
         <div class="flex items-center gap-3 bg-[#FAF6F0] p-2 sm:p-2.5 rounded-2xl border border-stone-200">
           <span class="text-xl sm:text-2xl font-black text-stone-800 flex items-center gap-1.5 shrink-0 font-serif-tc">
             <span>🧑‍🏫</span> 全班科任表現
@@ -359,7 +359,7 @@
               <span>📋 檢核紀錄明細</span>
               <span id="count_good_records" class="font-num text-2xl text-emerald-800 font-bold">0筆</span>
             </span>
-            <div id="list_good_records" class="space-y-2 overflow-hidden flex-1">
+            <div id="list_good_records" class="space-y-2 overflow-y-auto custom-scrollbar flex-1 pr-1">
               <div class="text-stone-400 text-3xl text-center py-4 font-bold font-serif-tc">今日尚未加步數</div>
             </div>
           </div>
@@ -398,7 +398,7 @@
 
               <div id="card_rule_bad_3" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
                 <button id="btn_rule_bad_3" onclick="window.appActions.applyStudentRule('個人工作未完成', -1, 'bad')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left">
-                  <span>⚠️️</span> 個人工作未完成
+                  <span>⚠️</span> 個人工作未完成
                 </button>
                 <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
                   <button onclick="window.appActions.adjustModalStepper('btn_step_bad_3', -1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">-</button>
@@ -414,7 +414,7 @@
               <span>📋 檢核紀錄明細</span>
               <span id="count_bad_records" class="font-num text-2xl text-rose-800 font-bold">0筆</span>
             </span>
-            <div id="list_bad_records" class="space-y-2 overflow-hidden flex-1">
+            <div id="list_bad_records" class="space-y-2 overflow-y-auto custom-scrollbar flex-1 pr-1">
               <div class="text-stone-400 text-3xl text-center py-4 font-bold font-serif-tc">今日無扣減步數</div>
             </div>
           </div>
@@ -469,7 +469,7 @@
               <span>📋 檢核紀錄明細</span>
               <span id="count_att_records" class="font-num text-2xl text-amber-800 font-bold">0筆</span>
             </span>
-            <div id="list_att_records" class="space-y-2 overflow-hidden flex-1">
+            <div id="list_att_records" class="space-y-2 overflow-y-auto custom-scrollbar flex-1 pr-1">
               <div class="text-stone-400 text-3xl text-center py-4 font-bold font-serif-tc">今日無自律扣步</div>
             </div>
           </div>
@@ -883,6 +883,7 @@
         }
       }, (err) => console.warn("打卡即時同步提示:", err));
 
+      // 讀取前一上課日之航海日誌任務（排除生活習慣項目）
       const annColName = `${prefix}announcements`;
       db.collection(annColName)
         .where("date", "<", dateStr)
@@ -949,6 +950,7 @@
       return totalS >= (7 * 3600 + 40 * 60 + 1) ? 'late' : 'on-time';
     }
 
+    // 打卡作業狀態判定：完整支援「免交 (exempt)」不扣分、不計缺交
     function getCheckinTaskDetailStatus(studentId, taskName, dateStr) {
       const d = (AppState.checkinAttendance[dateStr] && AppState.checkinAttendance[dateStr][studentId]) || {};
       const cleanName = taskName.trim();
@@ -1212,7 +1214,6 @@
       }
     }
 
-    // 🌟 核心渲染：學生卡片（支援病假/事假豁免，不倒扣作業與習慣）
     function renderStudentCards() {
       const grid = document.getElementById('studentCardsContainer');
       grid.innerHTML = '';
@@ -1274,7 +1275,7 @@
             arrivalScore = 0; arrivalLabel = '未到校'; arrivalBadgeClass = 'bg-stone-100 text-stone-600 border-stone-200';
           }
 
-          // 2. 作業（🌟 病假/事假豁免：不扣分、不計缺交）
+          // 2. 作業（病假/事假豁免：不扣分、不計缺交）
           if (isLeave) {
             checkinHwScore = 0;
             checkinHwLabel = attStatus === 'sick' ? '病假免計' : '事假免計';
@@ -1330,7 +1331,7 @@
 
           // 5. 表現
           const records = dayData.records[st.id] || [];
-          classroomScore = records.reduce((acc, r) => acc + r.step, 0);
+          classroomScore = records.reduce((acc, r) => acc + (r.step || 0), 0);
 
           totalScore = checkinSubtotal + correctionScore + classroomScore;
         }
@@ -1486,7 +1487,7 @@
       });
     }
 
-    // 🌟 檢核紀錄明細：未結算時允許學生撤回個人加扣分，全班項目與手續費由老師守門
+    // 🌟 檢核紀錄明細：同項目自動收納累積、橫向時間流動、點 ✕ 逐次倒退撤銷
     function renderModalRecords() {
       const studentId = AppState.activeModalStudentId;
       if (!studentId) return;
@@ -1495,15 +1496,7 @@
       const isDayLocked = dayData.locked;
       const isStudentLocked = !!dayData.studentLocked[studentId];
 
-      const records = dayData.records[studentId] || [];
-
-      const sortRecords = (arr) => {
-        return [...arr].sort((a, b) => {
-          if (a.isClass && !b.isClass) return 1;
-          if (!a.isClass && b.isClass) return -1;
-          return 0;
-        });
-      };
+      const rawRecords = dayData.records[studentId] || [];
 
       const getRuleIcon = (ruleName, isClass, defaultSign) => {
         if (isClass) {
@@ -1516,7 +1509,7 @@
         if (ruleName === '科任課好表現') return '🌟';
         if (ruleName === '未準時繳交簿本') return '⏰';
         if (ruleName === '中午未準時回位') return '🔔';
-        if (ruleName === '個人工作未完成') return '⚠️️';
+        if (ruleName === '個人工作未完成') return '⚠️';
         if (ruleName === '慢吞吞') return '🐢';
         if (ruleName === '不細心') return '👀';
         if (ruleName === '科任課待加油') return '📉';
@@ -1524,112 +1517,122 @@
         return defaultSign;
       };
 
-      const goodRecords = sortRecords(records.filter(r => r.category === 'good'));
-      const badRecords = sortRecords(records.filter(r => r.category === 'bad'));
-      const attRecords = sortRecords(records.filter(r => r.category === 'attitude'));
-
-      document.getElementById('count_good_records').innerText = `${goodRecords.length}筆`;
-      document.getElementById('count_bad_records').innerText = `${badRecords.length}筆`;
-      document.getElementById('count_att_records').innerText = `${attRecords.length}筆`;
-
-      const listGood = document.getElementById('list_good_records');
-      if (goodRecords.length === 0) {
-        listGood.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4 font-bold font-serif-tc">今日尚未加步數</div>';
-      } else {
-        listGood.innerHTML = goodRecords.map((r, i) => {
-          const isClassRecord = r.isClass === true;
-          const isReEditCost = r.name === '結算後修改';
-          const icon = getRuleIcon(r.name, isClassRecord, '✓');
-          
-          // 判斷刪除權限：老師可全刪；學生在未結算時可刪除個人項目（不可刪全班與手續費）
-          let canDelete = false;
-          if (AppState.isTeacher) {
-            canDelete = true;
-          } else if (!isDayLocked && !isStudentLocked) {
-            canDelete = !isClassRecord && !isReEditCost;
+      // 聚合相同項目：同名字合併，保留所有時間與單次步數
+      const aggregateGroup = (category) => {
+        const catRecords = rawRecords.filter(r => r.category === category);
+        const grouped = [];
+        
+        catRecords.forEach(r => {
+          let found = grouped.find(g => g.name === r.name && g.isClass === r.isClass);
+          if (!found) {
+            found = {
+              name: r.name,
+              category: r.category,
+              isClass: !!r.isClass,
+              items: [] // 儲存每次發生的 { time, step }
+            };
+            grouped.push(found);
           }
+          found.items.push({ time: r.time, step: r.step });
+        });
 
+        // 全班紀錄置後排序
+        return grouped.sort((a, b) => {
+          if (a.isClass && !b.isClass) return 1;
+          if (!a.isClass && b.isClass) return -1;
+          return 0;
+        });
+      };
+
+      const goodGroups = aggregateGroup('good');
+      const badGroups = aggregateGroup('bad');
+      const attGroups = aggregateGroup('attitude');
+
+      // 計算總次數顯示筆數
+      const countGoodTotal = goodGroups.reduce((acc, g) => acc + g.items.length, 0);
+      const countBadTotal = badGroups.reduce((acc, g) => acc + g.items.length, 0);
+      const countAttTotal = attGroups.reduce((acc, g) => acc + g.items.length, 0);
+
+      document.getElementById('count_good_records').innerText = `${countGoodTotal}次`;
+      document.getElementById('count_bad_records').innerText = `${countBadTotal}次`;
+      document.getElementById('count_att_records').innerText = `${countAttTotal}次`;
+
+      // 渲染單一卡片：包含橫向流動時間膠囊
+      const renderGroupCard = (group, borderColor, scoreTextColor) => {
+        const totalStep = group.items.reduce((acc, it) => acc + it.step, 0);
+        const isClassRecord = group.isClass === true;
+        const isReEditCost = group.name === '結算後修改';
+        const icon = getRuleIcon(group.name, isClassRecord, totalStep >= 0 ? '✓' : '✗');
+
+        // 刪除權限：老師全開放；學生未結算時可撤回個人項目
+        let canDelete = false;
+        if (AppState.isTeacher) {
+          canDelete = true;
+        } else if (!isDayLocked && !isStudentLocked) {
+          canDelete = !isClassRecord && !isReEditCost;
+        }
+
+        // 時間流動膠囊列表（即便 6~7 次也支援 flex-wrap 自動折行與捲動）
+        const timeChipsHtml = group.items.map(it => {
+          const sText = it.step > 0 ? `+${it.step}` : `${it.step}`;
           return `
-            <div class="bg-white py-1.5 px-3 rounded-xl border-2 border-emerald-500 flex items-center justify-between text-2xl sm:text-3xl font-black shadow-xs whitespace-nowrap">
-              <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
-                <span class="shrink-0 text-2xl">${icon}</span>
-                <span class="truncate">${r.name}</span>
-              </span>
-              <div class="flex items-center gap-2 shrink-0">
-                <span class="text-stone-400 text-sm font-num font-normal tracking-tight">${r.time || ''}</span>
-                <span class="text-emerald-700 font-num text-2xl sm:text-3xl font-black">+${r.step}</span>
-                ${canDelete ? `<button onclick="window.appActions.removeRecord('${studentId}', 'good', ${i})" class="text-stone-400 hover:text-rose-600 text-2xl font-black px-1 leading-none" title="刪除此紀錄">✕</button>` : ''}
-              </div>
-            </div>
+            <span class="inline-flex items-center gap-1 bg-stone-100/90 text-stone-700 border border-stone-300/80 px-2 py-0.5 rounded-lg text-sm font-num font-bold">
+              <span>${it.time}</span>
+              <span class="font-black ${it.step >= 0 ? 'text-emerald-700' : 'text-rose-700'}">(${sText})</span>
+            </span>
           `;
         }).join('');
+
+        return `
+          <div class="bg-white p-2.5 rounded-2xl border-2 ${isReEditCost ? 'border-rose-600 bg-rose-50/50' : borderColor} shadow-xs flex flex-col gap-1.5 transition">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-stone-900 font-black text-xl sm:text-2xl flex items-center gap-2 truncate">
+                <span class="text-2xl shrink-0">${icon}</span>
+                <span class="truncate">${group.name}</span>
+                ${group.items.length > 1 ? `<span class="bg-stone-200 text-stone-800 text-xs px-2 py-0.5 rounded-full font-num font-black">×${group.items.length}</span>` : ''}
+              </span>
+              <div class="flex items-center gap-2.5 shrink-0">
+                <span class="font-num text-2xl sm:text-3xl font-black ${scoreTextColor}">
+                  ${totalStep > 0 ? `+${totalStep}` : totalStep}
+                </span>
+                ${canDelete ? `
+                  <button onclick="window.appActions.removeRecord('${studentId}', '${group.name}')" class="w-8 h-8 rounded-xl bg-stone-100 hover:bg-rose-100 text-stone-400 hover:text-rose-600 text-xl font-black flex items-center justify-center transition leading-none" title="撤回最新一次紀錄">
+                    ✕
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+            
+            <!-- 🌟 橫向流動時間子軌跡（自動換行，支援超多筆） -->
+            <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-stone-100 max-h-20 overflow-y-auto custom-scrollbar">
+              ${timeChipsHtml}
+            </div>
+          </div>
+        `;
+      };
+
+      const listGood = document.getElementById('list_good_records');
+      if (goodGroups.length === 0) {
+        listGood.innerHTML = '<div class="text-stone-400 text-3xl text-center py-6 font-bold font-serif-tc">今日尚未加步數</div>';
+      } else {
+        listGood.innerHTML = goodGroups.map(g => renderGroupCard(g, 'border-emerald-400', 'text-emerald-700')).join('');
       }
 
       const listBad = document.getElementById('list_bad_records');
-      if (badRecords.length === 0) {
-        listBad.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4 font-bold font-serif-tc">今日無扣減步數</div>';
+      if (badGroups.length === 0) {
+        listBad.innerHTML = '<div class="text-stone-400 text-3xl text-center py-6 font-bold font-serif-tc">今日無扣減步數</div>';
       } else {
-        listBad.innerHTML = badRecords.map((r, i) => {
-          const isClassRecord = r.isClass === true;
-          const isReEditCost = r.name === '結算後修改';
-          const icon = getRuleIcon(r.name, isClassRecord, '✗');
-
-          let canDelete = false;
-          if (AppState.isTeacher) {
-            canDelete = true;
-          } else if (!isDayLocked && !isStudentLocked) {
-            canDelete = !isClassRecord && !isReEditCost;
-          }
-
-          return `
-            <div class="bg-white py-1.5 px-3 rounded-xl border-2 ${isReEditCost ? 'border-rose-600 bg-rose-50/50' : 'border-rose-500'} flex items-center justify-between text-2xl sm:text-3xl font-black shadow-xs whitespace-nowrap">
-              <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
-                <span class="shrink-0 text-2xl">${icon}</span>
-                <span class="truncate">${r.name}</span>
-              </span>
-              <div class="flex items-center gap-2 shrink-0">
-                <span class="text-stone-400 text-sm font-num font-normal tracking-tight">${r.time || ''}</span>
-                <span class="text-rose-700 font-num text-2xl sm:text-3xl font-black">${r.step}</span>
-                ${canDelete ? `<button onclick="window.appActions.removeRecord('${studentId}', 'bad', ${i})" class="text-stone-400 hover:text-rose-600 text-2xl font-black px-1 leading-none" title="刪除此紀錄">✕</button>` : ''}
-              </div>
-            </div>
-          `;
-        }).join('');
+        listBad.innerHTML = badGroups.map(g => renderGroupCard(g, 'border-rose-400', 'text-rose-700')).join('');
       }
 
       const listAtt = document.getElementById('list_att_records');
-      if (attRecords.length === 0) {
-        listAtt.innerHTML = '<div class="text-stone-400 text-3xl text-center py-4 font-bold font-serif-tc">今日無自律扣步</div>';
+      if (attGroups.length === 0) {
+        listAtt.innerHTML = '<div class="text-stone-400 text-3xl text-center py-6 font-bold font-serif-tc">今日無自律扣步</div>';
       } else {
-        listAtt.innerHTML = attRecords.map((r, i) => {
-          const isClassRecord = r.isClass === true;
-          const isReEditCost = r.name === '結算後修改';
-          const icon = getRuleIcon(r.name, isClassRecord, '⚠️️');
-
-          let canDelete = false;
-          if (AppState.isTeacher) {
-            canDelete = true;
-          } else if (!isDayLocked && !isStudentLocked) {
-            canDelete = !isClassRecord && !isReEditCost;
-          }
-
-          return `
-            <div class="bg-white py-1.5 px-3 rounded-xl border-2 border-amber-500 flex items-center justify-between text-2xl sm:text-3xl font-black shadow-xs whitespace-nowrap">
-              <span class="text-stone-900 flex items-center gap-2 truncate mr-2">
-                <span class="shrink-0 text-2xl">${icon}</span>
-                <span class="truncate">${r.name}</span>
-              </span>
-              <div class="flex items-center gap-2 shrink-0">
-                <span class="text-stone-400 text-sm font-num font-normal tracking-tight">${r.time || ''}</span>
-                <span class="text-amber-800 font-num text-2xl sm:text-3xl font-black">${r.step}</span>
-                ${canDelete ? `<button onclick="window.appActions.removeRecord('${studentId}', 'attitude', ${i})" class="text-stone-400 hover:text-rose-600 text-2xl font-black px-1 leading-none" title="刪除此紀錄">✕</button>` : ''}
-              </div>
-            </div>
-          `;
-        }).join('');
+        listAtt.innerHTML = attGroups.map(g => renderGroupCard(g, 'border-amber-400', 'text-amber-800')).join('');
       }
 
-      const totalModalClassroom = records.reduce((acc, r) => acc + r.step, 0);
+      const totalModalClassroom = rawRecords.reduce((acc, r) => acc + (r.step || 0), 0);
       document.getElementById('modalCurrentScore').innerText = `🚩 ${totalModalClassroom >= 0 ? '+' : ''}${totalModalClassroom}`;
     }
 
@@ -1812,6 +1815,7 @@
         el.innerText = next;
       },
 
+      // 🌟 核心調整：允許同一項目再次點選，如實新增時間流水帳，明細自動合併累加
       applyStudentRule(ruleName, sign, category) {
         const studentId = AppState.activeModalStudentId;
         if (!studentId) return;
@@ -1828,10 +1832,6 @@
           return;
         }
         const records = dayData.records[studentId];
-        if (records.some(r => r.name === ruleName && !r.isClass)) {
-          showToast(`此項「${ruleName}」今日已登記過！`, 'error');
-          return;
-        }
 
         let stepperId = 'btn_step_good_1';
         if (ruleName === '個人工作完成') stepperId = 'btn_step_good_2';
@@ -1846,6 +1846,7 @@
         const stepVal = parseInt(document.getElementById(stepperId).innerText, 10) || 1;
         const finalStep = sign * stepVal;
 
+        // 如實追加一筆記錄，帶上精確時間戳記
         records.push({
           time: getNowTimeString(),
           name: ruleName,
@@ -1864,7 +1865,8 @@
         showToast(`已登記：${ruleName} (${finalStep >= 0 ? '+' : ''}${finalStep})`, 'success');
       },
 
-      removeRecord(studentId, category, indexInCategory) {
+      // 🌟 核心調整：點 ✕ 每次撤回該項目最新一次紀錄（例如 -2 倒退回 -1）
+      removeRecord(studentId, ruleName) {
         const dayData = getDayData(AppState.currentDate);
         const isLocked = dayData.locked || dayData.studentLocked[studentId];
         if (isLocked && !AppState.isTeacher) {
@@ -1873,25 +1875,22 @@
         }
 
         const records = dayData.records[studentId];
-        const sortRecords = (arr) => {
-          return [...arr].sort((a, b) => {
-            if (a.isClass && !b.isClass) return 1;
-            if (!a.isClass && b.isClass) return -1;
-            return 0;
-          });
-        };
-        const categoryRecords = sortRecords(records.filter(r => r.category === category));
-        const target = categoryRecords[indexInCategory];
-
-        if (target) {
-          const globalIdx = records.indexOf(target);
-          if (globalIdx !== -1) {
-            records.splice(globalIdx, 1);
-            AudioEngine.playDeduct();
-            persistDayData(AppState.currentDate);
-            renderModalRecords();
-            showToast(`已刪除紀錄：${target.name}`);
+        
+        // 從陣列尾端（最新發生的）往前找對應項目的最後一筆
+        let lastTargetIndex = -1;
+        for (let i = records.length - 1; i >= 0; i--) {
+          if (records[i].name === ruleName) {
+            lastTargetIndex = i;
+            break;
           }
+        }
+
+        if (lastTargetIndex !== -1) {
+          const removed = records.splice(lastTargetIndex, 1)[0];
+          AudioEngine.playDeduct();
+          persistDayData(AppState.currentDate);
+          renderModalRecords();
+          showToast(`已撤回最後一筆【${ruleName}】(${removed.time})`, 'info');
         }
       },
 
@@ -2044,7 +2043,6 @@
         const curDate = AppState.currentDate;
         const assignedHwList = AppState.checkinTasksAssigned[curDate] || [];
 
-        // 🌟 判定請假狀態
         const attStatus = getStudentCheckinStatus(studentId, curDate);
         const isLeave = (attStatus === 'sick' || attStatus === 'personal');
 
@@ -2331,7 +2329,7 @@
 
             // 5. 表現
             const records = dayData.records[st.id] || [];
-            const classroomScore = records.reduce((acc, r) => acc + r.step, 0);
+            const classroomScore = records.reduce((acc, r) => acc + (r.step || 0), 0);
 
             const totalScore = checkinSubtotal + correctionScore + classroomScore;
 
