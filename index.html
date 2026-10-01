@@ -75,7 +75,7 @@
             </svg>
           </div>
           <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v5.8
+            v5.9
           </span>
         </div>
 
@@ -593,7 +593,7 @@
         <div class="flex items-center gap-4">
           <div class="flex items-center gap-1.5 bg-amber-50 border-2 border-amber-300 px-4 py-1.5 rounded-2xl shadow-xs">
             <span class="text-base font-bold text-amber-900">總計：</span>
-            <span id="correctionTotalScoreBadge" class="text-3xl font-num font-black text-amber-950">+0</span>
+            <span id="correctionTotalScoreBadge" class="text-3xl font-num font-black text-amber-950">0</span>
           </div>
           <button onclick="window.appActions.closeCorrectionModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
             <i class="fa-solid fa-xmark"></i>
@@ -675,6 +675,12 @@
     function maskName(n) {
       if (!n) return '';
       return n[0] + 'O' + (n[2] || '');
+    }
+
+    // 格式化數字：>0 顯示 +X，<0 顯示 -X，===0 顯示純粹的 0（絕不顯示 +0）
+    function formatScore(n) {
+      if (n > 0) return `+${n}`;
+      return `${n}`;
     }
 
     function getTodayString() {
@@ -1088,9 +1094,9 @@
         cleanLockedBadge.classList.remove('hidden');
         cleanLockedBadge.classList.add('flex');
         const s = classApplied.clean.step;
-        cleanLockedText.innerText = `${s >= 0 ? '+' : ''}${s}`;
+        cleanLockedText.innerText = formatScore(s);
         cleanLockedText.className = `px-4 py-1.5 rounded-2xl text-2xl font-black font-num shadow-xs border-2 ${
-          s >= 0 ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-rose-100 text-rose-950 border-rose-300'
+          s > 0 ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : s < 0 ? 'bg-rose-100 text-rose-950 border-rose-300' : 'bg-stone-100 text-stone-800 border-stone-300'
         }`;
         if (AppState.isTeacher) cleanResetBtn.classList.remove('hidden');
         else cleanResetBtn.classList.add('hidden');
@@ -1110,9 +1116,9 @@
         specLockedBadge.classList.remove('hidden');
         specLockedBadge.classList.add('flex');
         const s = classApplied.spec.step;
-        specLockedText.innerText = `${s >= 0 ? '+' : ''}${s}`;
+        specLockedText.innerText = formatScore(s);
         specLockedText.className = `px-4 py-1.5 rounded-2xl text-2xl font-black font-num shadow-xs border-2 ${
-          s >= 0 ? 'bg-blue-100 text-blue-950 border-blue-300' : 'bg-[#FAF5FC] text-[#5C2E75] border-[#7B4B94]/40'
+          s > 0 ? 'bg-blue-100 text-blue-950 border-blue-300' : 'bg-[#FAF5FC] text-[#5C2E75] border-[#7B4B94]/40'
         }`;
         if (AppState.isTeacher) specResetBtn.classList.remove('hidden');
         else specResetBtn.classList.add('hidden');
@@ -1123,7 +1129,6 @@
       }
     }
 
-    // 🌟 核心修復：renderDatePills 自動將左側下拉選單同步定位至 AppState.selectedMonth
     function renderDatePills() {
       const container = document.getElementById('datePillsContainer');
       container.innerHTML = '';
@@ -1153,7 +1158,6 @@
 
       document.getElementById('currentDateCapsule').innerText = AppState.currentDate;
       
-      // 🌟 保證左側月份選單 100% 跟隨當前選取月份同步更新！
       const monthSelect = document.getElementById('practiceMonthSelect');
       if (monthSelect) {
         monthSelect.value = String(curMonthInt);
@@ -1219,6 +1223,7 @@
       }
     }
 
+    // 🌟 核心渲染：學生卡片（病假/事假時作業與訂正全面連帶豁免，全站清除 +0）
     function renderStudentCards() {
       const grid = document.getElementById('studentCardsContainer');
       grid.innerHTML = '';
@@ -1324,15 +1329,20 @@
 
           checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
 
-          // 4. 訂正
-          const doneCorrectionCount = correctionTasks.filter(tName => {
-            const stat = getCorrectionStatus(tName, st.id, curDate);
-            return stat === 'green' || stat === 'yellow';
-          }).length;
-          correctionScore = doneCorrectionCount;
-          correctionPreviewText = correctionTasks.length === 0
-            ? '0 / 0'
-            : `${doneCorrectionCount} / ${correctionTasks.length}`;
+          // 🌟 4. 訂正：若為病假或事假，訂正自動連帶豁免，得分為 0，標籤顯示「病假免計」
+          if (isLeave) {
+            correctionScore = 0;
+            correctionPreviewText = attStatus === 'sick' ? '病假免計' : '事假免計';
+          } else {
+            const doneCorrectionCount = correctionTasks.filter(tName => {
+              const stat = getCorrectionStatus(tName, st.id, curDate);
+              return stat === 'green' || stat === 'yellow';
+            }).length;
+            correctionScore = doneCorrectionCount;
+            correctionPreviewText = correctionTasks.length === 0
+              ? '0 / 0'
+              : `${doneCorrectionCount} / ${correctionTasks.length}`;
+          }
 
           // 5. 表現
           const records = dayData.records[st.id] || [];
@@ -1376,7 +1386,7 @@
 
             <div class="mt-3 space-y-3">
               
-              <!-- 1. 打卡：陶土赭紅（右上角裸露大總分） -->
+              <!-- 1. 打卡：陶土赭紅（右上角裸露大總分，清除 +0） -->
               <div class="bg-[#FAF6EE] p-3 rounded-2xl border-2 border-[#D9C8B4] shadow-xs relative">
                 <div class="flex items-center justify-between pb-2 mb-2 border-b border-[#E8DEC8]">
                   <div class="flex items-center gap-2">
@@ -1385,12 +1395,12 @@
                       打卡
                     </span>
                   </div>
-                  <span class="text-3xl sm:text-4xl font-num font-black ${checkinSubtotal >= 0 ? 'text-[#8C5E3C]' : 'text-rose-700'}">
-                    ${checkinSubtotal >= 0 ? '+' : ''}${checkinSubtotal}
+                  <span class="text-3xl sm:text-4xl font-num font-black ${checkinSubtotal > 0 ? 'text-[#8C5E3C]' : checkinSubtotal < 0 ? 'text-rose-700' : 'text-stone-700'}">
+                    ${formatScore(checkinSubtotal)}
                   </span>
                 </div>
 
-                <!-- 內層細項：純二字標語（到校、作業、習慣），數值全面膠囊化 -->
+                <!-- 內層細項：純二字標語，數值膠囊化 -->
                 <div class="space-y-2">
                   <!-- 到校 -->
                   <div class="bg-white/90 px-2.5 py-1.5 rounded-xl border border-[#E5DAC8] flex items-center justify-between shadow-2xs">
@@ -1401,7 +1411,7 @@
                       </span>
                     </div>
                     <span class="px-2.5 py-0.5 rounded-lg border font-num font-black text-base sm:text-lg ${arrivalScore > 0 ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : arrivalScore < 0 ? 'bg-rose-50 text-rose-800 border-rose-200' : 'bg-stone-50 text-stone-500 border-stone-200'}">
-                      ${arrivalScore > 0 ? `+${arrivalScore}` : arrivalScore}
+                      ${formatScore(arrivalScore)}
                     </span>
                   </div>
 
@@ -1414,26 +1424,26 @@
                       </span>
                     </div>
                     <span class="px-2.5 py-0.5 rounded-lg border font-num font-black text-base sm:text-lg ${checkinHwScore > 0 ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : checkinHwScore < 0 ? 'bg-rose-50 text-rose-800 border-rose-200' : 'bg-stone-50 text-stone-500 border-stone-200'}">
-                      ${checkinHwScore > 0 ? `+${checkinHwScore}` : checkinHwScore}
+                      ${formatScore(checkinHwScore)}
                     </span>
                   </div>
 
-                  <!-- 習慣 -->
+                  <!-- 習慣：未達成按鈕增強深色灰階對比度 -->
                   <div class="bg-white/90 p-2 rounded-xl border border-[#E5DAC8] space-y-1.5 shadow-2xs">
                     <div class="flex items-center justify-between">
                       <span class="text-base font-black text-stone-800 font-serif-tc">習慣</span>
                       <span class="px-2.5 py-0.5 rounded-lg border font-num font-black text-base sm:text-lg ${habitScore > 0 ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-stone-50 text-stone-500 border-stone-200'}">
-                        ${habitScore > 0 ? `+${habitScore}` : habitScore}
+                        ${formatScore(habitScore)}
                       </span>
                     </div>
                     <div class="flex items-center justify-between gap-1 text-xs sm:text-sm font-black whitespace-nowrap">
-                      <span class="px-2 py-1 rounded-lg flex-1 text-center ${previewDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-100 text-stone-400 border border-stone-200'}">
+                      <span class="px-2 py-1 rounded-lg flex-1 text-center ${previewDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200/80 text-stone-600 border border-stone-300'}">
                         預習複習
                       </span>
-                      <span class="px-2 py-1 rounded-lg flex-1 text-center ${suppliesDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-100 text-stone-400 border border-stone-200'}">
+                      <span class="px-2 py-1 rounded-lg flex-1 text-center ${suppliesDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200/80 text-stone-600 border border-stone-300'}">
                         帶學用品
                       </span>
-                      <span class="px-2 py-1 rounded-lg flex-1 text-center ${checkinDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-100 text-stone-400 border border-stone-200'}">
+                      <span class="px-2 py-1 rounded-lg flex-1 text-center ${checkinDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200/80 text-stone-600 border border-stone-300'}">
                         訂正功課
                       </span>
                     </div>
@@ -1441,7 +1451,7 @@
                 </div>
               </div>
 
-              <!-- 2. 訂正：幾分之幾緊貼膠囊右側，純單行不折行 -->
+              <!-- 2. 訂正：單行橫向並排，清除 +0，請假時顯示病假免計 -->
               <div onclick="window.appActions.openCorrectionModal('${st.id}')" class="bg-[#F0F6FA] p-3 rounded-2xl border-2 border-[#B8D3E6] shadow-xs cursor-pointer hover:bg-[#E5F0F7] transition">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2.5 flex-nowrap min-w-0">
@@ -1453,13 +1463,13 @@
                       ${correctionPreviewText}
                     </span>
                   </div>
-                  <span class="text-3xl sm:text-4xl font-num font-black text-[#1E4E79] shrink-0 ml-2">
-                    +${correctionScore}
+                  <span class="text-3xl sm:text-4xl font-num font-black ${correctionScore > 0 ? 'text-[#1E4E79]' : 'text-stone-700'} shrink-0 ml-2">
+                    ${formatScore(correctionScore)}
                   </span>
                 </div>
               </div>
 
-              <!-- 3. 表現：蒼松黛綠 -->
+              <!-- 3. 表現：蒼松黛綠，清除 +0 -->
               <div class="bg-[#F0F7F3] p-3 rounded-2xl border-2 border-[#BCD4C6] shadow-xs flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <span class="text-3xl filter drop-shadow-xs">🏆</span>
@@ -1467,8 +1477,8 @@
                     表現
                   </span>
                 </div>
-                <span class="text-3xl sm:text-4xl font-num font-black ${classroomScore >= 0 ? 'text-[#235C3E]' : 'text-rose-700'}">
-                  ${classroomScore >= 0 ? '+' : ''}${classroomScore}
+                <span class="text-3xl sm:text-4xl font-num font-black ${classroomScore > 0 ? 'text-[#235C3E]' : classroomScore < 0 ? 'text-rose-700' : 'text-stone-700'}">
+                  ${formatScore(classroomScore)}
                 </span>
               </div>
 
@@ -1492,6 +1502,7 @@
       });
     }
 
+    // 檢核紀錄明細：同項目自動收納累積、橫向時間流動、點 ✕ 逐次倒退撤銷
     function renderModalRecords() {
       const studentId = AppState.activeModalStudentId;
       if (!studentId) return;
@@ -1572,11 +1583,10 @@
         }
 
         const timeChipsHtml = group.items.map(it => {
-          const sText = it.step > 0 ? `+${it.step}` : `${it.step}`;
           return `
             <span class="inline-flex items-center gap-1 bg-stone-100/90 text-stone-700 border border-stone-300/80 px-2 py-0.5 rounded-lg text-sm font-num font-bold">
               <span>${it.time}</span>
-              <span class="font-black ${it.step >= 0 ? 'text-emerald-700' : 'text-rose-700'}">(${sText})</span>
+              <span class="font-black ${it.step >= 0 ? 'text-emerald-700' : 'text-rose-700'}">(${formatScore(it.step)})</span>
             </span>
           `;
         }).join('');
@@ -1591,7 +1601,7 @@
               </span>
               <div class="flex items-center gap-2.5 shrink-0">
                 <span class="font-num text-2xl sm:text-3xl font-black ${scoreTextColor}">
-                  ${totalStep > 0 ? `+${totalStep}` : totalStep}
+                  ${formatScore(totalStep)}
                 </span>
                 ${canDelete ? `
                   <button onclick="window.appActions.removeRecord('${studentId}', '${group.name}')" class="w-8 h-8 rounded-xl bg-stone-100 hover:bg-rose-100 text-stone-400 hover:text-rose-600 text-xl font-black flex items-center justify-center transition leading-none" title="撤回最新一次紀錄">
@@ -1630,7 +1640,7 @@
       }
 
       const totalModalClassroom = rawRecords.reduce((acc, r) => acc + (r.step || 0), 0);
-      document.getElementById('modalCurrentScore').innerText = `🚩 ${totalModalClassroom >= 0 ? '+' : ''}${totalModalClassroom}`;
+      document.getElementById('modalCurrentScore').innerText = `🚩 ${formatScore(totalModalClassroom)}`;
     }
 
     window.appActions = {
@@ -1645,7 +1655,6 @@
         const monthNum = String(parseInt(dateStr.split('-')[1], 10));
         AppState.selectedMonth = monthNum;
         
-        // 🌟 即刻回填左側月份選單
         const mSelect = document.getElementById('practiceMonthSelect');
         if (mSelect) mSelect.value = monthNum;
 
@@ -1782,7 +1791,7 @@
         document.getElementById(`step_${type}`).innerText = 1;
 
         persistDayData(AppState.currentDate);
-        showToast(`全班已套用：${name} (${step >= 0 ? '+' : ''}${step})`, 'success');
+        showToast(`全班已套用：${name} (${formatScore(step)})`, 'success');
       },
 
       resetClassAction(group) {
@@ -1859,7 +1868,7 @@
 
         persistDayData(AppState.currentDate);
         renderModalRecords();
-        showToast(`已登記：${ruleName} (${finalStep >= 0 ? '+' : ''}${finalStep})`, 'success');
+        showToast(`已登記：${ruleName} (${formatScore(finalStep)})`, 'success');
       },
 
       removeRecord(studentId, ruleName) {
@@ -2004,18 +2013,18 @@
                 </span>
                 <div class="flex items-center gap-2 sm:gap-3 flex-nowrap text-base sm:text-lg font-bold font-serif-tc">
                   <span class="px-3 py-1 rounded-xl bg-[#FAF6EE] border border-[#D9C8B4] text-[#8C5E3C] whitespace-nowrap">
-                    打卡 ${item.checkinScore >= 0 ? '+' : ''}${item.checkinScore}
+                    打卡 ${formatScore(item.checkinScore)}
                   </span>
                   <span class="px-3 py-1 rounded-xl bg-[#F0F6FA] border border-[#B8D3E6] text-[#1E4E79] whitespace-nowrap">
-                    訂正 +${item.correctionScore}
+                    訂正 ${formatScore(item.correctionScore)}
                   </span>
                   <span class="px-3 py-1 rounded-xl bg-[#F0F7F3] border border-[#BCD4C6] text-[#235C3E] whitespace-nowrap">
-                    表現 ${item.classroomScore >= 0 ? '+' : ''}${item.classroomScore}
+                    表現 ${formatScore(item.classroomScore)}
                   </span>
                 </div>
               </div>
               <span class="text-3xl sm:text-4xl font-num font-black text-[#8C5E3C] shrink-0 text-right min-w-[70px]">
-                ${item.totalScore >= 0 ? '+' : ''}${item.totalScore}
+                ${formatScore(item.totalScore)}
               </span>
             `;
             container.appendChild(row);
@@ -2132,6 +2141,7 @@
         document.getElementById('checkinHwModal').classList.add('hidden');
       },
 
+      // 🌟 訂正彈窗：病假/事假豁免提示
       openCorrectionModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('correctionModalTitle').innerText = `${maskName(st.name)} 作業訂正狀況`;
@@ -2141,9 +2151,15 @@
         const curDate = AppState.currentDate;
         const correctionTasks = AppState.correctionTasks[curDate] || [];
 
+        const attStatus = getStudentCheckinStatus(studentId, curDate);
+        const isLeave = (attStatus === 'sick' || attStatus === 'personal');
+
         let totalCorrectionScore = 0;
 
-        if (correctionTasks.length === 0) {
+        if (isLeave) {
+          container.innerHTML = `<div class="col-span-1 md:col-span-2 text-stone-500 font-bold text-2xl text-center py-10 font-serif-tc">本日登記為【${attStatus === 'sick' ? '病假' : '事假'}】，作業訂正全面豁免免計</div>`;
+          document.getElementById('correctionTotalScoreBadge').innerText = '0';
+        } else if (correctionTasks.length === 0) {
           container.innerHTML = '<div class="col-span-1 md:col-span-2 text-stone-400 font-bold text-2xl text-center py-10 font-serif-tc">本日訂正系統尚未指派任何作業項目</div>';
           document.getElementById('correctionTotalScoreBadge').innerText = '0';
         } else {
@@ -2197,7 +2213,7 @@
             container.appendChild(row);
           });
 
-          document.getElementById('correctionTotalScoreBadge').innerText = totalCorrectionScore > 0 ? `+${totalCorrectionScore}` : `${totalCorrectionScore}`;
+          document.getElementById('correctionTotalScoreBadge').innerText = formatScore(totalCorrectionScore);
         }
 
         document.getElementById('correctionModal').classList.remove('hidden');
@@ -2314,13 +2330,20 @@
 
             const checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
 
-            // 4. 訂正
-            const doneCorrectionCount = correctionTasks.filter(tName => {
-              const stat = getCorrectionStatus(tName, st.id, curDate);
-              return stat === 'green' || stat === 'yellow';
-            }).length;
-            const correctionScore = doneCorrectionCount;
-            const correctionPreviewText = correctionTasks.length === 0 ? '0 / 0' : `${doneCorrectionCount} / ${correctionTasks.length}`;
+            // 4. 訂正（病假/事假豁免）
+            let correctionScore = 0;
+            let correctionPreviewText = '0 / 0';
+            if (isLeave) {
+              correctionScore = 0;
+              correctionPreviewText = attStatus === 'sick' ? '病假免計' : '事假免計';
+            } else {
+              const doneCorrectionCount = correctionTasks.filter(tName => {
+                const stat = getCorrectionStatus(tName, st.id, curDate);
+                return stat === 'green' || stat === 'yellow';
+              }).length;
+              correctionScore = doneCorrectionCount;
+              correctionPreviewText = correctionTasks.length === 0 ? '0 / 0' : `${doneCorrectionCount} / ${correctionTasks.length}`;
+            }
 
             // 5. 表現
             const records = dayData.records[st.id] || [];
@@ -2377,7 +2400,6 @@
       updateClock();
       setInterval(updateClock, 1000);
       
-      // 🌟 初始化確保月份選單對齊 AppState
       const mSelect = document.getElementById('practiceMonthSelect');
       if (mSelect) mSelect.value = AppState.selectedMonth;
 
