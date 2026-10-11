@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>六年甲班行知錄</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
@@ -46,15 +46,15 @@
     .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #B5AD9F; }
   </style>
 </head>
-<body class="min-h-screen p-3 sm:p-5 lg:p-6 text-stone-900 select-none">
+<body class="min-h-screen p-2.5 sm:p-5 lg:p-6 text-stone-900 select-none">
 
   <!-- 頂部大橫幅區塊 -->
-  <header class="bg-[#FFFDF9] rounded-3xl border-2 border-stone-200/90 shadow-sm p-4 sm:p-6 mb-5">
-    <div class="flex flex-wrap items-center justify-between gap-4">
+  <header class="bg-[#FFFDF9] rounded-3xl border-2 border-stone-200/90 shadow-sm p-3.5 sm:p-6 mb-4 sm:mb-5">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
       
       <div class="flex items-center gap-3 sm:gap-5 shrink-0">
         <div class="flex flex-col items-center justify-center shrink-0">
-          <div class="footstep-anim flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 text-[#8C5E3C]">
+          <div class="footstep-anim flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 text-[#8C5E3C]">
             <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 100 100" fill="currentColor">
               <g transform="translate(14, 8) rotate(-4)">
                 <rect x="6" y="4" width="22" height="34" rx="10" />
@@ -74,51 +74,53 @@
               </g>
             </svg>
           </div>
-          <span class="text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-2 py-0.5 rounded-md mt-1">
-            v6.0
+          <span class="text-[10px] sm:text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-1.5 py-0.5 rounded-md mt-0.5 sm:mt-1">
+            v6.2
           </span>
         </div>
 
         <div class="flex flex-col justify-center">
-          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black font-serif-tc text-stone-900 tracking-wider">
+          <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black font-serif-tc text-stone-900 tracking-wider">
             六年甲班行知錄
           </h1>
-          <div class="h-[1.5px] w-full bg-gradient-to-r from-stone-300 via-amber-800/40 to-stone-300 my-1"></div>
-          <div class="w-full flex justify-between items-center text-amber-900 font-serif-tc font-bold italic text-base sm:text-xl lg:text-2xl tracking-normal">
+          <div class="h-[1.5px] w-full bg-gradient-to-r from-stone-300 via-amber-800/40 to-stone-300 my-0.5 sm:my-1"></div>
+          <div class="w-full flex justify-between items-center text-amber-900 font-serif-tc font-bold italic text-xs sm:text-xl lg:text-2xl tracking-normal">
             <span>千</span><span>里</span><span>之</span><span>行</span><span>，</span><span>始</span><span>於</span><span>足</span><span>下</span>
           </div>
         </div>
       </div>
 
-      <!-- 右側工具組 -->
-      <div class="flex flex-wrap items-center gap-3 sm:gap-4 shrink-0">
-        <div class="relative group cursor-pointer" onclick="window.appActions.showConnectionInfo()">
-          <div class="w-4 h-4 rounded-full bg-emerald-500 shadow-sm flex items-center justify-center">
-            <div id="cloudPing" class="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping opacity-75"></div>
+      <!-- 工具組 -->
+      <div class="flex flex-wrap items-center justify-between sm:justify-end gap-2 sm:gap-4 shrink-0 mt-1 md:mt-0">
+        <div class="flex items-center gap-2 sm:gap-3">
+          <div class="relative group cursor-pointer" onclick="window.appActions.showConnectionInfo()">
+            <div class="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-emerald-500 shadow-sm flex items-center justify-center">
+              <div id="cloudPing" class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-300 animate-ping opacity-75"></div>
+            </div>
+            <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block bg-stone-900 text-white text-xs px-2.5 py-1 rounded-xl whitespace-nowrap shadow-lg z-20">
+              全自動即時雙向連動中
+            </div>
           </div>
-          <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block bg-stone-900 text-white text-sm px-3 py-1.5 rounded-xl whitespace-nowrap shadow-lg z-20">
-            全自動即時雙向連動中
+
+          <button id="authBtn" onclick="window.appActions.toggleAuthModal()" class="px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl text-sm sm:text-xl font-black transition flex items-center gap-1.5 sm:gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 border-2 border-stone-300 shadow-xs stone-btn">
+            <i id="authIcon" class="fa-solid fa-lock text-xs sm:text-base"></i>
+            <span id="authStatusText">學生模式 (點擊登入)</span>
+          </button>
+
+          <div class="hidden sm:flex items-center bg-stone-100 px-3 py-2 rounded-2xl border-2 border-stone-200">
+            <select id="academicYearSelect" onchange="window.appActions.changeAcademicYear(this.value)" class="bg-transparent text-lg font-black text-stone-700 cursor-pointer outline-none">
+              <option value="115" selected>115學年度 (六甲)</option>
+              <option value="114">114學年度 (五甲)</option>
+            </select>
           </div>
         </div>
 
-        <button id="authBtn" onclick="window.appActions.toggleAuthModal()" class="px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 border-2 border-stone-300 shadow-xs stone-btn">
-          <i id="authIcon" class="fa-solid fa-lock text-base"></i>
-          <span id="authStatusText">學生模式 (點擊登入)</span>
-        </button>
-
-        <div class="hidden sm:flex items-center bg-stone-100 px-3 py-2 rounded-2xl border-2 border-stone-200">
-          <select id="academicYearSelect" onchange="window.appActions.changeAcademicYear(this.value)" class="bg-transparent text-lg font-black text-stone-700 cursor-pointer outline-none">
-            <option value="115" selected>115學年度 (六甲)</option>
-            <option value="114">114學年度 (五甲)</option>
-          </select>
-        </div>
-
-        <div class="flex items-center h-[96px] bg-[#F3EDE2] border-2 border-[#DFD7C7] px-4 sm:px-6 rounded-2xl shadow-inner gap-3 sm:gap-4">
-          <span id="headerDateText" class="text-stone-700 font-serif-tc font-bold text-lg sm:text-2xl whitespace-nowrap">
+        <div class="flex items-center h-12 sm:h-[96px] bg-[#F3EDE2] border-2 border-[#DFD7C7] px-3 sm:px-6 rounded-xl sm:rounded-2xl shadow-inner gap-2 sm:gap-4 shrink-0">
+          <span id="headerDateText" class="text-stone-700 font-serif-tc font-bold text-sm sm:text-2xl whitespace-nowrap">
             --月--日
           </span>
-          <div class="w-[2px] h-10 bg-[#C8BFAD]"></div>
-          <span id="headerClockDigits" class="text-4xl sm:text-5xl lg:text-6xl font-num font-black text-stone-900 tracking-wider">
+          <div class="w-[1.5px] sm:w-[2px] h-6 sm:h-10 bg-[#C8BFAD]"></div>
+          <span id="headerClockDigits" class="text-xl sm:text-5xl lg:text-6xl font-num font-black text-stone-900 tracking-wider">
             00:00:00
           </span>
         </div>
@@ -127,60 +129,62 @@
     </div>
 
     <!-- 日期導航列 -->
-    <div class="flex items-center justify-between gap-3 pt-4 mt-3 border-t-2 border-stone-100 flex-nowrap w-full">
-      <div class="flex items-center gap-1.5 bg-stone-100 px-3 py-1.5 rounded-2xl border-2 border-stone-200 shrink-0">
-        <span class="text-lg sm:text-xl font-black text-stone-700 font-serif-tc whitespace-nowrap">實踐月：</span>
-        <select id="practiceMonthSelect" onchange="window.appActions.changeMonth(this.value)" class="bg-white text-lg sm:text-xl font-black text-stone-800 border border-stone-300 rounded-xl px-2.5 py-0.5 cursor-pointer">
-          <option value="8">8月</option>
-          <option value="9">9月</option>
-          <option value="10">10月</option>
-          <option value="11">11月</option>
-          <option value="12">12月</option>
-          <option value="1">1月</option>
-          <option value="2">2月</option>
-          <option value="3">3月</option>
-          <option value="4">4月</option>
-          <option value="5">5月</option>
-          <option value="6">6月</option>
-          <option value="7">7月</option>
-        </select>
-      </div>
-      
-      <div id="datePillsContainer" class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto custom-scrollbar flex-nowrap px-2 flex-1 min-w-0">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 pt-3 sm:pt-4 mt-2 sm:mt-3 border-t-2 border-stone-100">
+      <div class="flex items-center justify-between gap-2 min-w-0">
+        <div class="flex items-center gap-1 sm:gap-1.5 bg-stone-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 border-stone-200 shrink-0">
+          <span class="text-sm sm:text-xl font-black text-stone-700 font-serif-tc whitespace-nowrap">實踐月：</span>
+          <select id="practiceMonthSelect" onchange="window.appActions.changeMonth(this.value)" class="bg-white text-sm sm:text-xl font-black text-stone-800 border border-stone-300 rounded-lg sm:rounded-xl px-1.5 sm:px-2.5 py-0.5 cursor-pointer">
+            <option value="8">8月</option>
+            <option value="9">9月</option>
+            <option value="10">10月</option>
+            <option value="11">11月</option>
+            <option value="12">12月</option>
+            <option value="1">1月</option>
+            <option value="2">2月</option>
+            <option value="3">3月</option>
+            <option value="4">4月</option>
+            <option value="5">5月</option>
+            <option value="6">6月</option>
+            <option value="7">7月</option>
+          </select>
+        </div>
+        
+        <div id="datePillsContainer" class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto custom-scrollbar flex-nowrap px-1 flex-1 min-w-0">
+        </div>
       </div>
 
-      <div class="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto whitespace-nowrap relative">
-        <button id="deleteDayBtn" onclick="window.appActions.deleteCurrentDate()" class="hidden w-11 h-11 bg-rose-50 border-2 border-rose-300 hover:bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center text-xl font-black shadow-xs stone-btn" title="刪除此日期標籤">
+      <div class="flex items-center justify-between sm:justify-end gap-1.5 sm:gap-3 shrink-0 relative">
+        <button id="deleteDayBtn" onclick="window.appActions.deleteCurrentDate()" class="hidden w-9 h-9 sm:w-11 sm:h-11 bg-rose-50 border-2 border-rose-300 hover:bg-rose-100 text-rose-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-xl font-black shadow-xs stone-btn" title="刪除此日期標籤">
           <i class="fa-regular fa-trash-can"></i>
         </button>
 
-        <div class="flex items-center bg-white border-2 border-stone-300 rounded-2xl px-2 py-1 shadow-xs gap-1.5 sm:gap-2">
-          <button onclick="window.appActions.stepDate(-1)" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-stone-600 hover:text-stone-900 text-xl font-black rounded-xl hover:bg-stone-100" title="前一日">
+        <div class="flex items-center bg-white border-2 border-stone-300 rounded-xl sm:rounded-2xl px-1.5 sm:px-2 py-0.5 sm:py-1 shadow-xs gap-1 sm:gap-2">
+          <button onclick="window.appActions.stepDate(-1)" class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center text-stone-600 hover:text-stone-900 text-base sm:text-xl font-black rounded-lg hover:bg-stone-100" title="前一日">
             <i class="fa-solid fa-chevron-left"></i>
           </button>
-          <span id="currentDateCapsule" class="text-xl sm:text-2xl font-black font-num text-stone-800 px-2 tracking-wide">2026-10-01</span>
-          <button onclick="window.appActions.stepDate(1)" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-stone-600 hover:text-stone-900 text-xl font-black rounded-xl hover:bg-stone-100" title="後一日">
+          <span id="currentDateCapsule" class="text-base sm:text-2xl font-black font-num text-stone-800 px-1 sm:px-2 tracking-wide">2026-10-01</span>
+          <button onclick="window.appActions.stepDate(1)" class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center text-stone-600 hover:text-stone-900 text-base sm:text-xl font-black rounded-lg hover:bg-stone-100" title="後一日">
             <i class="fa-solid fa-chevron-right"></i>
           </button>
         </div>
 
-        <button id="addDayBtn" onclick="window.appActions.promptAddNewDate()" class="hidden w-11 h-11 bg-emerald-50 border-2 border-emerald-300 hover:bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center text-2xl font-black shadow-xs stone-btn" title="將目前日期納入上課日清單">
+        <button id="addDayBtn" onclick="window.appActions.promptAddNewDate()" class="hidden w-9 h-9 sm:w-11 sm:h-11 bg-emerald-50 border-2 border-emerald-300 hover:bg-emerald-100 text-emerald-700 rounded-xl sm:rounded-2xl flex items-center justify-center text-lg sm:text-2xl font-black shadow-xs stone-btn" title="將目前日期納入上課日清單">
           <i class="fa-solid fa-plus"></i>
         </button>
         
-        <button onclick="window.appActions.toggleCalendarPicker()" class="w-11 h-11 bg-white border-2 border-stone-300 hover:border-amber-700 text-amber-900 text-xl rounded-2xl flex items-center justify-center shadow-xs stone-btn" title="選擇日期">
+        <button onclick="window.appActions.toggleCalendarPicker()" class="w-9 h-9 sm:w-11 sm:h-11 bg-white border-2 border-stone-300 hover:border-amber-700 text-amber-900 text-base sm:text-xl rounded-xl sm:rounded-2xl flex items-center justify-center shadow-xs stone-btn" title="選擇日期">
           <i class="fa-regular fa-calendar-days"></i>
         </button>
 
-        <button id="archiveDayBtn" onclick="window.appActions.archiveToday()" class="hidden px-4 py-2 bg-amber-800 hover:bg-amber-900 text-white font-black text-lg sm:text-xl rounded-2xl shadow-xs stone-btn flex items-center gap-2">
-          <i class="fa-solid fa-box-archive"></i>
-          <span id="archiveBtnText">今日歸檔封存</span>
+        <button id="archiveDayBtn" onclick="window.appActions.archiveToday()" class="hidden px-2.5 py-1.5 sm:px-4 sm:py-2 bg-amber-800 hover:bg-amber-900 text-white font-black text-sm sm:text-xl rounded-xl sm:rounded-2xl shadow-xs stone-btn flex items-center gap-1 sm:gap-2">
+          <i class="fa-solid fa-box-archive text-xs sm:text-base"></i>
+          <span id="archiveBtnText">今日歸檔</span>
         </button>
 
-        <div id="customCalendarPopup" class="hidden absolute right-0 top-14 bg-white border-2 border-stone-300 rounded-3xl shadow-2xl p-4 z-40 w-80">
+        <div id="customCalendarPopup" class="hidden absolute right-0 top-12 sm:top-14 bg-white border-2 border-stone-300 rounded-3xl shadow-2xl p-4 z-40 w-72 sm:w-80">
           <div class="flex items-center justify-between pb-3 border-b border-stone-200 mb-3">
-            <span id="calendarTitle" class="font-black text-xl text-stone-800 font-serif-tc">月曆</span>
-            <button onclick="window.appActions.toggleCalendarPicker()" class="text-stone-400 hover:text-stone-700 text-lg font-black">✕</button>
+            <span id="calendarTitle" class="font-black text-lg sm:text-xl text-stone-800 font-serif-tc">月曆</span>
+            <button onclick="window.appActions.toggleCalendarPicker()" class="text-stone-400 hover:text-stone-700 text-base font-black">✕</button>
           </div>
           <div class="grid grid-cols-7 gap-1 text-center font-bold text-xs text-stone-500 mb-2">
             <div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div class="text-rose-500">六</div><div class="text-rose-500">日</div>
@@ -193,87 +197,87 @@
   </header>
 
   <!-- 全班表現橫幅 -->
-  <section class="bg-[#FFFDF9] rounded-3xl border-2 border-stone-200/90 p-4 sm:p-5 mb-6 shadow-sm">
-    <div class="flex flex-wrap items-center justify-between gap-4">
-      <div class="flex items-center gap-3 shrink-0">
-        <h2 class="text-2xl sm:text-3xl font-black text-stone-900 font-serif-tc tracking-wide">全班表現</h2>
+  <section class="bg-[#FFFDF9] rounded-3xl border-2 border-stone-200/90 p-3 sm:p-5 mb-5 sm:mb-6 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+        <h2 class="text-xl sm:text-3xl font-black text-stone-900 font-serif-tc tracking-wide">全班表現</h2>
       </div>
 
-      <div class="flex flex-wrap items-center gap-4 sm:gap-8 flex-1 justify-end">
+      <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-6 flex-1 justify-end">
         <!-- 整潔打掃 -->
-        <div class="flex items-center gap-3 bg-[#FAF6F0] p-2 sm:p-2.5 rounded-2xl border border-stone-200">
-          <span class="text-xl sm:text-2xl font-black text-stone-800 flex items-center gap-1.5 shrink-0 font-serif-tc">
+        <div class="flex items-center justify-between sm:justify-start gap-2 sm:gap-3 bg-[#FAF6F0] p-2 sm:p-2.5 rounded-2xl border border-stone-200">
+          <span class="text-base sm:text-2xl font-black text-stone-800 flex items-center gap-1.5 shrink-0 font-serif-tc">
             <span>🧹</span> 整潔打掃
           </span>
 
-          <div id="cleanActionGroup" class="flex items-center gap-2">
-            <div class="flex items-center gap-1.5 bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-1 shadow-xs">
-              <button onclick="window.appActions.applyClassRule('clean_done')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-3xl font-black flex items-center justify-center stone-btn" title="打掃完畢套用加步">
+          <div id="cleanActionGroup" class="flex items-center gap-1.5 sm:gap-2">
+            <div class="flex items-center gap-1 sm:gap-1.5 bg-emerald-50 border-2 border-emerald-300 rounded-xl sm:rounded-2xl p-0.5 sm:p-1 shadow-xs">
+              <button onclick="window.appActions.applyClassRule('clean_done')" class="px-2.5 py-1 sm:px-3.5 sm:py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg sm:rounded-xl text-xl sm:text-3xl font-black flex items-center justify-center stone-btn" title="打掃完畢套用加步">
                 <span>😀</span>
               </button>
-              <div class="flex items-center gap-1 bg-white rounded-xl px-2 py-1 border border-emerald-200">
-                <button onclick="window.appActions.adjustClassStepper('clean_done', -1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-100 rounded">-</button>
-                <span id="step_clean_done" class="w-6 text-center text-2xl font-num font-black text-emerald-900">1</span>
-                <button onclick="window.appActions.adjustClassStepper('clean_done', 1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-100 rounded">+</button>
+              <div class="flex items-center gap-0.5 sm:gap-1 bg-white rounded-lg sm:rounded-xl px-1 sm:px-2 py-0.5 sm:py-1 border border-emerald-200">
+                <button onclick="window.appActions.adjustClassStepper('clean_done', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-emerald-800 text-base sm:text-xl font-black hover:bg-emerald-100 rounded">-</button>
+                <span id="step_clean_done" class="w-5 sm:w-6 text-center text-lg sm:text-2xl font-num font-black text-emerald-900">1</span>
+                <button onclick="window.appActions.adjustClassStepper('clean_done', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-emerald-800 text-base sm:text-xl font-black hover:bg-emerald-100 rounded">+</button>
               </div>
             </div>
-            <div class="flex items-center gap-1.5 bg-rose-50 border-2 border-rose-300 rounded-2xl p-1 shadow-xs">
-              <button onclick="window.appActions.applyClassRule('clean_fail')" class="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-3xl font-black flex items-center justify-center stone-btn" title="未打掃完套用扣步">
+            <div class="flex items-center gap-1 sm:gap-1.5 bg-rose-50 border-2 border-rose-300 rounded-xl sm:rounded-2xl p-0.5 sm:p-1 shadow-xs">
+              <button onclick="window.appActions.applyClassRule('clean_fail')" class="px-2.5 py-1 sm:px-3.5 sm:py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg sm:rounded-xl text-xl sm:text-3xl font-black flex items-center justify-center stone-btn" title="未打掃完套用扣步">
                 <span>☹️</span>
               </button>
-              <div class="flex items-center gap-1 bg-white rounded-xl px-2 py-1 border border-rose-200">
-                <button onclick="window.appActions.adjustClassStepper('clean_fail', -1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-100 rounded">-</button>
-                <span id="step_clean_fail" class="w-6 text-center text-2xl font-num font-black text-rose-900">1</span>
-                <button onclick="window.appActions.adjustClassStepper('clean_fail', 1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-100 rounded">+</button>
+              <div class="flex items-center gap-0.5 sm:gap-1 bg-white rounded-lg sm:rounded-xl px-1 sm:px-2 py-0.5 sm:py-1 border border-rose-200">
+                <button onclick="window.appActions.adjustClassStepper('clean_fail', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-rose-800 text-base sm:text-xl font-black hover:bg-rose-100 rounded">-</button>
+                <span id="step_clean_fail" class="w-5 sm:w-6 text-center text-lg sm:text-2xl font-num font-black text-rose-900">1</span>
+                <button onclick="window.appActions.adjustClassStepper('clean_fail', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-rose-800 text-base sm:text-xl font-black hover:bg-rose-100 rounded">+</button>
               </div>
             </div>
           </div>
 
           <div id="cleanLockedBadge" class="hidden items-center gap-2">
-            <span id="cleanLockedText" class="px-4 py-2 rounded-2xl text-2xl font-black font-num bg-emerald-100 text-emerald-950 border-2 border-emerald-300 shadow-xs">
+            <span id="cleanLockedText" class="px-3 sm:px-4 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl text-xl sm:text-2xl font-black font-num shadow-xs border-2">
               +1
             </span>
-            <button id="cleanResetBtn" onclick="window.appActions.resetClassAction('clean')" class="hidden px-2.5 py-1.5 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-base font-black stone-btn" title="重設打掃紀錄">
+            <button id="cleanResetBtn" onclick="window.appActions.resetClassAction('clean')" class="hidden px-2 py-1 rounded-lg bg-stone-200 hover:bg-stone-300 text-stone-700 text-sm font-black stone-btn" title="重設打掃紀錄">
               <i class="fa-solid fa-rotate-left"></i>
             </button>
           </div>
         </div>
 
         <!-- 全班科任表現 -->
-        <div class="flex items-center gap-3 bg-[#FAF6F0] p-2 sm:p-2.5 rounded-2xl border border-stone-200">
-          <span class="text-xl sm:text-2xl font-black text-stone-800 flex items-center gap-1.5 shrink-0 font-serif-tc">
+        <div class="flex items-center justify-between sm:justify-start gap-2 sm:gap-3 bg-[#FAF6F0] p-2 sm:p-2.5 rounded-2xl border border-stone-200">
+          <span class="text-base sm:text-2xl font-black text-stone-800 flex items-center gap-1.5 shrink-0 font-serif-tc">
             <span>🧑‍🏫</span> 全班科任表現
           </span>
 
-          <div id="specActionGroup" class="flex items-center gap-2">
-            <div class="flex items-center gap-1.5 bg-blue-50 border-2 border-blue-300 rounded-2xl p-1 shadow-xs">
-              <button onclick="window.appActions.applyClassRule('spec_perfect')" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-3xl font-black flex items-center justify-center stone-btn" title="全班科任課表現滿分套用加步">
+          <div id="specActionGroup" class="flex items-center gap-1.5 sm:gap-2">
+            <div class="flex items-center gap-1 sm:gap-1.5 bg-blue-50 border-2 border-blue-300 rounded-xl sm:rounded-2xl p-0.5 sm:p-1 shadow-xs">
+              <button onclick="window.appActions.applyClassRule('spec_perfect')" class="px-2.5 py-1 sm:px-3.5 sm:py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg sm:rounded-xl text-xl sm:text-3xl font-black flex items-center justify-center stone-btn" title="全班科任課表現滿分套用加步">
                 <span>😀</span>
               </button>
-              <div class="flex items-center gap-1 bg-white rounded-xl px-2 py-1 border border-blue-200">
-                <button onclick="window.appActions.adjustClassStepper('spec_perfect', -1)" class="w-7 h-7 text-blue-800 text-xl font-black hover:bg-blue-100 rounded">-</button>
-                <span id="step_spec_perfect" class="w-6 text-center text-2xl font-num font-black text-blue-900">1</span>
-                <button onclick="window.appActions.adjustClassStepper('spec_perfect', 1)" class="w-7 h-7 text-blue-800 text-xl font-black hover:bg-blue-100 rounded">+</button>
+              <div class="flex items-center gap-0.5 sm:gap-1 bg-white rounded-lg sm:rounded-xl px-1 sm:px-2 py-0.5 sm:py-1 border border-blue-200">
+                <button onclick="window.appActions.adjustClassStepper('spec_perfect', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-blue-800 text-base sm:text-xl font-black hover:bg-blue-100 rounded">-</button>
+                <span id="step_spec_perfect" class="w-5 sm:w-6 text-center text-lg sm:text-2xl font-num font-black text-blue-900">1</span>
+                <button onclick="window.appActions.adjustClassStepper('spec_perfect', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-blue-800 text-base sm:text-xl font-black hover:bg-blue-100 rounded">+</button>
               </div>
             </div>
             
-            <div class="flex items-center gap-1.5 bg-[#FAF5FC] border-2 border-[#7B4B94]/40 rounded-2xl p-1 shadow-xs">
-              <button onclick="window.appActions.applyClassRule('spec_fair')" class="px-3.5 py-1.5 bg-[#7B4B94] hover:bg-[#683D7E] text-white rounded-xl text-3xl font-black flex items-center justify-center stone-btn" title="全班科任課表現尚可套用扣步">
+            <div class="flex items-center gap-1.5 bg-[#FAF5FC] border-2 border-[#7B4B94]/40 rounded-xl sm:rounded-2xl p-0.5 sm:p-1 shadow-xs">
+              <button onclick="window.appActions.applyClassRule('spec_fair')" class="px-2.5 py-1 sm:px-3.5 sm:py-1.5 bg-[#7B4B94] hover:bg-[#683D7E] text-white rounded-lg sm:rounded-xl text-xl sm:text-3xl font-black flex items-center justify-center stone-btn" title="全班科任課表現尚可套用扣步">
                 <span>☹️</span>
               </button>
-              <div class="flex items-center gap-1 bg-white rounded-xl px-2 py-1 border border-[#7B4B94]/30">
-                <button onclick="window.appActions.adjustClassStepper('spec_fair', -1)" class="w-7 h-7 text-[#7B4B94] text-xl font-black hover:bg-[#F3E8F9] rounded">-</button>
-                <span id="step_spec_fair" class="w-6 text-center text-2xl font-num font-black text-[#5C2E75]">1</span>
-                <button onclick="window.appActions.adjustClassStepper('spec_fair', 1)" class="w-7 h-7 text-[#7B4B94] text-xl font-black hover:bg-[#F3E8F9] rounded">+</button>
+              <div class="flex items-center gap-0.5 sm:gap-1 bg-white rounded-lg sm:rounded-xl px-1 sm:px-2 py-0.5 sm:py-1 border border-[#7B4B94]/30">
+                <button onclick="window.appActions.adjustClassStepper('spec_fair', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-[#7B4B94] text-base sm:text-xl font-black hover:bg-[#F3E8F9] rounded">-</button>
+                <span id="step_spec_fair" class="w-5 sm:w-6 text-center text-lg sm:text-2xl font-num font-black text-[#5C2E75]">1</span>
+                <button onclick="window.appActions.adjustClassStepper('spec_fair', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-[#7B4B94] text-base sm:text-xl font-black hover:bg-[#F3E8F9] rounded">+</button>
               </div>
             </div>
           </div>
 
           <div id="specLockedBadge" class="hidden items-center gap-2">
-            <span id="specLockedText" class="px-4 py-2 rounded-2xl text-2xl font-black font-num bg-blue-100 text-blue-950 border-2 border-blue-300 shadow-xs">
+            <span id="specLockedText" class="px-3 sm:px-4 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl text-xl sm:text-2xl font-black font-num shadow-xs border-2">
               +1
             </span>
-            <button id="specResetBtn" onclick="window.appActions.resetClassAction('spec')" class="hidden px-2.5 py-1.5 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-base font-black stone-btn" title="重設科任紀錄">
+            <button id="specResetBtn" onclick="window.appActions.resetClassAction('spec')" class="hidden px-2 py-1 rounded-lg bg-stone-200 hover:bg-stone-300 text-stone-700 text-sm font-black stone-btn" title="重設科任紀錄">
               <i class="fa-solid fa-rotate-left"></i>
             </button>
           </div>
@@ -284,211 +288,211 @@
   </section>
 
   <!-- 學生卡片網格 -->
-  <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5 mb-8" id="studentCardsContainer">
+  <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-5 mb-8" id="studentCardsContainer">
   </main>
 
-  <!-- 學生檢核彈出視窗 -->
-  <div id="auditModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2">
-    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[98vw] max-w-[98vw] h-[96vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden">
+  <!-- 【學生檢核彈出視窗】 -->
+  <div id="auditModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-1 sm:p-2">
+    <div class="bg-[#FFFDF9] border-2 sm:border-4 border-stone-300 w-full sm:w-[98vw] max-w-[98vw] h-[98vh] sm:h-[96vh] rounded-3xl sm:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden">
       
-      <div class="px-8 py-3.5 border-b-2 border-stone-200 flex items-center justify-between bg-stone-50/80 shrink-0">
-        <div class="flex items-center gap-4 flex-wrap">
-          <h2 id="modalStudentName" class="text-4xl sm:text-5xl font-black text-stone-900 font-serif-tc tracking-tight">學生姓名</h2>
-          <span id="modalDateBadge" class="bg-amber-100 text-amber-900 border border-amber-300 font-black text-2xl px-5 py-1.5 rounded-2xl font-num">
+      <div class="px-4 sm:px-8 py-2.5 sm:py-3.5 border-b-2 border-stone-200 flex items-center justify-between bg-stone-50/80 shrink-0">
+        <div class="flex items-center gap-2 sm:gap-4 flex-wrap">
+          <h2 id="modalStudentName" class="text-2xl sm:text-5xl font-black text-stone-900 font-serif-tc tracking-tight">學生姓名</h2>
+          <span id="modalDateBadge" class="bg-amber-100 text-amber-900 border border-amber-300 font-black text-sm sm:text-2xl px-2.5 py-1 sm:px-5 sm:py-1.5 rounded-xl sm:rounded-2xl font-num">
             實踐檢核
           </span>
-          <span id="modalLockBadge" class="hidden bg-stone-300 text-stone-900 border-2 border-stone-500 font-black text-2xl px-5 py-1.5 rounded-2xl shadow-xs">
-            <i class="fa-solid fa-lock text-stone-800 mr-2"></i>【今日已結算鎖定】(僅供查閱)
+          <span id="modalLockBadge" class="hidden bg-stone-300 text-stone-900 border border-stone-500 font-black text-xs sm:text-2xl px-2.5 py-1 sm:px-5 sm:py-1.5 rounded-xl sm:rounded-2xl shadow-xs">
+            <i class="fa-solid fa-lock text-stone-800 mr-1 sm:mr-2"></i>【已結算鎖定】
           </span>
-          <span id="modalReEditNotice" class="hidden bg-rose-100 text-rose-900 border border-rose-300 font-black text-xl px-4 py-1.5 rounded-2xl">
-            ⚠️ 結算後修改模式 (送出將扣 1 成本)
+          <span id="modalReEditNotice" class="hidden bg-rose-100 text-rose-900 border border-rose-300 font-black text-xs sm:text-xl px-2 py-1 rounded-xl">
+            ⚠️ 重新修訂模式 (-1)
           </span>
         </div>
-        <button onclick="window.appActions.closeAuditModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
+        <button onclick="window.appActions.closeAuditModal()" class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-lg sm:text-2xl font-black flex items-center justify-center stone-btn">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <div class="flex-1 p-4 grid grid-cols-1 md:grid-cols-3 gap-4 overflow-hidden">
+      <div class="flex-1 p-2 sm:p-4 flex flex-col md:grid md:grid-cols-3 gap-3 sm:gap-4 overflow-y-auto md:overflow-hidden custom-scrollbar">
         <!-- 左欄：履行責任 -->
-        <div class="bg-emerald-50/70 border-2 border-emerald-200 rounded-3xl p-3 sm:p-4 flex flex-col justify-between overflow-hidden shadow-xs">
+        <div class="bg-emerald-50/70 border-2 border-emerald-200 rounded-2xl sm:rounded-3xl p-3 sm:p-4 flex flex-col justify-between shadow-xs shrink-0 md:shrink md:overflow-hidden">
           <div>
             <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b-2 border-emerald-200">
-              <span class="text-3xl font-black text-emerald-950 font-serif-tc flex items-center gap-2">
+              <span class="text-xl sm:text-3xl font-black text-emerald-950 font-serif-tc flex items-center gap-2">
                 <span>🌟</span> 履行責任
               </span>
             </div>
-            <div class="space-y-1">
-              <div id="card_rule_good_1" class="bg-white py-1.5 px-2.5 rounded-2xl border border-emerald-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_good_1" onclick="window.appActions.applyStudentRule('準時繳交簿本', 1, 'good')" class="text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+            <div class="space-y-1.5 sm:space-y-1">
+              <div class="bg-white py-1 sm:py-1.5 px-2 sm:px-2.5 rounded-xl sm:rounded-2xl border border-emerald-200 flex items-center justify-between shadow-xs gap-1">
+                <button onclick="window.appActions.applyStudentRule('準時繳交簿本', 1, 'good')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-1.5 flex-1 text-left whitespace-nowrap">
                   <span>🎒</span> 準時繳交簿本
                 </button>
-                <div class="flex items-center gap-1 bg-emerald-50 rounded-xl p-1 border border-emerald-200 shrink-0">
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_1', -1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-200 rounded">-</button>
-                  <span id="btn_step_good_1" class="w-7 text-center text-2xl font-num font-black text-emerald-900">1</span>
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_1', 1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-200 rounded">+</button>
+                <div class="flex items-center gap-1 bg-emerald-50 rounded-lg sm:rounded-xl p-0.5 sm:p-1 border border-emerald-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_1', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-emerald-800 text-base sm:text-xl font-black hover:bg-emerald-200 rounded">-</button>
+                  <span id="btn_step_good_1" class="w-6 text-center text-lg sm:text-2xl font-num font-black text-emerald-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_1', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-emerald-800 text-base sm:text-xl font-black hover:bg-emerald-200 rounded">+</button>
                 </div>
               </div>
 
-              <div id="card_rule_good_2" class="bg-white py-1.5 px-2.5 rounded-2xl border border-emerald-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_good_2" onclick="window.appActions.applyStudentRule('個人工作完成', 1, 'good')" class="text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+              <div class="bg-white py-1 sm:py-1.5 px-2 sm:px-2.5 rounded-xl sm:rounded-2xl border border-emerald-200 flex items-center justify-between shadow-xs gap-1">
+                <button onclick="window.appActions.applyStudentRule('個人工作完成', 1, 'good')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-1.5 flex-1 text-left whitespace-nowrap">
                   <span>🎖️</span> 個人工作完成
                 </button>
-                <div class="flex items-center gap-1 bg-emerald-50 rounded-xl p-1 border border-emerald-200 shrink-0">
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_2', -1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-200 rounded">-</button>
-                  <span id="btn_step_good_2" class="w-7 text-center text-2xl font-num font-black text-emerald-900">1</span>
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_2', 1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-200 rounded">+</button>
+                <div class="flex items-center gap-1 bg-emerald-50 rounded-lg sm:rounded-xl p-0.5 sm:p-1 border border-emerald-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_2', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-emerald-800 text-base sm:text-xl font-black hover:bg-emerald-200 rounded">-</button>
+                  <span id="btn_step_good_2" class="w-6 text-center text-lg sm:text-2xl font-num font-black text-emerald-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_2', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-emerald-800 text-base sm:text-xl font-black hover:bg-emerald-200 rounded">+</button>
                 </div>
               </div>
 
-              <div id="card_rule_good_3" class="bg-white py-1.5 px-2.5 rounded-2xl border border-emerald-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_good_3" onclick="window.appActions.applyStudentRule('科任課好表現', 1, 'good')" class="text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-2 flex-1 text-left whitespace-nowrap">
+              <div class="bg-white py-1 sm:py-1.5 px-2 sm:px-2.5 rounded-xl sm:rounded-2xl border border-emerald-200 flex items-center justify-between shadow-xs gap-1">
+                <button onclick="window.appActions.applyStudentRule('科任課好表現', 1, 'good')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-emerald-700 flex items-center gap-1.5 flex-1 text-left whitespace-nowrap">
                   <span>🌟</span> 科任課好表現
                 </button>
-                <div class="flex items-center gap-1 bg-emerald-50 rounded-xl p-1 border border-emerald-200 shrink-0">
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_3', -1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-200 rounded">-</button>
-                  <span id="btn_step_good_3" class="w-7 text-center text-2xl font-num font-black text-emerald-900">1</span>
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_3', 1)" class="w-7 h-7 text-emerald-800 text-xl font-black hover:bg-emerald-200 rounded">+</button>
+                <div class="flex items-center gap-1 bg-emerald-50 rounded-lg sm:rounded-xl p-0.5 sm:p-1 border border-emerald-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_3', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-emerald-800 text-base sm:text-xl font-black hover:bg-emerald-200 rounded">-</button>
+                  <span id="btn_step_good_3" class="w-6 text-center text-lg sm:text-2xl font-num font-black text-emerald-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_good_3', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-emerald-800 text-base sm:text-xl font-black hover:bg-emerald-200 rounded">+</button>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="mt-3 p-3 bg-stone-200/90 border-2 border-stone-300 rounded-2xl flex-1 flex flex-col justify-start overflow-hidden shadow-inner">
-            <span class="text-2xl font-black text-stone-700 mb-2 flex items-center justify-between">
+          <div class="mt-2.5 sm:mt-3 p-2.5 sm:p-3 bg-stone-200/90 border-2 border-stone-300 rounded-xl sm:rounded-2xl flex-1 flex flex-col justify-start shadow-inner min-h-[120px] md:min-h-0 md:overflow-hidden">
+            <span class="text-lg sm:text-2xl font-black text-stone-700 mb-1 sm:mb-2 flex items-center justify-between">
               <span>📋 檢核紀錄明細</span>
-              <span id="count_good_records" class="font-num text-2xl text-emerald-800 font-bold">0次</span>
+              <span id="count_good_records" class="font-num text-lg sm:text-2xl text-emerald-800 font-bold">0次</span>
             </span>
-            <div id="list_good_records" class="space-y-2 overflow-y-auto custom-scrollbar flex-1 pr-1">
-              <div class="text-stone-400 text-3xl text-center py-4 font-bold font-serif-tc">今日尚未加步數</div>
+            <div id="list_good_records" class="space-y-1.5 sm:space-y-2 overflow-y-auto custom-scrollbar flex-1 pr-1">
+              <div class="text-stone-400 text-xl sm:text-3xl text-center py-4 font-bold font-serif-tc">今日尚未加步數</div>
             </div>
           </div>
         </div>
 
         <!-- 中欄：持續進步 -->
-        <div class="bg-rose-50/70 border-2 border-rose-200 rounded-3xl p-3 sm:p-4 flex flex-col justify-between overflow-hidden shadow-xs">
+        <div class="bg-rose-50/70 border-2 border-rose-200 rounded-2xl sm:rounded-3xl p-3 sm:p-4 flex flex-col justify-between shadow-xs shrink-0 md:shrink md:overflow-hidden">
           <div>
             <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b-2 border-rose-200">
-              <span class="text-3xl font-black text-rose-950 font-serif-tc flex items-center gap-2">
+              <span class="text-xl sm:text-3xl font-black text-rose-950 font-serif-tc flex items-center gap-2">
                 <span>🚨</span> 持續進步
               </span>
             </div>
-            <div class="space-y-1">
-              <div id="card_rule_bad_1" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_bad_1" onclick="window.appActions.applyStudentRule('未準時繳交簿本', -1, 'bad')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left">
+            <div class="space-y-1.5 sm:space-y-1">
+              <div class="bg-white py-1 sm:py-1.5 px-2 sm:px-2.5 rounded-xl sm:rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-1">
+                <button onclick="window.appActions.applyStudentRule('未準時繳交簿本', -1, 'bad')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-1.5 flex-1 text-left">
                   <span>⏰</span> 未準時繳交簿本
                 </button>
-                <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_1', -1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">-</button>
-                  <span id="btn_step_bad_1" class="w-7 text-center text-2xl font-num font-black text-rose-900">1</span>
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_1', 1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">+</button>
+                <div class="flex items-center gap-1 bg-rose-50 rounded-lg sm:rounded-xl p-0.5 sm:p-1 border border-rose-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_1', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-rose-800 text-base sm:text-xl font-black hover:bg-rose-200 rounded">-</button>
+                  <span id="btn_step_bad_1" class="w-6 text-center text-lg sm:text-2xl font-num font-black text-rose-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_1', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-rose-800 text-base sm:text-xl font-black hover:bg-rose-200 rounded">+</button>
                 </div>
               </div>
 
-              <div id="card_rule_bad_2" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_bad_2" onclick="window.appActions.applyStudentRule('中午未準時回位', -1, 'bad')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left">
+              <div class="bg-white py-1 sm:py-1.5 px-2 sm:px-2.5 rounded-xl sm:rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-1">
+                <button onclick="window.appActions.applyStudentRule('中午未準時回位', -1, 'bad')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-1.5 flex-1 text-left">
                   <span>🔔</span> 中午未準時回位
                 </button>
-                <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_2', -1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">-</button>
-                  <span id="btn_step_bad_2" class="w-7 text-center text-2xl font-num font-black text-rose-900">1</span>
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_2', 1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">+</button>
+                <div class="flex items-center gap-1 bg-rose-50 rounded-lg sm:rounded-xl p-0.5 sm:p-1 border border-rose-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_2', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-rose-800 text-base sm:text-xl font-black hover:bg-rose-200 rounded">-</button>
+                  <span id="btn_step_bad_2" class="w-6 text-center text-lg sm:text-2xl font-num font-black text-rose-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_2', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-rose-800 text-base sm:text-xl font-black hover:bg-rose-200 rounded">+</button>
                 </div>
               </div>
 
-              <div id="card_rule_bad_3" class="bg-white py-1.5 px-2.5 rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_bad_3" onclick="window.appActions.applyStudentRule('個人工作未完成', -1, 'bad')" class="text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-2 flex-1 text-left">
+              <div class="bg-white py-1 sm:py-1.5 px-2 sm:px-2.5 rounded-xl sm:rounded-2xl border border-rose-200 flex items-center justify-between shadow-xs gap-1">
+                <button onclick="window.appActions.applyStudentRule('個人工作未完成', -1, 'bad')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-rose-700 flex items-center gap-1.5 flex-1 text-left">
                   <span>⚠️</span> 個人工作未完成
                 </button>
-                <div class="flex items-center gap-1 bg-rose-50 rounded-xl p-1 border border-rose-200 shrink-0">
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_3', -1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">-</button>
-                  <span id="btn_step_bad_3" class="w-7 text-center text-2xl font-num font-black text-rose-900">1</span>
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_3', 1)" class="w-7 h-7 text-rose-800 text-xl font-black hover:bg-rose-200 rounded">+</button>
+                <div class="flex items-center gap-1 bg-rose-50 rounded-lg sm:rounded-xl p-0.5 sm:p-1 border border-rose-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_3', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-rose-800 text-base sm:text-xl font-black hover:bg-rose-200 rounded">-</button>
+                  <span id="btn_step_bad_3" class="w-6 text-center text-lg sm:text-2xl font-num font-black text-rose-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_bad_3', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-rose-800 text-base sm:text-xl font-black hover:bg-rose-200 rounded">+</button>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="mt-3 p-3 bg-stone-200/90 border-2 border-stone-300 rounded-2xl flex-1 flex flex-col justify-start overflow-hidden shadow-inner">
-            <span class="text-2xl font-black text-stone-700 mb-2 flex items-center justify-between">
+          <div class="mt-2.5 sm:mt-3 p-2.5 sm:p-3 bg-stone-200/90 border-2 border-stone-300 rounded-xl sm:rounded-2xl flex-1 flex flex-col justify-start shadow-inner min-h-[120px] md:min-h-0 md:overflow-hidden">
+            <span class="text-lg sm:text-2xl font-black text-stone-700 mb-1 sm:mb-2 flex items-center justify-between">
               <span>📋 檢核紀錄明細</span>
-              <span id="count_bad_records" class="font-num text-2xl text-rose-800 font-bold">0次</span>
+              <span id="count_bad_records" class="font-num text-lg sm:text-2xl text-rose-800 font-bold">0次</span>
             </span>
-            <div id="list_bad_records" class="space-y-2 overflow-y-auto custom-scrollbar flex-1 pr-1">
-              <div class="text-stone-400 text-3xl text-center py-4 font-bold font-serif-tc">今日無扣減步數</div>
+            <div id="list_bad_records" class="space-y-1.5 sm:space-y-2 overflow-y-auto custom-scrollbar flex-1 pr-1">
+              <div class="text-stone-400 text-xl sm:text-3xl text-center py-4 font-bold font-serif-tc">今日無扣減步數</div>
             </div>
           </div>
         </div>
 
         <!-- 右欄：學習自律 -->
-        <div class="bg-amber-50/70 border-2 border-amber-200 rounded-3xl p-3 sm:p-4 flex flex-col justify-between overflow-hidden shadow-xs">
+        <div class="bg-amber-50/70 border-2 border-amber-200 rounded-2xl sm:rounded-3xl p-3 sm:p-4 flex flex-col justify-between shadow-xs shrink-0 md:shrink md:overflow-hidden">
           <div>
             <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b-2 border-amber-200">
-              <span class="text-3xl font-black text-amber-950 font-serif-tc flex items-center gap-2">
+              <span class="text-xl sm:text-3xl font-black text-amber-950 font-serif-tc flex items-center gap-2">
                 <span>🎯</span> 學習自律
               </span>
             </div>
-            <div class="space-y-1">
-              <div id="card_rule_att_1" class="bg-white py-1.5 px-2.5 rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_att_1" onclick="window.appActions.applyStudentRule('慢吞吞', -1, 'attitude')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left">
+            <div class="space-y-1.5 sm:space-y-1">
+              <div class="bg-white py-1 sm:py-1.5 px-2 sm:px-2.5 rounded-xl sm:rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-1">
+                <button onclick="window.appActions.applyStudentRule('慢吞吞', -1, 'attitude')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-1.5 flex-1 text-left">
                   <span>🐢</span> 慢吞吞
                 </button>
-                <div class="flex items-center gap-1 bg-amber-50 rounded-xl p-1 border border-amber-200 shrink-0">
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_1', -1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">-</button>
-                  <span id="btn_step_att_1" class="w-7 text-center text-2xl font-num font-black text-amber-900">1</span>
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_1', 1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">+</button>
+                <div class="flex items-center gap-1 bg-amber-50 rounded-lg sm:rounded-xl p-0.5 sm:p-1 border border-amber-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_1', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 text-base sm:text-xl font-black hover:bg-amber-200 rounded">-</button>
+                  <span id="btn_step_att_1" class="w-6 text-center text-lg sm:text-2xl font-num font-black text-amber-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_1', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 text-base sm:text-xl font-black hover:bg-amber-200 rounded">+</button>
                 </div>
               </div>
 
-              <div id="card_rule_att_2" class="bg-white py-1.5 px-2.5 rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_att_2" onclick="window.appActions.applyStudentRule('不細心', -1, 'attitude')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left">
+              <div class="bg-white py-1 sm:py-1.5 px-2 sm:px-2.5 rounded-xl sm:rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-1">
+                <button onclick="window.appActions.applyStudentRule('不細心', -1, 'attitude')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-1.5 flex-1 text-left">
                   <span>👀</span> 不細心
                 </button>
-                <div class="flex items-center gap-1 bg-amber-50 rounded-xl p-1 border border-amber-200 shrink-0">
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_2', -1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">-</button>
-                  <span id="btn_step_att_2" class="w-7 text-center text-2xl font-num font-black text-amber-900">1</span>
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_2', 1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">+</button>
+                <div class="flex items-center gap-1 bg-amber-50 rounded-lg sm:rounded-xl p-0.5 sm:p-1 border border-amber-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_2', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 text-base sm:text-xl font-black hover:bg-amber-200 rounded">-</button>
+                  <span id="btn_step_att_2" class="w-6 text-center text-lg sm:text-2xl font-num font-black text-amber-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_2', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 text-base sm:text-xl font-black hover:bg-amber-200 rounded">+</button>
                 </div>
               </div>
 
-              <div id="card_rule_att_3" class="bg-white py-1.5 px-2.5 rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-2">
-                <button id="btn_rule_att_3" onclick="window.appActions.applyStudentRule('科任課待加油', -1, 'attitude')" class="text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-2 flex-1 text-left">
+              <div class="bg-white py-1 sm:py-1.5 px-2 sm:px-2.5 rounded-xl sm:rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-1">
+                <button onclick="window.appActions.applyStudentRule('科任課待加油', -1, 'attitude')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-1.5 flex-1 text-left">
                   <span>📉</span> 科任課待加油
                 </button>
-                <div class="flex items-center gap-1 bg-amber-50 rounded-xl p-1 border border-amber-200 shrink-0">
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_3', -1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">-</button>
-                  <span id="btn_step_att_3" class="w-7 text-center text-2xl font-num font-black text-amber-900">1</span>
-                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_3', 1)" class="w-7 h-7 text-amber-800 text-xl font-black hover:bg-amber-200 rounded">+</button>
+                <div class="flex items-center gap-1 bg-amber-50 rounded-lg sm:rounded-xl p-0.5 sm:p-1 border border-amber-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_3', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 text-base sm:text-xl font-black hover:bg-amber-200 rounded">-</button>
+                  <span id="btn_step_att_3" class="w-6 text-center text-lg sm:text-2xl font-num font-black text-amber-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_3', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 text-base sm:text-xl font-black hover:bg-amber-200 rounded">+</button>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="mt-3 p-3 bg-stone-200/90 border-2 border-stone-300 rounded-2xl flex-1 flex flex-col justify-start overflow-hidden shadow-inner">
-            <span class="text-2xl font-black text-stone-700 mb-2 flex items-center justify-between">
+          <div class="mt-2.5 sm:mt-3 p-2.5 sm:p-3 bg-stone-200/90 border-2 border-stone-300 rounded-xl sm:rounded-2xl flex-1 flex flex-col justify-start shadow-inner min-h-[120px] md:min-h-0 md:overflow-hidden">
+            <span class="text-lg sm:text-2xl font-black text-stone-700 mb-1 sm:mb-2 flex items-center justify-between">
               <span>📋 檢核紀錄明細</span>
-              <span id="count_att_records" class="font-num text-2xl text-amber-800 font-bold">0次</span>
+              <span id="count_att_records" class="font-num text-lg sm:text-2xl text-amber-800 font-bold">0次</span>
             </span>
-            <div id="list_att_records" class="space-y-2 overflow-y-auto custom-scrollbar flex-1 pr-1">
-              <div class="text-stone-400 text-3xl text-center py-4 font-bold font-serif-tc">今日無自律扣步</div>
+            <div id="list_att_records" class="space-y-1.5 sm:space-y-2 overflow-y-auto custom-scrollbar flex-1 pr-1">
+              <div class="text-stone-400 text-xl sm:text-3xl text-center py-4 font-bold font-serif-tc">今日無自律扣步</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 彈窗底部結算列 -->
-      <div class="px-8 py-3.5 bg-stone-100/90 border-t-2 border-stone-200 flex flex-wrap items-center justify-between gap-4 shrink-0">
-        <div class="flex items-center gap-4">
-          <span class="text-3xl font-black text-stone-700 font-serif-tc">當前表現結算：</span>
-          <span id="modalCurrentScore" class="text-5xl font-black font-num text-stone-900">🚩 0</span>
+      <!-- 彈窗底部固定結算列 -->
+      <div class="px-4 sm:px-8 py-2.5 sm:py-3.5 bg-stone-100/90 border-t-2 border-stone-200 flex flex-wrap items-center justify-between gap-2.5 sm:gap-4 shrink-0">
+        <div class="flex items-center gap-2 sm:gap-4">
+          <span class="text-lg sm:text-3xl font-black text-stone-700 font-serif-tc">當前結算：</span>
+          <span id="modalCurrentScore" class="text-2xl sm:text-5xl font-black font-num text-stone-900">🚩 0</span>
         </div>
-        <div class="flex items-center gap-3">
-          <button id="modalUnlockBtn" onclick="window.appActions.unlockStudentAudit()" class="hidden px-6 py-3 bg-stone-300 hover:bg-stone-400 text-stone-900 border-2 border-stone-500 text-2xl sm:text-3xl font-black rounded-2xl shadow-xs stone-btn flex items-center gap-2">
+        <div class="flex items-center gap-2 sm:gap-3 ml-auto">
+          <button id="modalUnlockBtn" onclick="window.appActions.unlockStudentAudit()" class="hidden px-3.5 py-1.5 sm:px-6 sm:py-3 bg-stone-300 hover:bg-stone-400 text-stone-900 border-2 border-stone-500 text-sm sm:text-3xl font-black rounded-xl sm:rounded-2xl shadow-xs stone-btn flex items-center gap-1.5">
             <span>🔓</span>
-            <span>解除結算鎖定</span>
+            <span>解鎖</span>
           </button>
           
-          <button id="modalSubmitBtn" onclick="window.appActions.submitStudentAudit()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-3xl font-black rounded-2xl shadow-md stone-btn flex items-center gap-2">
+          <button id="modalSubmitBtn" onclick="window.appActions.submitStudentAudit()" class="px-4 py-2 sm:px-8 sm:py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-base sm:text-3xl font-black rounded-xl sm:rounded-2xl shadow-md stone-btn flex items-center gap-2">
             <i class="fa-solid fa-check-to-slot"></i>
             <span id="modalSubmitText">完成並送出結算</span>
           </button>
@@ -499,120 +503,120 @@
   </div>
 
   <!-- 【千里足跡・個人修行歷程簿】 -->
-  <div id="mileageModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-5">
-    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[96vw] max-w-5xl rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
-      <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-4 shrink-0">
-        <div class="flex items-center gap-4">
-          <span class="text-5xl filter drop-shadow-sm">👣</span>
+  <div id="mileageModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-5">
+    <div class="bg-[#FFFDF9] border-2 sm:border-4 border-stone-300 w-full sm:w-[96vw] max-w-5xl rounded-3xl sm:rounded-[2.5rem] shadow-2xl p-4 sm:p-8 flex flex-col max-h-[92vh]">
+      <div class="flex items-center justify-between pb-3 sm:pb-4 border-b-2 border-stone-200 mb-3 sm:mb-4 shrink-0">
+        <div class="flex items-center gap-2.5 sm:gap-4">
+          <span class="text-3xl sm:text-5xl filter drop-shadow-sm">👣</span>
           <div>
-            <h3 id="mileageModalTitle" class="text-3xl sm:text-5xl font-black text-stone-900 font-serif-tc tracking-tight">千里足跡歷程</h3>
-            <p class="text-base sm:text-xl font-bold text-amber-950 font-serif-tc tracking-wide mt-1">
+            <h3 id="mileageModalTitle" class="text-xl sm:text-5xl font-black text-stone-900 font-serif-tc tracking-tight">千里足跡歷程</h3>
+            <p class="text-xs sm:text-xl font-bold text-amber-950 font-serif-tc tracking-wide mt-0.5 sm:mt-1 hidden sm:block">
               合抱之木，生於毫末；九層之臺，起於累土；千里之行，始於足下。
             </p>
           </div>
         </div>
-        <button onclick="window.appActions.closeMileageModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
+        <button onclick="window.appActions.closeMileageModal()" class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-lg sm:text-2xl font-black flex items-center justify-center stone-btn">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
       <!-- 總里程榮譽卡 -->
-      <div class="bg-gradient-to-r from-[#FAF3EA] via-[#F4E8D5] to-[#FAF3EA] border-2 border-[#D9C4A9] rounded-2xl p-5 sm:p-6 flex items-center justify-between shadow-xs mb-5 shrink-0">
+      <div class="bg-gradient-to-r from-[#FAF3EA] via-[#F4E8D5] to-[#FAF3EA] border-2 border-[#D9C4A9] rounded-2xl p-3.5 sm:p-6 flex items-center justify-between shadow-xs mb-3 sm:mb-5 shrink-0">
         <div class="flex flex-col">
-          <span class="text-xl sm:text-2xl font-black text-stone-800 font-serif-tc">已封存歸檔總里程</span>
-          <span class="text-sm sm:text-base text-stone-600 font-bold mt-0.5">（僅計入教師正式歸檔封存之修行足跡）</span>
+          <span class="text-base sm:text-2xl font-black text-stone-800 font-serif-tc">已封存歸檔總里程</span>
+          <span class="text-xs sm:text-base text-stone-600 font-bold mt-0.5">（僅計入教師正式歸檔之修行）</span>
         </div>
-        <div class="flex items-center gap-3">
-          <span class="text-4xl sm:text-5xl">🏆</span>
-          <span id="mileageTotalScoreBadge" class="text-6xl sm:text-7xl font-num font-black text-[#8C5E3C]">0</span>
+        <div class="flex items-center gap-2 sm:gap-3">
+          <span class="text-2xl sm:text-5xl">🏆</span>
+          <span id="mileageTotalScoreBadge" class="text-4xl sm:text-7xl font-num font-black text-[#8C5E3C]">0</span>
         </div>
       </div>
 
       <!-- 歷史歷程清單 -->
-      <div class="text-lg sm:text-xl font-black text-stone-700 font-serif-tc mb-3 flex items-center justify-between shrink-0">
+      <div class="text-sm sm:text-xl font-black text-stone-700 font-serif-tc mb-2 sm:mb-3 flex items-center justify-between shrink-0">
         <span>📜 歷次封存修行明細</span>
-        <span id="mileageRecordCount" class="font-num text-stone-600 font-bold text-base sm:text-lg">共 0 天</span>
+        <span id="mileageRecordCount" class="font-num text-stone-600 font-bold text-xs sm:text-lg">共 0 天</span>
       </div>
 
-      <div id="mileageListContainer" class="space-y-3 overflow-y-auto custom-scrollbar flex-1 pr-1">
+      <div id="mileageListContainer" class="space-y-2.5 sm:space-y-3 overflow-y-auto custom-scrollbar flex-1 pr-1">
       </div>
 
-      <div class="pt-4 mt-3 border-t-2 border-stone-100 flex justify-end shrink-0">
-        <button onclick="window.appActions.closeMileageModal()" class="px-10 py-3.5 bg-[#2D2926] hover:bg-[#1A1816] text-white font-black text-2xl rounded-2xl stone-btn shadow-md">
+      <div class="pt-3 sm:pt-4 mt-2 sm:mt-3 border-t-2 border-stone-100 flex justify-end shrink-0">
+        <button onclick="window.appActions.closeMileageModal()" class="w-full sm:w-auto px-6 py-2.5 sm:px-10 sm:py-3.5 bg-[#2D2926] hover:bg-[#1A1816] text-white font-black text-lg sm:text-2xl rounded-xl sm:rounded-2xl stone-btn shadow-md">
           關閉存摺
         </button>
       </div>
     </div>
   </div>
 
-  <!-- 【打卡系統作業獨立彈窗】：請假提示直觀顯示「今日病假/事假，不記錄」 -->
+  <!-- 【打卡系統作業獨立彈窗】 -->
   <div id="checkinHwModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
-    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[98vw] max-w-[98vw] rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
-      <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-4">
-        <div class="flex items-center gap-3">
-          <span class="text-4xl">📝</span>
-          <h3 id="checkinHwModalTitle" class="text-3xl sm:text-4xl font-black text-stone-900 font-serif-tc">打卡作業繳交紀錄</h3>
+    <div class="bg-[#FFFDF9] border-2 sm:border-4 border-stone-300 w-full sm:w-[98vw] max-w-[98vw] rounded-3xl sm:rounded-[2.5rem] shadow-2xl p-4 sm:p-8 flex flex-col max-h-[92vh]">
+      <div class="flex items-center justify-between pb-3 sm:pb-4 border-b-2 border-stone-200 mb-3 sm:mb-4">
+        <div class="flex items-center gap-2 sm:gap-3">
+          <span class="text-2xl sm:text-4xl">📝</span>
+          <h3 id="checkinHwModalTitle" class="text-lg sm:text-4xl font-black text-stone-900 font-serif-tc">打卡作業繳交紀錄</h3>
         </div>
-        <button onclick="window.appActions.closeCheckinHwModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
+        <button onclick="window.appActions.closeCheckinHwModal()" class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-lg sm:text-2xl font-black flex items-center justify-center stone-btn">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <div class="flex items-center justify-between px-3 py-2 mb-3 bg-stone-100 rounded-2xl border border-stone-200 text-sm font-black text-stone-700">
-        <div class="flex items-center gap-4">
-          <span class="text-stone-500">圖例：</span>
-          <span class="px-2.5 py-0.5 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-900">🟢 齊全 (全齊+2)</span>
-          <span class="px-2.5 py-0.5 rounded-lg bg-yellow-100 border border-yellow-300 text-yellow-900">🟡 遲交</span>
-          <span class="px-2.5 py-0.5 rounded-lg bg-stone-200 border border-stone-300 text-stone-800">⚪ 免交 (不扣步)</span>
-          <span class="px-2.5 py-0.5 rounded-lg bg-rose-100 border border-rose-300 text-rose-900">🔴 缺交 (-1)</span>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between px-3 py-2 mb-3 bg-stone-100 rounded-xl sm:rounded-2xl border border-stone-200 text-xs sm:text-sm font-black text-stone-700 gap-1.5 sm:gap-0">
+        <div class="flex flex-wrap items-center gap-1.5 sm:gap-4">
+          <span class="text-stone-500 hidden sm:inline">圖例：</span>
+          <span class="px-2 py-0.5 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-900">🟢 齊全 (+2)</span>
+          <span class="px-2 py-0.5 rounded-lg bg-yellow-100 border border-yellow-300 text-yellow-900">🟡 遲交</span>
+          <span class="px-2 py-0.5 rounded-lg bg-stone-200 border border-stone-300 text-stone-800">⚪ 免交</span>
+          <span class="px-2 py-0.5 rounded-lg bg-rose-100 border border-rose-300 text-rose-900">🔴 缺交 (-1)</span>
         </div>
-        <span id="checkinHwSummaryBadge" class="text-2xl font-num font-black"></span>
+        <span id="checkinHwSummaryBadge" class="text-base sm:text-2xl font-num font-black self-end sm:self-auto"></span>
       </div>
 
-      <div id="checkinHwListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 overflow-y-auto custom-scrollbar flex-1 p-1">
+      <div id="checkinHwListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4 overflow-y-auto custom-scrollbar flex-1 p-0.5 sm:p-1">
       </div>
 
-      <div class="pt-4 mt-3 border-t-2 border-stone-100 flex justify-end">
-        <button onclick="window.appActions.closeCheckinHwModal()" class="px-8 py-3 bg-[#2D2926] hover:bg-[#1A1816] text-white font-black text-2xl rounded-2xl stone-btn shadow-md">
+      <div class="pt-3 sm:pt-4 mt-2 sm:mt-3 border-t-2 border-stone-100 flex justify-end">
+        <button onclick="window.appActions.closeCheckinHwModal()" class="w-full sm:w-auto px-6 py-2.5 sm:px-8 sm:py-3 bg-[#2D2926] hover:bg-[#1A1816] text-white font-black text-lg sm:text-2xl rounded-xl sm:rounded-2xl stone-btn shadow-md">
           關閉
         </button>
       </div>
     </div>
   </div>
 
-  <!-- 【訂正系統作業獨立彈窗】：請假提示直觀顯示「今日病假/事假，不記錄」 -->
+  <!-- 【訂正系統作業獨立彈窗】 -->
   <div id="correctionModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
-    <div class="bg-[#FFFDF9] border-4 border-stone-300 w-[98vw] max-w-[98vw] rounded-[2.5rem] shadow-2xl p-6 sm:p-8 flex flex-col max-h-[92vh]">
+    <div class="bg-[#FFFDF9] border-2 sm:border-4 border-stone-300 w-full sm:w-[98vw] max-w-[98vw] rounded-3xl sm:rounded-[2.5rem] shadow-2xl p-4 sm:p-8 flex flex-col max-h-[92vh]">
       
-      <div class="flex items-center justify-between pb-4 border-b-2 border-stone-200 mb-4">
-        <div class="flex items-center gap-3">
-          <span class="text-4xl">📘</span>
-          <h3 id="correctionModalTitle" class="text-3xl sm:text-4xl font-black text-stone-900 font-serif-tc">作業訂正狀況</h3>
+      <div class="flex items-center justify-between pb-3 sm:pb-4 border-b-2 border-stone-200 mb-3 sm:mb-4">
+        <div class="flex items-center gap-2 sm:gap-3">
+          <span class="text-2xl sm:text-4xl">📘</span>
+          <h3 id="correctionModalTitle" class="text-lg sm:text-4xl font-black text-stone-900 font-serif-tc">作業訂正狀況</h3>
         </div>
         
-        <div class="flex items-center gap-4">
-          <div class="flex items-center gap-1.5 bg-amber-50 border-2 border-amber-300 px-4 py-1.5 rounded-2xl shadow-xs">
-            <span class="text-base font-bold text-amber-900">總計：</span>
-            <span id="correctionTotalScoreBadge" class="text-3xl font-num font-black text-amber-950">0</span>
+        <div class="flex items-center gap-2 sm:gap-4">
+          <div class="flex items-center gap-1 bg-amber-50 border sm:border-2 border-amber-300 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-xl sm:rounded-2xl shadow-xs">
+            <span class="text-xs sm:text-base font-bold text-amber-900">總計：</span>
+            <span id="correctionTotalScoreBadge" class="text-lg sm:text-3xl font-num font-black text-amber-950">0</span>
           </div>
-          <button onclick="window.appActions.closeCorrectionModal()" class="w-12 h-12 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-2xl font-black flex items-center justify-center stone-btn">
+          <button onclick="window.appActions.closeCorrectionModal()" class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-lg sm:text-2xl font-black flex items-center justify-center stone-btn">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
       </div>
 
-      <div class="flex flex-wrap items-center gap-4 px-3 py-2 mb-3 bg-stone-100 rounded-2xl border border-stone-200 text-sm font-black text-stone-700">
-        <span class="text-stone-500">狀態圖例：</span>
-        <span class="flex items-center gap-1 px-3 py-1 bg-emerald-100 border border-emerald-300 text-emerald-950 rounded-xl">🟢 當天完成 (+1)</span>
-        <span class="flex items-center gap-1 px-3 py-1 bg-yellow-100 border border-yellow-300 text-yellow-950 rounded-xl">🟡 補訂正 (+1)</span>
-        <span class="flex items-center gap-1 px-3 py-1 bg-rose-100 border border-rose-300 text-rose-950 rounded-xl">🔴 還未訂正 (0)</span>
+      <div class="flex flex-wrap items-center gap-1.5 sm:gap-4 px-2.5 py-1.5 sm:px-3 sm:py-2 mb-3 bg-stone-100 rounded-xl sm:rounded-2xl border border-stone-200 text-xs sm:text-sm font-black text-stone-700">
+        <span class="text-stone-500 hidden sm:inline">狀態圖例：</span>
+        <span class="px-2 py-0.5 bg-emerald-100 border border-emerald-300 text-emerald-950 rounded-lg">🟢 當天完成 (+1)</span>
+        <span class="px-2 py-0.5 bg-yellow-100 border border-yellow-300 text-yellow-950 rounded-lg">🟡 補訂正 (+1)</span>
+        <span class="px-2 py-0.5 bg-rose-100 border border-rose-300 text-rose-950 rounded-lg">🔴 還未訂正 (0)</span>
       </div>
 
-      <div id="correctionListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 overflow-y-auto custom-scrollbar flex-1 p-1">
+      <div id="correctionListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4 overflow-y-auto custom-scrollbar flex-1 p-0.5 sm:p-1">
       </div>
 
-      <div class="pt-4 mt-3 border-t-2 border-stone-100 flex justify-end">
-        <button onclick="window.appActions.closeCorrectionModal()" class="px-8 py-3 bg-[#2D2926] hover:bg-[#1A1816] text-white font-black text-2xl rounded-2xl stone-btn shadow-md">
+      <div class="pt-3 sm:pt-4 mt-2 sm:mt-3 border-t-2 border-stone-100 flex justify-end">
+        <button onclick="window.appActions.closeCorrectionModal()" class="w-full sm:w-auto px-6 py-2.5 sm:px-8 sm:py-3 bg-[#2D2926] hover:bg-[#1A1816] text-white font-black text-lg sm:text-2xl rounded-xl sm:rounded-2xl stone-btn shadow-md">
           關閉視窗
         </button>
       </div>
@@ -621,36 +625,36 @@
 
   <!-- 教師權限登入彈窗 -->
   <div id="teacherAuthModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white border-2 border-stone-300 rounded-3xl p-6 max-w-md w-full shadow-2xl">
-      <h3 class="text-2xl font-black text-stone-900 font-serif-tc mb-2 flex items-center gap-2">
+    <div class="bg-white border-2 border-stone-300 rounded-3xl p-5 sm:p-6 max-w-md w-full shadow-2xl">
+      <h3 class="text-xl sm:text-2xl font-black text-stone-900 font-serif-tc mb-2 flex items-center gap-2">
         <i class="fa-solid fa-shield-halved text-emerald-700"></i>
         <span>教師權限驗證</span>
       </h3>
-      <p class="text-stone-500 font-bold text-sm mb-4">輸入您在打卡/訂正系統使用的教師帳號與密碼：</p>
+      <p class="text-stone-500 font-bold text-xs sm:text-sm mb-4">輸入教師帳號與密碼以解鎖管理權限：</p>
       
       <div class="space-y-3 mb-4">
         <div>
-          <label class="block text-sm font-bold text-stone-700 mb-1">電子郵件帳號</label>
-          <input type="email" id="teacherEmailInput" value="" placeholder="例如：teacher@example.com" class="w-full text-lg p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" />
+          <label class="block text-xs sm:text-sm font-bold text-stone-700 mb-1">電子郵件帳號</label>
+          <input type="email" id="teacherEmailInput" value="" placeholder="例如：teacher@example.com" class="w-full text-base sm:text-lg p-2.5 sm:p-3 border-2 border-stone-300 rounded-xl sm:rounded-2xl font-num outline-none focus:border-stone-700" />
         </div>
         <div>
-          <label class="block text-sm font-bold text-stone-700 mb-1">密碼</label>
-          <input type="password" id="teacherPwdInput" value="" placeholder="輸入您的登入密碼" class="w-full text-lg p-3 border-2 border-stone-300 rounded-2xl font-num outline-none focus:border-stone-700" onkeydown="if(event.key==='Enter') window.appActions.verifyTeacherAuth()" />
+          <label class="block text-xs sm:text-sm font-bold text-stone-700 mb-1">密碼</label>
+          <input type="password" id="teacherPwdInput" value="" placeholder="輸入您的登入密碼" class="w-full text-base sm:text-lg p-2.5 sm:p-3 border-2 border-stone-300 rounded-xl sm:rounded-2xl font-num outline-none focus:border-stone-700" onkeydown="if(event.key==='Enter') window.appActions.verifyTeacherAuth()" />
         </div>
-        <div id="authErrorMessage" class="hidden p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-sm font-bold">
+        <div id="authErrorMessage" class="hidden p-2.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs sm:text-sm font-bold">
           登入失敗：請確認帳號或密碼是否正確。
         </div>
       </div>
 
-      <div class="flex justify-end gap-3">
-        <button onclick="window.appActions.closeAuthModal()" class="px-5 py-2.5 text-stone-600 font-black rounded-xl hover:bg-stone-100 text-lg">取消</button>
-        <button id="submitLoginBtn" onclick="window.appActions.verifyTeacherAuth()" class="px-6 py-2.5 bg-[#2D2926] hover:bg-[#1A1816] text-white font-black rounded-xl text-lg stone-btn shadow-xs">確認登入</button>
+      <div class="flex justify-end gap-2 sm:gap-3">
+        <button onclick="window.appActions.closeAuthModal()" class="px-4 py-2 sm:px-5 sm:py-2.5 text-stone-600 font-black rounded-xl hover:bg-stone-100 text-base sm:text-lg">取消</button>
+        <button id="submitLoginBtn" onclick="window.appActions.verifyTeacherAuth()" class="px-5 py-2 sm:px-6 sm:py-2.5 bg-[#2D2926] hover:bg-[#1A1816] text-white font-black rounded-xl text-base sm:text-lg stone-btn shadow-xs">確認登入</button>
       </div>
     </div>
   </div>
 
   <!-- Toast 浮層 -->
-  <div id="toastNotification" class="fixed top-8 left-1/2 -translate-x-1/2 z-50 bg-stone-900 text-white px-6 py-3 rounded-2xl shadow-2xl font-black text-xl flex items-center gap-3 transition-all duration-300 opacity-0 pointer-events-none transform -translate-y-4">
+  <div id="toastNotification" class="fixed top-6 sm:top-8 left-1/2 -translate-x-1/2 z-50 bg-stone-900 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl shadow-2xl font-black text-base sm:text-xl flex items-center gap-2 sm:gap-3 transition-all duration-300 opacity-0 pointer-events-none transform -translate-y-4 max-w-[90vw] text-center">
     <span id="toastIcon">✨</span>
     <span id="toastMessage">提示訊息</span>
   </div>
@@ -670,7 +674,26 @@
     ];
     const SPECIAL_IDS = ['5', '7', '8'];
 
-    const HABIT_KEYWORDS = ['預習', '複習', '帶學用品', '學用品', '訂正功課', '訂正作業'];
+    // 🌟 精準辨識「生活習慣打卡項目」vs「正式家庭作業」
+    // 徹底解決「預習數課59.60.61」因為包含「預習」兩字被誤殺的 Bug！
+    function isPureHabitTask(rawText) {
+      if (!rawText) return false;
+      const t = rawText.trim();
+      
+      // 1. 帶學用品系列
+      if (t === '帶學用品' || t === '學用品') return true;
+      
+      // 2. 訂正功課/訂正作業系列（純生活打卡，如「訂正功課全」、「訂正功課」、「訂正作業」）
+      if (t.startsWith('訂正功課') || t.startsWith('訂正作業')) return true;
+      
+      // 3. 純生活預習/複習項目（只有「複習+預習」、「預習複習」或純粹兩字）
+      if (t === '複習+預習' || t === '預習+複習' || t === '預習複習' || t === '複習預習' || t === '預習' || t === '複習') {
+        return true;
+      }
+      
+      // 其餘若帶有具體頁碼、單元或科目（例如「預習數課59.60.61」、「預習國L6」），皆為正式作業！
+      return false;
+    }
 
     function maskName(n) {
       if (!n) return '';
@@ -773,12 +796,12 @@
 
       if (isT) {
         statusText.innerText = '已解鎖：教師模式 (點擊登出)';
-        authIcon.className = 'fa-solid fa-lock-open text-base text-emerald-800';
-        authBtn.className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-emerald-100 text-emerald-900 border-2 border-emerald-300 shadow-xs stone-btn';
+        authIcon.className = 'fa-solid fa-lock-open text-xs sm:text-base text-emerald-800';
+        authBtn.className = 'px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl text-sm sm:text-xl font-black transition flex items-center gap-1.5 sm:gap-2 bg-emerald-100 text-emerald-900 border-2 border-emerald-300 shadow-xs stone-btn';
       } else {
         statusText.innerText = '學生模式 (點擊登入)';
-        authIcon.className = 'fa-solid fa-lock text-base';
-        authBtn.className = 'px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-lg sm:text-xl font-black transition flex items-center gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 border-2 border-stone-300 shadow-xs stone-btn';
+        authIcon.className = 'fa-solid fa-lock text-xs sm:text-base';
+        authBtn.className = 'px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl text-sm sm:text-xl font-black transition flex items-center gap-1.5 sm:gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 border-2 border-stone-300 shadow-xs stone-btn';
       }
       renderDatePills();
       renderStudentCards();
@@ -887,6 +910,7 @@
         }
       }, (err) => console.warn("打卡即時同步提示:", err));
 
+      // 讀取前一上課日之航海日誌任務（🌟 使用 isPureHabitTask 精確過濾生活習慣，保留正式家庭作業）
       const annColName = `${prefix}announcements`;
       db.collection(annColName)
         .where("date", "<", dateStr)
@@ -899,8 +923,7 @@
             const rawItems = prevLogSnap.docs[0].data().items || [];
             rawItems.forEach(t => {
               const text = (typeof t === 'string' ? t : (t?.text || '')).trim();
-              const isHabitTask = HABIT_KEYWORDS.some(k => text.includes(k));
-              if (text && !text.startsWith('※') && !text.startsWith(' ') && !text.includes('新航程開始') && !isHabitTask) {
+              if (text && !text.startsWith('※') && !text.startsWith(' ') && !text.includes('新航程開始') && !isPureHabitTask(text)) {
                 taskNames.push(text);
               }
             });
@@ -1094,7 +1117,7 @@
         cleanLockedBadge.classList.add('flex');
         const s = classApplied.clean.step;
         cleanLockedText.innerText = formatScore(s);
-        cleanLockedText.className = `px-4 py-1.5 rounded-2xl text-2xl font-black font-num shadow-xs border-2 ${
+        cleanLockedText.className = `px-3 sm:px-4 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl text-xl sm:text-2xl font-black font-num shadow-xs border-2 ${
           s > 0 ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : s < 0 ? 'bg-rose-100 text-rose-950 border-rose-300' : 'bg-stone-100 text-stone-800 border-stone-300'
         }`;
         if (AppState.isTeacher) cleanResetBtn.classList.remove('hidden');
@@ -1116,7 +1139,7 @@
         specLockedBadge.classList.add('flex');
         const s = classApplied.spec.step;
         specLockedText.innerText = formatScore(s);
-        specLockedText.className = `px-4 py-1.5 rounded-2xl text-2xl font-black font-num shadow-xs border-2 ${
+        specLockedText.className = `px-3 sm:px-4 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl text-xl sm:text-2xl font-black font-num shadow-xs border-2 ${
           s > 0 ? 'bg-blue-100 text-blue-950 border-blue-300' : 'bg-[#FAF5FC] text-[#5C2E75] border-[#7B4B94]/40'
         }`;
         if (AppState.isTeacher) specResetBtn.classList.remove('hidden');
@@ -1138,13 +1161,13 @@
       });
 
       if (filteredDays.length === 0) {
-        container.innerHTML = `<span class="text-stone-400 font-bold px-3 py-2 whitespace-nowrap text-lg">${AppState.selectedMonth}月尚無登記上課日標籤</span>`;
+        container.innerHTML = `<span class="text-stone-400 font-bold px-2 py-1 whitespace-nowrap text-xs sm:text-lg">${AppState.selectedMonth}月無登記日</span>`;
       } else {
         filteredDays.forEach(dStr => {
           const dayNumber = dStr.split('-')[2];
           const isSelected = dStr === AppState.currentDate;
           const btn = document.createElement('button');
-          btn.className = `w-12 h-12 rounded-2xl font-num font-black text-2xl flex items-center justify-center shrink-0 shadow-xs stone-btn ${
+          btn.className = `w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl font-num font-black text-base sm:text-2xl flex items-center justify-center shrink-0 shadow-xs stone-btn ${
             isSelected 
               ? 'bg-stone-900 text-white border-2 border-stone-900' 
               : 'bg-white text-stone-800 border-2 border-stone-200 hover:border-stone-400'
@@ -1172,7 +1195,7 @@
         archiveBtn.classList.remove('hidden');
         addDayBtn.classList.remove('hidden');
         deleteDayBtn.classList.remove('hidden');
-        archiveBtnText.innerText = isLocked ? '今日已歸檔' : '今日歸檔封存';
+        archiveBtnText.innerText = isLocked ? '今日已歸檔' : '今日歸檔';
       } else {
         archiveBtn.classList.add('hidden');
         addDayBtn.classList.add('hidden');
@@ -1196,7 +1219,7 @@
 
       for (let i = 0; i < firstDayOffset; i++) {
         const emptyCell = document.createElement('div');
-        emptyCell.className = 'w-9 h-9';
+        emptyCell.className = 'w-8 h-8 sm:w-9 sm:h-9';
         grid.appendChild(emptyCell);
       }
 
@@ -1206,7 +1229,7 @@
         const isRecorded = AppState.recordedDays.includes(dStr);
 
         const dayBtn = document.createElement('button');
-        dayBtn.className = `w-9 h-9 rounded-xl font-num font-black text-sm flex items-center justify-center transition ${
+        dayBtn.className = `w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl font-num font-black text-xs sm:text-sm flex items-center justify-center transition ${
           isCurrent
             ? 'bg-[#8C5E3C] text-white shadow-xs'
             : isRecorded
@@ -1222,7 +1245,6 @@
       }
     }
 
-    // 🌟 核心渲染：學生卡片（作業與訂正完全移除「免計」，直接顯示純粹的「病假」或「事假」）
     function renderStudentCards() {
       const grid = document.getElementById('studentCardsContainer');
       grid.innerHTML = '';
@@ -1285,7 +1307,7 @@
             arrivalScore = 0; arrivalLabel = '未到校'; arrivalBadgeClass = 'bg-stone-100 text-stone-600 border-stone-200';
           }
 
-          // 🌟 2. 作業：請假時拿掉「免計」，直接顯示「病假」或「事假」
+          // 2. 作業：請假時純標示病假/事假，不扣步
           if (isLeave) {
             checkinHwScore = 0;
             checkinHwLabel = leaveLabel;
@@ -1320,16 +1342,16 @@
             habitScore = 0;
             habitBadgeClass = 'bg-stone-100 text-stone-500 border-stone-200';
           } else {
-            previewDone = !!completedTasks['複習+預習'] || !!completedTasks['預習複習'] || !!completedTasks['預習'] || !!completedTasks['複習'];
+            previewDone = !!completedTasks['複習+預習'] || !!completedTasks['預習複習'] || !!completedTasks['預習+複習'] || !!completedTasks['預習'] || !!completedTasks['複習'];
             suppliesDone = !!completedTasks['帶學用品'] || !!completedTasks['學用品'];
-            checkinDone = !!completedTasks['訂正功課'] || !!completedTasks['訂正作業'];
+            checkinDone = !!completedTasks['訂正功課全'] || !!completedTasks['訂正功課'] || !!completedTasks['訂正作業'];
             habitScore = (previewDone && suppliesDone && checkinDone) ? 1 : 0;
             habitBadgeClass = habitScore > 0 ? 'bg-emerald-100 text-emerald-950 border-emerald-300' : 'bg-stone-100 text-stone-500 border-stone-200';
           }
 
           checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
 
-          // 🌟 4. 訂正：請假時拿掉「免計」，直接顯示「病假」或「事假」，得分為 0
+          // 4. 訂正：請假時純標示病假/事假，得分為 0
           if (isLeave) {
             correctionScore = 0;
             correctionPreviewText = leaveLabel;
@@ -1356,94 +1378,93 @@
         const card = document.createElement('div');
         card.className = `bg-[#FFFDF9] rounded-3xl border-2 ${
           isStudentLocked ? 'border-[#8C6D52] bg-[#F7F3EE]' : 'border-stone-200/90'
-        } p-4 sm:p-5 flex flex-col justify-between shadow-sm stone-card`;
+        } p-3.5 sm:p-5 flex flex-col justify-between shadow-sm stone-card`;
 
         card.innerHTML = `
           <div>
             <!-- 姓名與今日旗子 -->
             <div class="flex items-center justify-between pb-2 border-b border-stone-100 gap-1">
               <span class="text-3xl sm:text-4xl font-black font-serif-tc text-stone-900 whitespace-nowrap tracking-tight">${maskName(st.name)}</span>
-              <div class="flex items-center gap-2 ${isStudentLocked ? 'bg-[#EFE8DF] border-[#8C6D52]/40' : 'bg-amber-50 border-amber-200'} px-3 py-1 rounded-2xl border shrink-0">
-                <i class="fa-solid fa-flag text-5xl sm:text-6xl drop-shadow-sm ${
+              <div class="flex items-center gap-1.5 sm:gap-2 ${isStudentLocked ? 'bg-[#EFE8DF] border-[#8C6D52]/40' : 'bg-amber-50 border-amber-200'} px-2.5 sm:px-3 py-1 rounded-2xl border shrink-0">
+                <i class="fa-solid fa-flag text-4xl sm:text-6xl drop-shadow-sm ${
                   ['text-rose-600', 'text-amber-500', 'text-yellow-500', 'text-emerald-500', 'text-teal-500', 'text-sky-500', 'text-indigo-600', 'text-purple-600', 'text-pink-500', 'text-orange-600'][(st.no - 1) % 10]
                 }"></i>
-                <span class="text-5xl sm:text-6xl font-num font-black ${isStudentLocked ? 'text-[#5C4028]' : 'text-amber-950'}">${totalScore}</span>
+                <span class="text-4xl sm:text-6xl font-num font-black ${isStudentLocked ? 'text-[#5C4028]' : 'text-amber-950'}">${totalScore}</span>
               </div>
             </div>
 
             <!-- 千里足跡行者橫條 -->
-            <div onclick="window.appActions.openMileageModal('${st.id}')" class="mt-3 bg-gradient-to-r from-[#FAF4EA] to-[#F5ECE0] hover:from-[#F4E9D8] hover:to-[#EFE0CB] transition cursor-pointer p-2.5 rounded-2xl border-2 border-[#DFCDB7] flex items-center justify-between shadow-2xs">
-              <div class="flex items-center gap-2">
-                <span class="text-2xl filter drop-shadow-xs">👣</span>
+            <div onclick="window.appActions.openMileageModal('${st.id}')" class="mt-2.5 sm:mt-3 bg-gradient-to-r from-[#FAF4EA] to-[#F5ECE0] hover:from-[#F4E9D8] hover:to-[#EFE0CB] transition cursor-pointer p-2 sm:p-2.5 rounded-2xl border-2 border-[#DFCDB7] flex items-center justify-between shadow-2xs">
+              <div class="flex items-center gap-1.5 sm:gap-2">
+                <span class="text-xl sm:text-2xl filter drop-shadow-xs">👣</span>
                 <span class="text-base sm:text-lg font-black font-serif-tc text-stone-800">千里足跡</span>
                 <span class="text-xs text-stone-400 font-bold hidden sm:inline">(已封存累計)</span>
               </div>
-              <div class="flex items-center gap-1.5 shrink-0">
-                <span class="text-2xl sm:text-3xl font-num font-black text-[#8C5E3C]">${totalMileage}</span>
+              <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+                <span class="text-xl sm:text-3xl font-num font-black text-[#8C5E3C]">${totalMileage}</span>
                 <i class="fa-solid fa-chevron-right text-xs text-stone-400"></i>
               </div>
             </div>
 
-            <div class="mt-3 space-y-3">
+            <div class="mt-2.5 sm:mt-3 space-y-2.5 sm:space-y-3">
               
-              <!-- 1. 打卡：陶土赭紅（右上角裸露大總分，清除 +0） -->
-              <div class="bg-[#FAF6EE] p-3 rounded-2xl border-2 border-[#D9C8B4] shadow-xs relative">
-                <div class="flex items-center justify-between pb-2 mb-2 border-b border-[#E8DEC8]">
-                  <div class="flex items-center gap-2">
-                    <span class="text-3xl filter drop-shadow-xs">⏳</span>
-                    <span class="px-3.5 py-0.5 rounded-xl bg-[#8C5E3C] text-[#FFFDF9] text-xl sm:text-2xl font-black font-serif-tc tracking-wider shadow-xs">
+              <!-- 1. 打卡 -->
+              <div class="bg-[#FAF6EE] p-2.5 sm:p-3 rounded-2xl border-2 border-[#D9C8B4] shadow-xs relative">
+                <div class="flex items-center justify-between pb-1.5 sm:pb-2 mb-1.5 sm:mb-2 border-b border-[#E8DEC8]">
+                  <div class="flex items-center gap-1.5 sm:gap-2">
+                    <span class="text-2xl sm:text-3xl filter drop-shadow-xs">⏳</span>
+                    <span class="px-2.5 sm:px-3.5 py-0.5 rounded-xl bg-[#8C5E3C] text-[#FFFDF9] text-lg sm:text-2xl font-black font-serif-tc tracking-wider shadow-xs">
                       打卡
                     </span>
                   </div>
-                  <span class="text-3xl sm:text-4xl font-num font-black ${checkinSubtotal > 0 ? 'text-[#8C5E3C]' : checkinSubtotal < 0 ? 'text-rose-700' : 'text-stone-700'}">
+                  <span class="text-2xl sm:text-4xl font-num font-black ${checkinSubtotal > 0 ? 'text-[#8C5E3C]' : checkinSubtotal < 0 ? 'text-rose-700' : 'text-stone-700'}">
                     ${formatScore(checkinSubtotal)}
                   </span>
                 </div>
 
-                <!-- 內層細項：純二字標語，數值膠囊化 -->
-                <div class="space-y-2">
+                <div class="space-y-1.5 sm:space-y-2">
                   <!-- 到校 -->
-                  <div class="bg-white/90 px-2.5 py-1.5 rounded-xl border border-[#E5DAC8] flex items-center justify-between shadow-2xs">
-                    <div class="flex items-center gap-2">
-                      <span class="text-base font-black text-stone-800 font-serif-tc w-10">到校</span>
-                      <span class="text-xs sm:text-sm font-black px-2 py-0.5 rounded-lg ${arrivalBadgeClass}">
+                  <div class="bg-white/90 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-xl border border-[#E5DAC8] flex items-center justify-between shadow-2xs">
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                      <span class="text-sm sm:text-base font-black text-stone-800 font-serif-tc w-9 sm:w-10">到校</span>
+                      <span class="text-xs sm:text-sm font-black px-1.5 sm:px-2 py-0.5 rounded-lg ${arrivalBadgeClass}">
                         ${arrivalLabel}
                       </span>
                     </div>
-                    <span class="px-2.5 py-0.5 rounded-lg border font-num font-black text-base sm:text-lg ${arrivalScore > 0 ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : arrivalScore < 0 ? 'bg-rose-50 text-rose-800 border-rose-200' : 'bg-stone-50 text-stone-500 border-stone-200'}">
+                    <span class="px-2 sm:px-2.5 py-0.5 rounded-lg border font-num font-black text-sm sm:text-lg ${arrivalScore > 0 ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : arrivalScore < 0 ? 'bg-rose-50 text-rose-800 border-rose-200' : 'bg-stone-50 text-stone-500 border-stone-200'}">
                       ${formatScore(arrivalScore)}
                     </span>
                   </div>
 
                   <!-- 作業 -->
-                  <div onclick="window.appActions.openCheckinHwModal('${st.id}')" class="bg-white/90 hover:bg-emerald-50/60 transition cursor-pointer px-2.5 py-1.5 rounded-xl border border-[#E5DAC8] flex items-center justify-between shadow-2xs">
-                    <div class="flex items-center gap-2">
-                      <span class="text-base font-black text-stone-800 font-serif-tc w-10">作業</span>
-                      <span class="text-xs sm:text-sm font-black px-2 py-0.5 rounded-lg ${checkinHwBadgeClass}">
+                  <div onclick="window.appActions.openCheckinHwModal('${st.id}')" class="bg-white/90 hover:bg-emerald-50/60 transition cursor-pointer px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-xl border border-[#E5DAC8] flex items-center justify-between shadow-2xs">
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                      <span class="text-sm sm:text-base font-black text-stone-800 font-serif-tc w-9 sm:w-10">作業</span>
+                      <span class="text-xs sm:text-sm font-black px-1.5 sm:px-2 py-0.5 rounded-lg ${checkinHwBadgeClass}">
                         ${checkinHwLabel}
                       </span>
                     </div>
-                    <span class="px-2.5 py-0.5 rounded-lg border font-num font-black text-base sm:text-lg ${checkinHwScore > 0 ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : checkinHwScore < 0 ? 'bg-rose-50 text-rose-800 border-rose-200' : 'bg-stone-50 text-stone-500 border-stone-200'}">
+                    <span class="px-2 sm:px-2.5 py-0.5 rounded-lg border font-num font-black text-sm sm:text-lg ${checkinHwScore > 0 ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : checkinHwScore < 0 ? 'bg-rose-50 text-rose-800 border-rose-200' : 'bg-stone-50 text-stone-500 border-stone-200'}">
                       ${formatScore(checkinHwScore)}
                     </span>
                   </div>
 
                   <!-- 習慣 -->
-                  <div class="bg-white/90 p-2 rounded-xl border border-[#E5DAC8] space-y-1.5 shadow-2xs">
+                  <div class="bg-white/90 p-1.5 sm:p-2 rounded-xl border border-[#E5DAC8] space-y-1 sm:space-y-1.5 shadow-2xs">
                     <div class="flex items-center justify-between">
-                      <span class="text-base font-black text-stone-800 font-serif-tc">習慣</span>
-                      <span class="px-2.5 py-0.5 rounded-lg border font-num font-black text-base sm:text-lg ${habitScore > 0 ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-stone-50 text-stone-500 border-stone-200'}">
+                      <span class="text-sm sm:text-base font-black text-stone-800 font-serif-tc">習慣</span>
+                      <span class="px-2 sm:px-2.5 py-0.5 rounded-lg border font-num font-black text-sm sm:text-lg ${habitScore > 0 ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-stone-50 text-stone-500 border-stone-200'}">
                         ${formatScore(habitScore)}
                       </span>
                     </div>
-                    <div class="flex items-center justify-between gap-1 text-xs sm:text-sm font-black whitespace-nowrap">
-                      <span class="px-2 py-1 rounded-lg flex-1 text-center ${previewDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200/80 text-stone-600 border border-stone-300'}">
+                    <div class="flex items-center justify-between gap-1 text-[11px] sm:text-sm font-black whitespace-nowrap">
+                      <span class="px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg flex-1 text-center ${previewDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200/80 text-stone-600 border border-stone-300'}">
                         預習複習
                       </span>
-                      <span class="px-2 py-1 rounded-lg flex-1 text-center ${suppliesDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200/80 text-stone-600 border border-stone-300'}">
+                      <span class="px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg flex-1 text-center ${suppliesDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200/80 text-stone-600 border border-stone-300'}">
                         帶學用品
                       </span>
-                      <span class="px-2 py-1 rounded-lg flex-1 text-center ${checkinDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200/80 text-stone-600 border border-stone-300'}">
+                      <span class="px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg flex-1 text-center ${checkinDone ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-200/80 text-stone-600 border border-stone-300'}">
                         訂正功課
                       </span>
                     </div>
@@ -1451,33 +1472,33 @@
                 </div>
               </div>
 
-              <!-- 2. 訂正：單行橫向並排，請假時直接顯示純粹的「病假」或「事假」 -->
-              <div onclick="window.appActions.openCorrectionModal('${st.id}')" class="bg-[#F0F6FA] p-3 rounded-2xl border-2 border-[#B8D3E6] shadow-xs cursor-pointer hover:bg-[#E5F0F7] transition">
+              <!-- 2. 訂正 -->
+              <div onclick="window.appActions.openCorrectionModal('${st.id}')" class="bg-[#F0F6FA] p-2.5 sm:p-3 rounded-2xl border-2 border-[#B8D3E6] shadow-xs cursor-pointer hover:bg-[#E5F0F7] transition">
                 <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-2.5 flex-nowrap min-w-0">
-                    <span class="text-3xl filter drop-shadow-xs shrink-0">📘</span>
-                    <span class="px-3.5 py-0.5 rounded-xl bg-[#1E4E79] text-[#F0F6FA] text-xl sm:text-2xl font-black font-serif-tc tracking-wider shadow-xs shrink-0">
+                  <div class="flex items-center gap-1.5 sm:gap-2.5 flex-nowrap min-w-0">
+                    <span class="text-2xl sm:text-3xl filter drop-shadow-xs shrink-0">📘</span>
+                    <span class="px-2.5 sm:px-3.5 py-0.5 rounded-xl bg-[#1E4E79] text-[#F0F6FA] text-lg sm:text-2xl font-black font-serif-tc tracking-wider shadow-xs shrink-0">
                       訂正
                     </span>
-                    <span class="text-2xl font-black font-num text-[#2C6287] tracking-tight shrink-0">
+                    <span class="text-lg sm:text-2xl font-black font-num text-[#2C6287] tracking-tight shrink-0">
                       ${correctionPreviewText}
                     </span>
                   </div>
-                  <span class="text-3xl sm:text-4xl font-num font-black ${correctionScore > 0 ? 'text-[#1E4E79]' : 'text-stone-700'} shrink-0 ml-2">
+                  <span class="text-2xl sm:text-4xl font-num font-black ${correctionScore > 0 ? 'text-[#1E4E79]' : 'text-stone-700'} shrink-0 ml-1 sm:ml-2">
                     ${formatScore(correctionScore)}
                   </span>
                 </div>
               </div>
 
-              <!-- 3. 表現：蒼松黛綠 -->
-              <div class="bg-[#F0F7F3] p-3 rounded-2xl border-2 border-[#BCD4C6] shadow-xs flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <span class="text-3xl filter drop-shadow-xs">🏆</span>
-                  <span class="px-3.5 py-0.5 rounded-xl bg-[#235C3E] text-[#F0F7F3] text-xl sm:text-2xl font-black font-serif-tc tracking-wider shadow-xs">
+              <!-- 3. 表現 -->
+              <div class="bg-[#F0F7F3] p-2.5 sm:p-3 rounded-2xl border-2 border-[#BCD4C6] shadow-xs flex items-center justify-between">
+                <div class="flex items-center gap-1.5 sm:gap-2">
+                  <span class="text-2xl sm:text-3xl filter drop-shadow-xs">🏆</span>
+                  <span class="px-2.5 sm:px-3.5 py-0.5 rounded-xl bg-[#235C3E] text-[#F0F7F3] text-lg sm:text-2xl font-black font-serif-tc tracking-wider shadow-xs">
                     表現
                   </span>
                 </div>
-                <span class="text-3xl sm:text-4xl font-num font-black ${classroomScore > 0 ? 'text-[#235C3E]' : classroomScore < 0 ? 'text-rose-700' : 'text-stone-700'}">
+                <span class="text-2xl sm:text-4xl font-num font-black ${classroomScore > 0 ? 'text-[#235C3E]' : classroomScore < 0 ? 'text-rose-700' : 'text-stone-700'}">
                   ${formatScore(classroomScore)}
                 </span>
               </div>
@@ -1485,9 +1506,8 @@
             </div>
           </div>
 
-          <div class="mt-4 pt-3 border-t border-stone-100">
-            <!-- 4. 實踐檢核：單一深色向量鎖頭 -->
-            <button onclick="window.appActions.openAuditModal('${st.id}')" class="w-full py-2.5 rounded-2xl text-xl font-black transition flex items-center justify-center gap-2 shadow-xs stone-btn ${
+          <div class="mt-3 sm:mt-4 pt-2.5 sm:pt-3 border-t border-stone-100">
+            <button onclick="window.appActions.openAuditModal('${st.id}')" class="w-full py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-base sm:text-xl font-black transition flex items-center justify-center gap-1.5 sm:gap-2 shadow-xs stone-btn ${
               (isStudentLocked || isDayLocked)
                 ? 'bg-stone-300 hover:bg-stone-400 text-stone-900 border-2 border-stone-500'
                 : 'bg-[#2D2926] hover:bg-[#1A1816] text-[#F7F4EE] border-2 border-[#2D2926]'
@@ -1583,7 +1603,7 @@
 
         const timeChipsHtml = group.items.map(it => {
           return `
-            <span class="inline-flex items-center gap-1 bg-stone-100/90 text-stone-700 border border-stone-300/80 px-2 py-0.5 rounded-lg text-sm font-num font-bold">
+            <span class="inline-flex items-center gap-1 bg-stone-100/90 text-stone-700 border border-stone-300/80 px-1.5 sm:px-2 py-0.5 rounded-lg text-xs sm:text-sm font-num font-bold">
               <span>${it.time}</span>
               <span class="font-black ${it.step >= 0 ? 'text-emerald-700' : 'text-rose-700'}">(${formatScore(it.step)})</span>
             </span>
@@ -1591,26 +1611,26 @@
         }).join('');
 
         return `
-          <div class="bg-white p-2.5 rounded-2xl border-2 ${isReEditCost ? 'border-rose-600 bg-rose-50/50' : borderColor} shadow-xs flex flex-col gap-1.5 transition">
-            <div class="flex items-center justify-between gap-2">
-              <span class="text-stone-900 font-black text-xl sm:text-2xl flex items-center gap-2 truncate">
-                <span class="text-2xl shrink-0">${icon}</span>
+          <div class="bg-white p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 ${isReEditCost ? 'border-rose-600 bg-rose-50/50' : borderColor} shadow-xs flex flex-col gap-1 sm:gap-1.5 transition">
+            <div class="flex items-center justify-between gap-1.5 sm:gap-2">
+              <span class="text-stone-900 font-black text-base sm:text-2xl flex items-center gap-1.5 sm:gap-2 truncate">
+                <span class="text-xl sm:text-2xl shrink-0">${icon}</span>
                 <span class="truncate">${group.name}</span>
-                ${group.items.length > 1 ? `<span class="bg-stone-200 text-stone-800 text-xs px-2 py-0.5 rounded-full font-num font-black">×${group.items.length}</span>` : ''}
+                ${group.items.length > 1 ? `<span class="bg-stone-200 text-stone-800 text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full font-num font-black">×${group.items.length}</span>` : ''}
               </span>
-              <div class="flex items-center gap-2.5 shrink-0">
-                <span class="font-num text-2xl sm:text-3xl font-black ${scoreTextColor}">
+              <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+                <span class="font-num text-xl sm:text-3xl font-black ${scoreTextColor}">
                   ${formatScore(totalStep)}
                 </span>
                 ${canDelete ? `
-                  <button onclick="window.appActions.removeRecord('${studentId}', '${group.name}')" class="w-8 h-8 rounded-xl bg-stone-100 hover:bg-rose-100 text-stone-400 hover:text-rose-600 text-xl font-black flex items-center justify-center transition leading-none" title="撤回最新一次紀錄">
+                  <button onclick="window.appActions.removeRecord('${studentId}', '${group.name}')" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-stone-100 hover:bg-rose-100 text-stone-400 hover:text-rose-600 text-base sm:text-xl font-black flex items-center justify-center transition leading-none" title="撤回最新一次紀錄">
                     ✕
                   </button>
                 ` : ''}
               </div>
             </div>
             
-            <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-stone-100 max-h-20 overflow-y-auto custom-scrollbar">
+            <div class="flex flex-wrap items-center gap-1 sm:gap-1.5 pt-1 border-t border-stone-100 max-h-20 overflow-y-auto custom-scrollbar">
               ${timeChipsHtml}
             </div>
           </div>
@@ -1619,21 +1639,21 @@
 
       const listGood = document.getElementById('list_good_records');
       if (goodGroups.length === 0) {
-        listGood.innerHTML = '<div class="text-stone-400 text-3xl text-center py-6 font-bold font-serif-tc">今日尚未加步數</div>';
+        listGood.innerHTML = '<div class="text-stone-400 text-xl sm:text-3xl text-center py-4 sm:py-6 font-bold font-serif-tc">今日尚未加步數</div>';
       } else {
         listGood.innerHTML = goodGroups.map(g => renderGroupCard(g, 'border-emerald-400', 'text-emerald-700')).join('');
       }
 
       const listBad = document.getElementById('list_bad_records');
       if (badGroups.length === 0) {
-        listBad.innerHTML = '<div class="text-stone-400 text-3xl text-center py-6 font-bold font-serif-tc">今日無扣減步數</div>';
+        listBad.innerHTML = '<div class="text-stone-400 text-xl sm:text-3xl text-center py-4 sm:py-6 font-bold font-serif-tc">今日無扣減步數</div>';
       } else {
         listBad.innerHTML = badGroups.map(g => renderGroupCard(g, 'border-rose-400', 'text-rose-700')).join('');
       }
 
       const listAtt = document.getElementById('list_att_records');
       if (attGroups.length === 0) {
-        listAtt.innerHTML = '<div class="text-stone-400 text-3xl text-center py-6 font-bold font-serif-tc">今日無自律扣步</div>';
+        listAtt.innerHTML = '<div class="text-stone-400 text-xl sm:text-3xl text-center py-4 font-bold font-serif-tc">今日無自律扣步</div>';
       } else {
         listAtt.innerHTML = attGroups.map(g => renderGroupCard(g, 'border-amber-400', 'text-amber-800')).join('');
       }
@@ -2000,29 +2020,29 @@
         container.innerHTML = '';
 
         if (historyList.length === 0) {
-          container.innerHTML = '<div class="text-stone-400 font-bold text-3xl text-center py-16 font-serif-tc">尚無正式封存歸檔之里程紀錄</div>';
+          container.innerHTML = '<div class="text-stone-400 font-bold text-2xl sm:text-3xl text-center py-12 sm:py-16 font-serif-tc">尚無正式封存歸檔之里程紀錄</div>';
         } else {
           historyList.forEach(item => {
             const row = document.createElement('div');
-            row.className = 'bg-white p-4 sm:p-5 rounded-2xl border-2 border-stone-200 flex items-center justify-between shadow-xs gap-4';
+            row.className = 'bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border-2 border-stone-200 flex items-center justify-between shadow-xs gap-2 sm:gap-4';
             row.innerHTML = `
-              <div class="flex items-center gap-3 sm:gap-4 flex-nowrap min-w-0">
-                <span class="w-36 text-center px-3.5 py-1.5 rounded-xl bg-stone-100 text-stone-800 font-num font-black text-xl sm:text-2xl border border-stone-300 shrink-0">
+              <div class="flex items-center gap-2 sm:gap-4 flex-nowrap min-w-0">
+                <span class="w-28 sm:w-36 text-center px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-stone-100 text-stone-800 font-num font-black text-sm sm:text-2xl border border-stone-300 shrink-0">
                   ${item.date}
                 </span>
-                <div class="flex items-center gap-2 sm:gap-3 flex-nowrap text-base sm:text-lg font-bold font-serif-tc">
-                  <span class="px-3 py-1 rounded-xl bg-[#FAF6EE] border border-[#D9C8B4] text-[#8C5E3C] whitespace-nowrap">
+                <div class="flex items-center gap-1.5 sm:gap-3 flex-nowrap text-xs sm:text-lg font-bold font-serif-tc">
+                  <span class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg sm:rounded-xl bg-[#FAF6EE] border border-[#D9C8B4] text-[#8C5E3C] whitespace-nowrap">
                     打卡 ${formatScore(item.checkinScore)}
                   </span>
-                  <span class="px-3 py-1 rounded-xl bg-[#F0F6FA] border border-[#B8D3E6] text-[#1E4E79] whitespace-nowrap">
+                  <span class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg sm:rounded-xl bg-[#F0F6FA] border border-[#B8D3E6] text-[#1E4E79] whitespace-nowrap">
                     訂正 ${formatScore(item.correctionScore)}
                   </span>
-                  <span class="px-3 py-1 rounded-xl bg-[#F0F7F3] border border-[#BCD4C6] text-[#235C3E] whitespace-nowrap">
+                  <span class="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg sm:rounded-xl bg-[#F0F7F3] border border-[#BCD4C6] text-[#235C3E] whitespace-nowrap">
                     表現 ${formatScore(item.classroomScore)}
                   </span>
                 </div>
               </div>
-              <span class="text-3xl sm:text-4xl font-num font-black text-[#8C5E3C] shrink-0 text-right min-w-[70px]">
+              <span class="text-2xl sm:text-4xl font-num font-black text-[#8C5E3C] shrink-0 text-right min-w-[50px] sm:min-w-[70px]">
                 ${formatScore(item.totalScore)}
               </span>
             `;
@@ -2037,7 +2057,7 @@
         document.getElementById('mileageModal').classList.add('hidden');
       },
 
-      // 🌟 打卡作業自主勾選彈窗：更新為直觀自然語句「今日病假/事假，不記錄」
+      // 🌟 打卡作業自主勾選彈窗
       openCheckinHwModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('checkinHwModalTitle').innerText = `${maskName(st.name)} 打卡作業繳交紀錄`;
@@ -2055,14 +2075,14 @@
         let lateCount = 0;
 
         if (isLeave) {
-          container.innerHTML = `<div class="col-span-1 md:col-span-2 text-stone-500 font-bold text-3xl text-center py-12 font-serif-tc">今日${leaveLabel}，不記錄</div>`;
+          container.innerHTML = `<div class="col-span-1 md:col-span-2 text-stone-500 font-bold text-2xl sm:text-3xl text-center py-10 sm:py-12 font-serif-tc">今日${leaveLabel}，不記錄</div>`;
           const badge = document.getElementById('checkinHwSummaryBadge');
           badge.innerText = `結算：0 (${leaveLabel})`;
-          badge.className = 'text-2xl font-num font-black text-stone-600';
+          badge.className = 'text-base sm:text-2xl font-num font-black text-stone-600';
         } else if (assignedHwList.length === 0) {
-          container.innerHTML = '<div class="col-span-1 md:col-span-2 text-stone-400 font-bold text-2xl text-center py-10 font-serif-tc">本日航海日誌無作業任務</div>';
+          container.innerHTML = '<div class="col-span-1 md:col-span-2 text-stone-400 font-bold text-xl sm:text-2xl text-center py-8 sm:py-10 font-serif-tc">本日航海日誌無作業任務</div>';
           document.getElementById('checkinHwSummaryBadge').innerText = '0';
-          document.getElementById('checkinHwSummaryBadge').className = 'text-2xl font-num font-black text-stone-500';
+          document.getElementById('checkinHwSummaryBadge').className = 'text-base sm:text-2xl font-num font-black text-stone-500';
         } else {
           assignedHwList.forEach(tName => {
             const detailStat = getCheckinTaskDetailStatus(studentId, tName, curDate);
@@ -2104,17 +2124,17 @@
             }
 
             const row = document.createElement('div');
-            row.className = `p-3.5 sm:p-4 rounded-2xl border-2 flex items-center justify-between gap-3 shadow-xs ${rowBg}`;
+            row.className = `p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border-2 flex items-center justify-between gap-2 sm:gap-3 shadow-xs ${rowBg}`;
             row.innerHTML = `
-              <div class="flex items-center gap-2.5 min-w-0 flex-1">
-                <span class="text-3xl font-black ${iconColor} shrink-0">${iconText}</span>
-                <span class="text-xl sm:text-2xl font-black font-serif-tc text-stone-900 whitespace-nowrap truncate">${tName}</span>
+              <div class="flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1">
+                <span class="text-xl sm:text-3xl font-black ${iconColor} shrink-0">${iconText}</span>
+                <span class="text-base sm:text-2xl font-black font-serif-tc text-stone-900 whitespace-nowrap overflow-hidden text-ellipsis">${tName}</span>
               </div>
-              <div class="flex items-center gap-3 shrink-0 ml-auto">
-                <span class="w-14 text-center text-2xl sm:text-3xl font-num font-black ${scoreColor}">
+              <div class="flex items-center gap-1.5 sm:gap-3 shrink-0 ml-auto">
+                <span class="w-10 sm:w-14 text-center text-lg sm:text-3xl font-num font-black ${scoreColor}">
                   ${scoreText ? (scoreText > 0 ? `+${scoreText}` : scoreText) : ''}
                 </span>
-                <span class="w-28 text-center px-3 py-1.5 rounded-xl border text-lg sm:text-xl font-black whitespace-nowrap ${badgeBg}">
+                <span class="w-20 sm:w-28 text-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl border text-sm sm:text-xl font-black whitespace-nowrap ${badgeBg}">
                   ${labelText}
                 </span>
               </div>
@@ -2125,13 +2145,13 @@
           const badge = document.getElementById('checkinHwSummaryBadge');
           if (missingCount > 0) {
             badge.innerText = `結算：-${missingCount}`;
-            badge.className = 'text-2xl font-num font-black text-rose-700';
+            badge.className = 'text-base sm:text-2xl font-num font-black text-rose-700';
           } else if (lateCount > 0) {
             badge.innerText = `結算：0 (有遲交)`;
-            badge.className = 'text-2xl font-num font-black text-yellow-700';
+            badge.className = 'text-base sm:text-2xl font-num font-black text-yellow-700';
           } else {
             badge.innerText = `結算：+2 (全齊)`;
-            badge.className = 'text-2xl font-num font-black text-emerald-700';
+            badge.className = 'text-base sm:text-2xl font-num font-black text-emerald-700';
           }
         }
 
@@ -2142,7 +2162,7 @@
         document.getElementById('checkinHwModal').classList.add('hidden');
       },
 
-      // 🌟 作業訂正狀況彈窗：更新為直觀自然語句「今日病假/事假，不記錄」
+      // 🌟 作業訂正狀況彈窗
       openCorrectionModal(studentId) {
         const st = STUDENTS.find(s => s.id === studentId);
         document.getElementById('correctionModalTitle').innerText = `${maskName(st.name)} 作業訂正狀況`;
@@ -2159,10 +2179,10 @@
         let totalCorrectionScore = 0;
 
         if (isLeave) {
-          container.innerHTML = `<div class="col-span-1 md:col-span-2 text-stone-500 font-bold text-3xl text-center py-12 font-serif-tc">今日${leaveLabel}，不記錄</div>`;
+          container.innerHTML = `<div class="col-span-1 md:col-span-2 text-stone-500 font-bold text-2xl sm:text-3xl text-center py-10 sm:py-12 font-serif-tc">今日${leaveLabel}，不記錄</div>`;
           document.getElementById('correctionTotalScoreBadge').innerText = '0';
         } else if (correctionTasks.length === 0) {
-          container.innerHTML = '<div class="col-span-1 md:col-span-2 text-stone-400 font-bold text-2xl text-center py-10 font-serif-tc">本日訂正系統尚未指派任何作業項目</div>';
+          container.innerHTML = '<div class="col-span-1 md:col-span-2 text-stone-400 font-bold text-xl sm:text-2xl text-center py-8 sm:py-10 font-serif-tc">本日訂正系統尚未指派任何作業項目</div>';
           document.getElementById('correctionTotalScoreBadge').innerText = '0';
         } else {
           correctionTasks.forEach(tName => {
@@ -2197,17 +2217,17 @@
             }
 
             const row = document.createElement('div');
-            row.className = `p-3.5 sm:p-4 rounded-2xl border-2 flex items-center justify-between gap-3 shadow-xs ${statusBg}`;
+            row.className = `p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border-2 flex items-center justify-between gap-2 sm:gap-3 shadow-xs ${statusBg}`;
             row.innerHTML = `
-              <div class="flex items-center gap-2.5 min-w-0 flex-1">
-                <span class="text-3xl font-black ${iconColor} shrink-0">${iconText}</span>
-                <span class="text-xl sm:text-2xl font-black font-serif-tc text-stone-900 whitespace-nowrap truncate">${tName}</span>
+              <div class="flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1">
+                <span class="text-xl sm:text-3xl font-black ${iconColor} shrink-0">${iconText}</span>
+                <span class="text-base sm:text-2xl font-black font-serif-tc text-stone-900 whitespace-nowrap overflow-hidden text-ellipsis">${tName}</span>
               </div>
-              <div class="flex items-center gap-3 shrink-0 ml-auto">
-                <span class="w-14 text-center text-2xl sm:text-3xl font-num font-black ${scoreColor}">
+              <div class="flex items-center gap-1.5 sm:gap-3 shrink-0 ml-auto">
+                <span class="w-10 sm:w-14 text-center text-lg sm:text-3xl font-num font-black ${scoreColor}">
                   ${scoreText}
                 </span>
-                <span class="w-28 text-center px-3 py-1.5 rounded-xl border text-lg sm:text-xl font-black whitespace-nowrap ${badgeBg}">
+                <span class="w-20 sm:w-28 text-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl border text-sm sm:text-xl font-black whitespace-nowrap ${badgeBg}">
                   ${labelText}
                 </span>
               </div>
@@ -2302,7 +2322,7 @@
             else if (attStatus === 'sick') { arrivalScore = 0; arrivalLabel = '病假'; }
             else if (attStatus === 'personal') { arrivalScore = 0; arrivalLabel = '事假'; }
 
-            // 2. 作業（請假時標示為病假/事假，不倒扣）
+            // 2. 作業
             let checkinHwScore = 0, checkinHwLabel = '作業';
             if (isLeave) {
               checkinHwScore = 0;
@@ -2325,15 +2345,15 @@
             // 3. 習慣
             let previewDone = false, suppliesDone = false, checkinDone = false, habitScore = 0;
             if (!isLeave) {
-              previewDone = !!completedTasks['複習+預習'] || !!completedTasks['預習複習'] || !!completedTasks['預習'] || !!completedTasks['複習'];
+              previewDone = !!completedTasks['複習+預習'] || !!completedTasks['預習複習'] || !!completedTasks['預習+複習'] || !!completedTasks['預習'] || !!completedTasks['複習'];
               suppliesDone = !!completedTasks['帶學用品'] || !!completedTasks['學用品'];
-              checkinDone = !!completedTasks['訂正功課'] || !!completedTasks['訂正作業'];
+              checkinDone = !!completedTasks['訂正功課全'] || !!completedTasks['訂正功課'] || !!completedTasks['訂正作業'];
               habitScore = (previewDone && suppliesDone && checkinDone) ? 1 : 0;
             }
 
             const checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
 
-            // 4. 訂正（請假時標示為病假/事假，豁免）
+            // 4. 訂正
             let correctionScore = 0;
             let correctionPreviewText = '0 / 0';
             if (isLeave) {
