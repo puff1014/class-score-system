@@ -1850,8 +1850,6 @@
     // 🌟 渲染【全班千里足跡航行總表】
     function renderClassVoyageUI() {
       const { totalClassSteps, studentMap } = getClassTotalCumulativeMileage();
-
-      const { totalClassSteps, studentMap } = getClassTotalCumulativeMileage();
       const waypoints = [...AppState.voyageWaypoints].sort((a, b) => a.step - b.step);
 
       const totalStepsEl = document.getElementById('voyageTotalClassSteps');
