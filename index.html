@@ -1849,10 +1849,14 @@
 
     // 🌟 渲染【全班千里足跡航行總表】
     function renderClassVoyageUI() {
+      const modal = document.getElementById('classVoyageModal');
+      if (!modal || modal.classList.contains('hidden')) return;
+
       const { totalClassSteps, studentMap } = getClassTotalCumulativeMileage();
       const waypoints = [...AppState.voyageWaypoints].sort((a, b) => a.step - b.step);
 
-      document.getElementById('voyageTotalClassSteps').innerText = totalClassSteps;
+      const totalStepsEl = document.getElementById('voyageTotalClassSteps');
+      if (totalStepsEl) totalStepsEl.innerText = totalClassSteps;
 
       let currentIdx = 0;
       for (let i = 0; i < waypoints.length; i++) {
@@ -1866,7 +1870,8 @@
       const curWp = waypoints[currentIdx] || waypoints[0];
       const nextWp = waypoints[currentIdx + 1] || null;
 
-      document.getElementById('voyageCurrentCountry').innerText = curWp.country;
+      const countryEl = document.getElementById('voyageCurrentCountry');
+      if (countryEl) countryEl.innerText = curWp.country;
 
       const promptEl = document.getElementById('voyageNextTargetPrompt');
       const percentEl = document.getElementById('voyageSegmentPercentText');
@@ -1874,105 +1879,98 @@
 
       if (nextWp) {
         const remaining = Math.max(0, nextWp.step - totalClassSteps);
-        promptEl.innerText = `距離下一站【${nextWp.country}】，全班還差 ${remaining} 步`;
+        if (promptEl) promptEl.innerText = `距離下一站【${nextWp.country}】，全班還差 ${remaining} 步`;
 
-        const segmentTotal = nextWp.step - curWp.step;
+        const segmentTotal = Math.max(1, nextWp.step - curWp.step);
         const segmentProgress = Math.max(0, totalClassSteps - curWp.step);
         const percent = Math.min(100, Math.round((segmentProgress / segmentTotal) * 100));
 
-        percentEl.innerText = `本站進度 ${percent}%`;
-        barEl.style.width = `${percent}%`;
+        if (percentEl) percentEl.innerText = `本站進度 ${percent}%`;
+        if (barEl) barEl.style.width = `${percent}%`;
       } else {
-        promptEl.innerText = `🎉 恭喜全班！已圓滿達成環球壯遊終極目標【${curWp.country}】！`;
-        percentEl.innerText = `100% 達成`;
-        barEl.style.width = `100%`;
+        if (promptEl) promptEl.innerText = `🎉 恭喜全班！已圓滿達成環球壯遊終極目標【${curWp.country}】！`;
+        if (percentEl) percentEl.innerText = `100% 達成`;
+        if (barEl) barEl.style.width = `100%`;
       }
 
-      // 🌟 渲染 7 國航線站點階梯圖（一次排開不捲動，配色：訂正青藍 / 蕭淵群旗幟淡黃 / 簡潔石白）
+      // 渲染 7 國航線站點階梯圖
       const msContainer = document.getElementById('voyageMilestonesContainer');
-      msContainer.innerHTML = '';
+      if (msContainer) {
+        msContainer.innerHTML = '';
+        waypoints.forEach((wp, idx) => {
+          const isReached = totalClassSteps >= wp.step;
+          const isNextTarget = (idx === currentIdx + 1);
+          const isCurrentStay = (idx === currentIdx);
 
-      waypoints.forEach((wp, idx) => {
-        const isReached = totalClassSteps >= wp.step;
-        const isNextTarget = (idx === currentIdx + 1);
-        const isCurrentStay = (idx === currentIdx);
+          let cardBgClass = 'bg-stone-100 text-stone-400 border-stone-200';
+          let statusBadge = `<span class="text-[11px] font-bold text-stone-400">尚需 ${wp.step} 步</span>`;
 
-        let cardBgClass = 'bg-stone-100 text-stone-400 border-stone-200';
-        let statusBadge = `<span class="text-[11px] font-bold text-stone-400">尚需 ${wp.step} 步</span>`;
+          if (isCurrentStay || isReached) {
+            cardBgClass = 'bg-[#F0F6FA] text-[#1E4E79] border-[#B8D3E6] shadow-xs';
+            statusBadge = `<span class="text-xs font-black text-[#1E4E79] bg-white/90 px-2 py-0.5 rounded-lg border border-[#B8D3E6]">✓ 已抵達</span>`;
+          } else if (isNextTarget) {
+            cardBgClass = 'bg-[#FEF9C3] text-[#854D0E] border-[#FDE047] shadow-sm';
+            statusBadge = `<span class="text-xs font-black text-[#854D0E] bg-white px-2 py-0.5 rounded-lg border border-[#FDE047]">🚩 目標中</span>`;
+          }
 
-        if (isCurrentStay || isReached) {
-          // 已抵達站點：訂正底色青藍色
-          cardBgClass = 'bg-[#F0F6FA] text-[#1E4E79] border-[#B8D3E6] shadow-xs';
-          statusBadge = `<span class="text-xs font-black text-[#1E4E79] bg-white/90 px-2 py-0.5 rounded-lg border border-[#B8D3E6]">✓ 已抵達</span>`;
-        } else if (isNextTarget) {
-          // 下一站目標中：蕭淵群旗子淡黃色微調（柔和奶黃 #FEF9C3，深褐金字）
-          cardBgClass = 'bg-[#FEF9C3] text-[#854D0E] border-[#FDE047] shadow-sm';
-          statusBadge = `<span class="text-xs font-black text-[#854D0E] bg-white px-2 py-0.5 rounded-lg border border-[#FDE047]">🚩 目標中</span>`;
+          const chip = document.createElement('div');
+          chip.className = `p-2.5 sm:p-3 rounded-2xl border-2 flex flex-col justify-between items-center text-center gap-1.5 transition ${cardBgClass}`;
+          chip.innerHTML = `
+            <span class="text-xs font-bold opacity-75">第 ${idx + 1} 站</span>
+            <span class="text-base sm:text-xl font-black font-serif-tc tracking-tight truncate w-full">${wp.country}</span>
+            <div class="mt-0.5">${statusBadge}</div>
+          `;
+          msContainer.appendChild(chip);
+        });
+      }
+
+      // 渲染小船員榜單
+      const rosterList = document.getElementById('voyageRosterList');
+      if (rosterList) {
+        rosterList.innerHTML = '';
+        let sortedStudents = [...STUDENTS].map(st => {
+          const steps = studentMap[st.id] || 0;
+          const pct = totalClassSteps > 0 ? ((steps / totalClassSteps) * 100).toFixed(1) : '0.0';
+          return { ...st, steps, pct: parseFloat(pct) };
+        });
+
+        if (AppState.voyageSort === 'score') {
+          sortedStudents.sort((a, b) => b.steps - a.steps);
+        } else {
+          sortedStudents.sort((a, b) => a.no - b.no);
         }
 
-        const chip = document.createElement('div');
-        chip.className = `p-2.5 sm:p-3 rounded-2xl border-2 flex flex-col justify-between items-center text-center gap-1.5 transition ${cardBgClass}`;
-        chip.innerHTML = `
-          <span class="text-xs font-bold opacity-75">第 ${idx + 1} 站</span>
-          <span class="text-base sm:text-xl font-black font-serif-tc tracking-tight truncate w-full">${wp.country}</span>
-          <div class="mt-0.5">${statusBadge}</div>
-        `;
-        msContainer.appendChild(chip);
-      });
-
-      // 🌟 渲染十位小船員榜單（拿掉座號、拿掉金銀銅牌，字體全面顯著放大）
-      const rosterList = document.getElementById('voyageRosterList');
-      rosterList.innerHTML = '';
-
-      let sortedStudents = [...STUDENTS].map(st => {
-        const steps = studentMap[st.id] || 0;
-        const pct = totalClassSteps > 0 ? ((steps / totalClassSteps) * 100).toFixed(1) : '0.0';
-        return { ...st, steps, pct: parseFloat(pct) };
-      });
-
-      if (AppState.voyageSort === 'score') {
-        sortedStudents.sort((a, b) => b.steps - a.steps);
-      } else {
-        sortedStudents.sort((a, b) => a.no - b.no);
-      }
-
-      sortedStudents.forEach((st, idx) => {
-        const row = document.createElement('div');
-        row.className = 'bg-stone-50 hover:bg-stone-100 transition p-3 sm:p-4 rounded-2xl border-2 border-stone-200 flex items-center justify-between gap-3 shadow-2xs';
-
-        // 統一編號方塊（1～10，無獎牌）
-        const rankNumber = idx + 1;
-        const rankBadge = `
-          <span class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-stone-200/90 text-stone-700 font-num font-black text-xl sm:text-2xl flex items-center justify-center shrink-0 border border-stone-300">
-            ${rankNumber}
-          </span>
-        `;
-
-        row.innerHTML = `
-          <div class="flex items-center gap-3 sm:gap-5 min-w-0">
-            ${rankBadge}
-            <!-- 學生大名（拿掉座號，顯著放大） -->
-            <span class="text-2xl sm:text-4xl font-black font-serif-tc text-stone-900 tracking-wide truncate">
-              ${maskName(st.name)}
+        sortedStudents.forEach((st, idx) => {
+          const row = document.createElement('div');
+          row.className = 'bg-stone-50 hover:bg-stone-100 transition p-3 sm:p-4 rounded-2xl border-2 border-stone-200 flex items-center justify-between gap-3 shadow-2xs';
+          const rankNumber = idx + 1;
+          const rankBadge = `
+            <span class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-stone-200/90 text-stone-700 font-num font-black text-xl sm:text-2xl flex items-center justify-center shrink-0 border border-stone-300">
+              ${rankNumber}
             </span>
-          </div>
+          `;
 
-          <div class="flex items-center gap-4 sm:gap-6 shrink-0">
-            <!-- 累積大步數 -->
-            <div class="text-right">
-              <span class="text-3xl sm:text-5xl font-num font-black text-[#8C5E3C]">${st.steps}</span>
-              <span class="text-base sm:text-2xl font-black text-stone-600 ml-1">步</span>
+          row.innerHTML = `
+            <div class="flex items-center gap-3 sm:gap-5 min-w-0">
+              ${rankBadge}
+              <span class="text-2xl sm:text-4xl font-black font-serif-tc text-stone-900 tracking-wide truncate">
+                ${maskName(st.name)}
+              </span>
             </div>
-            <!-- 百分比大膠囊 -->
-            <span class="w-20 sm:w-24 text-center text-sm sm:text-lg font-num font-black text-stone-600 bg-white px-2.5 py-1 rounded-xl border border-stone-300">
-              ${st.pct}%
-            </span>
-          </div>
-        `;
-        rosterList.appendChild(row);
-      });
+            <div class="flex items-center gap-4 sm:gap-6 shrink-0">
+              <div class="text-right">
+                <span class="text-3xl sm:text-5xl font-num font-black text-[#8C5E3C]">${st.steps}</span>
+                <span class="text-base sm:text-2xl font-black text-stone-600 ml-1">步</span>
+              </div>
+              <span class="w-20 sm:w-24 text-center text-sm sm:text-lg font-num font-black text-stone-600 bg-white px-2.5 py-1 rounded-xl border border-stone-300">
+                ${st.pct}%
+              </span>
+            </div>
+          `;
+          rosterList.appendChild(row);
+        });
+      }
     }
-
     // 渲染航線編輯器清單
     function renderWaypointsEditor() {
       const container = document.getElementById('voyageWaypointsEditorList');
