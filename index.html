@@ -52,6 +52,7 @@
   <header class="bg-[#FFFDF9] rounded-3xl border-2 border-stone-200/90 shadow-sm p-3.5 sm:p-6 mb-4 sm:mb-5">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
       
+      <!-- 左側：標題區（完整純淨書法，不被塞按鈕） -->
       <div class="flex items-center gap-3 sm:gap-5 shrink-0">
         <div class="flex flex-col items-center justify-center shrink-0">
           <div class="footstep-anim flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 text-[#8C5E3C]">
@@ -75,21 +76,14 @@
             </svg>
           </div>
           <span class="text-[10px] sm:text-xs font-black font-num bg-stone-100 text-stone-600 border border-stone-300 px-1.5 py-0.5 rounded-md mt-0.5 sm:mt-1">
-            v6.5
+            v6.6
           </span>
         </div>
 
         <div class="flex flex-col justify-center">
-          <div class="flex items-center gap-2 sm:gap-4 flex-wrap">
-            <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black font-serif-tc text-stone-900 tracking-wider">
-              六年甲班行知錄
-            </h1>
-            <!-- 🌟 【千里足跡總表】入口按鈕 -->
-            <button onclick="window.appActions.openClassVoyageModal()" class="px-3 py-1 sm:px-4 sm:py-1.5 rounded-2xl bg-gradient-to-r from-[#FAF3EA] to-[#F2E5D0] hover:from-[#F4E8D5] hover:to-[#EAD8BD] border-2 border-[#D9C4A9] text-[#8C5E3C] font-black text-sm sm:text-lg flex items-center gap-1.5 shadow-xs stone-btn transition">
-              <span class="text-base sm:text-xl">🌍</span>
-              <span class="font-serif-tc">千里足跡總表</span>
-            </button>
-          </div>
+          <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black font-serif-tc text-stone-900 tracking-wider">
+            六年甲班行知錄
+          </h1>
           <div class="h-[1.5px] w-full bg-gradient-to-r from-stone-300 via-amber-800/40 to-stone-300 my-0.5 sm:my-1"></div>
           <div class="w-full flex justify-between items-center text-amber-900 font-serif-tc font-bold italic text-xs sm:text-xl lg:text-2xl tracking-normal">
             <span>千</span><span>里</span><span>之</span><span>行</span><span>，</span><span>始</span><span>於</span><span>足</span><span>下</span>
@@ -97,8 +91,16 @@
         </div>
       </div>
 
+      <!-- 🌟 中間空檔：獨立放置【千里足跡總表】按鈕 -->
+      <div class="flex items-center justify-center md:flex-1 px-2">
+        <button onclick="window.appActions.openClassVoyageModal()" class="w-full sm:w-auto px-5 py-2 sm:px-6 sm:py-2.5 rounded-2xl bg-gradient-to-r from-[#FAF3EA] via-[#F4E8D5] to-[#FAF3EA] hover:from-[#F4E8D5] hover:to-[#EBD5B7] border-2 border-[#D9C4A9] text-[#8C5E3C] font-black text-base sm:text-xl flex items-center justify-center gap-2.5 shadow-sm stone-btn transition">
+          <span class="text-xl sm:text-2xl filter drop-shadow-xs">🌍</span>
+          <span class="font-serif-tc tracking-wide">千里足跡總表</span>
+        </button>
+      </div>
+
       <!-- 右側工具組 -->
-      <div class="flex flex-wrap items-center justify-between sm:justify-end gap-2 sm:gap-4 shrink-0 mt-1 md:mt-0">
+      <div class="flex flex-wrap items-center justify-between sm:justify-end gap-2 sm:gap-4 shrink-0">
         <div class="flex items-center gap-2 sm:gap-3">
           <div class="relative group cursor-pointer" onclick="window.appActions.showConnectionInfo()">
             <div class="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-emerald-500 shadow-sm flex items-center justify-center">
@@ -298,107 +300,107 @@
   <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-5 mb-8" id="studentCardsContainer">
   </main>
 
-  <!-- 🌟 【全新：全班千里足跡航行總表彈窗】 -->
+  <!-- 🌟 【全班千里足跡航行總表彈窗】 -->
   <div id="classVoyageModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-5">
-    <div class="bg-[#FFFDF9] border-2 sm:border-4 border-stone-300 w-full sm:w-[96vw] max-w-5xl rounded-3xl sm:rounded-[2.5rem] shadow-2xl p-4 sm:p-7 flex flex-col max-h-[94vh]">
+    <div class="bg-[#FFFDF9] border-2 sm:border-4 border-stone-300 w-full sm:w-[96vw] max-w-5xl rounded-3xl sm:rounded-[2.5rem] shadow-2xl p-4 sm:p-8 flex flex-col max-h-[94vh]">
       
       <!-- 頂部標題列 -->
-      <div class="flex items-center justify-between pb-3 sm:pb-4 border-b-2 border-stone-200 mb-3 sm:mb-4 shrink-0">
-        <div class="flex items-center gap-3">
-          <span class="text-3xl sm:text-5xl filter drop-shadow-sm">🌍</span>
+      <div class="flex items-center justify-between pb-3 sm:pb-4 border-b-2 border-stone-200 mb-4 shrink-0">
+        <div class="flex items-center gap-3 sm:gap-4">
+          <span class="text-4xl sm:text-6xl filter drop-shadow-sm">🌍</span>
           <div>
-            <h3 class="text-2xl sm:text-4xl font-black text-stone-900 font-serif-tc tracking-tight">全班千里足跡航行總表</h3>
-            <p class="text-xs sm:text-base font-bold text-amber-950 font-serif-tc tracking-wide mt-0.5">
-              全班同舟共濟・步步邁向世界
+            <h3 class="text-3xl sm:text-5xl font-black text-stone-900 font-serif-tc tracking-tight">全班千里足跡航行總表</h3>
+            <p class="text-sm sm:text-xl font-bold text-amber-950 font-serif-tc tracking-wide mt-1">
+              《淮南子》：「乘眾人之智，則無不任也；用眾人之力，則無不勝也。」
             </p>
           </div>
         </div>
         <div class="flex items-center gap-2">
-          <button id="voyageSettingsBtn" onclick="window.appActions.openVoyageSettingsModal()" class="hidden px-3 py-1.5 sm:px-4 sm:py-2 bg-stone-100 hover:bg-stone-200 border-2 border-stone-300 text-stone-700 rounded-xl sm:rounded-2xl text-xs sm:text-base font-black stone-btn flex items-center gap-1.5">
+          <button id="voyageSettingsBtn" onclick="window.appActions.openVoyageSettingsModal()" class="hidden px-3.5 py-2 sm:px-5 sm:py-2.5 bg-stone-100 hover:bg-stone-200 border-2 border-stone-300 text-stone-700 rounded-xl sm:rounded-2xl text-sm sm:text-lg font-black stone-btn flex items-center gap-1.5">
             <i class="fa-solid fa-gear"></i>
             <span>編輯航線</span>
           </button>
-          <button onclick="window.appActions.closeClassVoyageModal()" class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-lg sm:text-2xl font-black flex items-center justify-center stone-btn">
+          <button onclick="window.appActions.closeClassVoyageModal()" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-xl sm:text-2xl font-black flex items-center justify-center stone-btn">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
       </div>
 
       <!-- 滾動內容區 -->
-      <div class="space-y-4 overflow-y-auto custom-scrollbar flex-1 pr-1">
+      <div class="space-y-5 overflow-y-auto custom-scrollbar flex-1 pr-1">
         
         <!-- 大航海集體看板（全班共融卡） -->
-        <div class="bg-gradient-to-br from-[#FAF3EA] via-[#F4E8D5] to-[#FAF3EA] border-2 border-[#D9C4A9] rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xs flex flex-col gap-3 sm:gap-4">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#DFCDB7] pb-3">
-            <div class="flex items-center gap-3">
-              <span id="voyageCurrentFlag" class="text-4xl sm:text-6xl">🇹🇼</span>
-              <div>
-                <span class="text-xs sm:text-sm font-bold text-stone-600 block">目前抵達位置</span>
-                <span id="voyageCurrentCountry" class="text-2xl sm:text-4xl font-black font-serif-tc text-stone-900">台灣 (起點)</span>
-              </div>
+        <div class="bg-gradient-to-br from-[#FAF3EA] via-[#F4E8D5] to-[#FAF3EA] border-2 border-[#D9C4A9] rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-xs flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#DFCDB7] pb-4">
+            <div>
+              <span class="text-sm sm:text-base font-bold text-stone-600 block mb-0.5">目前抵達位置</span>
+              <span id="voyageCurrentCountry" class="text-3xl sm:text-5xl font-black font-serif-tc text-stone-900">台灣 (出發起點)</span>
             </div>
-            <div class="flex items-center gap-3 sm:text-right">
-              <div>
-                <span class="text-xs sm:text-sm font-bold text-stone-600 block">全班已封存累計步數</span>
-                <span id="voyageTotalClassSteps" class="text-3xl sm:text-5xl font-num font-black text-[#8C5E3C]">0</span>
-                <span class="text-base sm:text-2xl font-bold text-[#8C5E3C] ml-1">步</span>
+            <div class="sm:text-right">
+              <span class="text-sm sm:text-base font-bold text-stone-600 block mb-0.5">全班已封存累計步數</span>
+              <div class="flex items-baseline sm:justify-end gap-1">
+                <span id="voyageTotalClassSteps" class="text-4xl sm:text-6xl font-num font-black text-[#8C5E3C]">0</span>
+                <span class="text-xl sm:text-3xl font-black text-[#8C5E3C]">步</span>
               </div>
             </div>
           </div>
 
           <!-- 下一站推進引導文字 -->
-          <div class="flex items-center justify-between flex-wrap gap-2">
-            <span id="voyageNextTargetPrompt" class="text-base sm:text-2xl font-black font-serif-tc text-stone-800">
-              距離下一站【🇵🇭 菲律賓】，全班還差 27 步
+          <div class="flex items-center justify-between flex-wrap gap-2 pt-1">
+            <span id="voyageNextTargetPrompt" class="text-xl sm:text-3xl font-black font-serif-tc text-stone-800">
+              距離下一站【菲律賓】，全班還差 27 步
             </span>
-            <span id="voyageSegmentPercentText" class="text-sm sm:text-xl font-black font-num text-amber-900 bg-white/80 px-3 py-1 rounded-xl border border-[#D9C4A9]">
+            <span id="voyageSegmentPercentText" class="text-base sm:text-2xl font-black font-num text-[#8C5E3C] bg-white px-3.5 py-1 rounded-xl border border-[#D9C4A9] shadow-2xs">
               進度 0%
             </span>
           </div>
 
           <!-- 視覺化動態進度條 -->
-          <div class="w-full bg-stone-200/90 h-5 sm:h-7 rounded-full overflow-hidden border border-[#C8B8A2] p-0.5 shadow-inner">
-            <div id="voyageProgressBar" class="h-full bg-gradient-to-r from-amber-600 via-[#8C5E3C] to-emerald-600 rounded-full transition-all duration-700" style="width: 0%;"></div>
+          <div class="w-full bg-stone-200/90 h-6 sm:h-8 rounded-full overflow-hidden border border-[#C8B8A2] p-0.5 shadow-inner">
+            <div id="voyageProgressBar" class="h-full bg-gradient-to-r from-amber-500 via-[#8C5E3C] to-emerald-600 rounded-full transition-all duration-700" style="width: 0%;"></div>
           </div>
 
-          <!-- 航線站點階梯里程圖（橫向滾動） -->
-          <div id="voyageMilestonesContainer" class="flex items-center gap-2 sm:gap-3 overflow-x-auto custom-scrollbar pt-2 pb-1">
+          <!-- 🌟 7 國航線站點階梯圖（一次排開不捲動） -->
+          <div>
+            <span class="text-xs sm:text-sm font-bold text-stone-600 block mb-2">亞洲壯遊航程站點：</span>
+            <div id="voyageMilestonesContainer" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-2.5">
+            </div>
           </div>
         </div>
 
         <!-- 船員個人貢獻榜看板 -->
-        <div class="bg-white border-2 border-stone-200 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-xs">
-          <div class="flex items-center justify-between pb-3 border-b border-stone-100 mb-3 flex-wrap gap-2">
-            <span class="text-lg sm:text-2xl font-black font-serif-tc text-stone-800 flex items-center gap-2">
+        <div class="bg-white border-2 border-stone-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xs">
+          <div class="flex items-center justify-between pb-3.5 border-b border-stone-200 mb-3.5 flex-wrap gap-2">
+            <span class="text-xl sm:text-3xl font-black font-serif-tc text-stone-800 flex items-center gap-2">
               <span>⛵</span> 十位小船員里程貢獻榜
             </span>
             <div class="flex items-center gap-2">
-              <span class="text-xs sm:text-sm font-bold text-stone-500">排序：</span>
-              <button id="sortRankBtn" onclick="window.appActions.toggleVoyageSort('score')" class="px-2.5 py-1 rounded-xl text-xs sm:text-sm font-black bg-[#8C5E3C] text-white border border-[#8C5E3C] stone-btn">
+              <span class="text-xs sm:text-base font-bold text-stone-500">排序：</span>
+              <button id="sortRankBtn" onclick="window.appActions.toggleVoyageSort('score')" class="px-3 py-1.5 rounded-xl text-xs sm:text-base font-black bg-[#8C5E3C] text-white border border-[#8C5E3C] stone-btn">
                 依步數高低
               </button>
-              <button id="sortNoBtn" onclick="window.appActions.toggleVoyageSort('no')" class="px-2.5 py-1 rounded-xl text-xs sm:text-sm font-black bg-stone-100 text-stone-700 border border-stone-300 stone-btn">
-                依座號
+              <button id="sortNoBtn" onclick="window.appActions.toggleVoyageSort('no')" class="px-3 py-1.5 rounded-xl text-xs sm:text-base font-black bg-stone-100 text-stone-700 border border-stone-300 stone-btn">
+                依預設順序
               </button>
             </div>
           </div>
 
-          <!-- 學生個人列表 -->
-          <div id="voyageRosterList" class="space-y-2 sm:space-y-2.5">
+          <!-- 學生個人列表（大編號 + 大姓名 + 大步數，無座號與獎牌） -->
+          <div id="voyageRosterList" class="space-y-2.5 sm:space-y-3">
           </div>
         </div>
 
       </div>
 
       <div class="pt-3 sm:pt-4 mt-2 sm:mt-3 border-t-2 border-stone-100 flex justify-end shrink-0">
-        <button onclick="window.appActions.closeClassVoyageModal()" class="w-full sm:w-auto px-6 py-2.5 sm:px-10 sm:py-3.5 bg-[#2D2926] hover:bg-[#1A1816] text-white font-black text-lg sm:text-2xl rounded-xl sm:rounded-2xl stone-btn shadow-md">
+        <button onclick="window.appActions.closeClassVoyageModal()" class="w-full sm:w-auto px-8 py-3 sm:px-12 sm:py-3.5 bg-[#2D2926] hover:bg-[#1A1816] text-white font-black text-xl sm:text-2xl rounded-2xl stone-btn shadow-md">
           關閉總表
         </button>
       </div>
     </div>
   </div>
 
-  <!-- 🌟 【教師模式：航線目標管理編輯彈窗】 -->
+  <!-- 【教師模式：航線目標管理編輯彈窗】 -->
   <div id="voyageSettingsModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-5">
     <div class="bg-white border-2 border-stone-300 w-full max-w-2xl rounded-3xl shadow-2xl p-5 sm:p-7 flex flex-col max-h-[90vh]">
       <div class="flex items-center justify-between pb-3 border-b border-stone-200 mb-3 shrink-0">
@@ -424,7 +426,7 @@
         </button>
         <div class="flex items-center gap-2">
           <button onclick="window.appActions.resetDefaultWaypoints()" class="px-3 py-2 text-stone-500 hover:text-stone-800 font-black text-sm">
-            重設預設 6 國
+            重設預設 7 站
           </button>
           <button onclick="window.appActions.saveWaypoints()" class="px-5 py-2 bg-[#2D2926] hover:bg-[#1A1816] text-white font-black text-base rounded-xl stone-btn shadow-xs">
             儲存航線
@@ -663,7 +665,6 @@
         </button>
       </div>
 
-      <!-- 總里程榮譽卡 -->
       <div class="bg-gradient-to-r from-[#FAF3EA] via-[#F4E8D5] to-[#FAF3EA] border-2 border-[#D9C4A9] rounded-2xl p-3.5 sm:p-6 flex items-center justify-between shadow-xs mb-3 sm:mb-5 shrink-0">
         <div class="flex flex-col">
           <span class="text-base sm:text-2xl font-black text-stone-800 font-serif-tc">已封存歸檔總里程</span>
@@ -675,7 +676,6 @@
         </div>
       </div>
 
-      <!-- 歷史歷程清單 -->
       <div class="text-sm sm:text-xl font-black text-stone-700 font-serif-tc mb-2 sm:mb-3 flex items-center justify-between shrink-0">
         <span>📜 歷次封存修行明細</span>
         <span id="mileageRecordCount" class="font-num text-stone-600 font-bold text-xs sm:text-lg">共 0 天</span>
@@ -817,18 +817,17 @@
     ];
     const SPECIAL_IDS = ['5', '7', '8'];
 
-    // 🌟 預設 6 個亞洲教室國旗航線
+    // 🌟 預設 7 站亞洲航線里程點
     const DEFAULT_WAYPOINTS = [
-      { step: 0, country: '台灣 (出發起點)', flag: '🇹🇼' },
-      { step: 300, country: '菲律賓', flag: '🇵🇭' },
-      { step: 700, country: '日本', flag: '🇯🇵' },
-      { step: 1200, country: '中國', flag: '🇨🇳' },
-      { step: 1800, country: '哈薩克', flag: '🇰🇿' },
-      { step: 2500, country: '亞美尼亞', flag: '🇦🇲' },
-      { step: 3300, country: '約旦 (終點站)', flag: '🇯🇴' }
+      { step: 0, country: '台灣 (起點)' },
+      { step: 300, country: '菲律賓' },
+      { step: 700, country: '日本' },
+      { step: 1200, country: '中國' },
+      { step: 1800, country: '哈薩克' },
+      { step: 2500, country: '亞美尼亞' },
+      { step: 3300, country: '約旦 (終點)' }
     ];
 
-    // 精準生活習慣過濾
     function isPureHabitTask(rawText) {
       if (!rawText) return false;
       const t = rawText.trim();
@@ -869,7 +868,7 @@
       checkinAttendance: {},
       checkinTasksAssigned: {},
       voyageWaypoints: JSON.parse(localStorage.getItem('class_voyage_waypoints') || JSON.stringify(DEFAULT_WAYPOINTS)),
-      voyageSort: 'score' // 'score' 或 'no'
+      voyageSort: 'score'
     };
 
     const firebaseConfig = {
@@ -910,7 +909,6 @@
       return `${prefix}daily_records`;
     }
 
-    // 航線雲端同步
     function setupWaypointsSync() {
       if (!db) return;
       if (unsubWaypoints) unsubWaypoints();
@@ -1042,7 +1040,6 @@
       return { totalMileage, historyList };
     }
 
-    // 計算全班所有人已封存累計總步數
     function getClassTotalCumulativeMileage() {
       let total = 0;
       const studentMap = {};
@@ -1517,7 +1514,7 @@
             }
           }
 
-          // 3. 習慣：智慧模糊辨識
+          // 3. 習慣
           if (isLeave) {
             previewDone = false;
             suppliesDone = false;
@@ -1850,14 +1847,13 @@
       document.getElementById('modalCurrentScore').innerText = `🚩 ${formatScore(totalModalClassroom)}`;
     }
 
-    // 🌟 渲染【全班千里足跡航行總表】介面
+    // 🌟 渲染【全班千里足跡航行總表】
     function renderClassVoyageUI() {
       const { totalClassSteps, studentMap } = getClassTotalCumulativeMileage();
       const waypoints = [...AppState.voyageWaypoints].sort((a, b) => a.step - b.step);
 
       document.getElementById('voyageTotalClassSteps').innerText = totalClassSteps;
 
-      // 判定當前抵達的國家與下一站目標
       let currentIdx = 0;
       for (let i = 0; i < waypoints.length; i++) {
         if (totalClassSteps >= waypoints[i].step) {
@@ -1870,7 +1866,6 @@
       const curWp = waypoints[currentIdx] || waypoints[0];
       const nextWp = waypoints[currentIdx + 1] || null;
 
-      document.getElementById('voyageCurrentFlag').innerText = curWp.flag;
       document.getElementById('voyageCurrentCountry').innerText = curWp.country;
 
       const promptEl = document.getElementById('voyageNextTargetPrompt');
@@ -1879,9 +1874,8 @@
 
       if (nextWp) {
         const remaining = Math.max(0, nextWp.step - totalClassSteps);
-        promptEl.innerText = `距離下一站【${nextWp.flag} ${nextWp.country}】，全班還差 ${remaining} 步`;
+        promptEl.innerText = `距離下一站【${nextWp.country}】，全班還差 ${remaining} 步`;
 
-        // 計算區間進度百分比
         const segmentTotal = nextWp.step - curWp.step;
         const segmentProgress = Math.max(0, totalClassSteps - curWp.step);
         const percent = Math.min(100, Math.round((segmentProgress / segmentTotal) * 100));
@@ -1889,34 +1883,44 @@
         percentEl.innerText = `本站進度 ${percent}%`;
         barEl.style.width = `${percent}%`;
       } else {
-        promptEl.innerText = `🎉 恭喜全班！已完成環球壯遊終極目標【${curWp.country}】！`;
+        promptEl.innerText = `🎉 恭喜全班！已圓滿達成環球壯遊終極目標【${curWp.country}】！`;
         percentEl.innerText = `100% 達成`;
         barEl.style.width = `100%`;
       }
 
-      // 渲染階梯里程小站點
+      // 🌟 渲染 7 國航線站點階梯圖（一次排開不捲動，配色：訂正青藍 / 蕭淵群旗幟淡黃 / 簡潔石白）
       const msContainer = document.getElementById('voyageMilestonesContainer');
       msContainer.innerHTML = '';
+
       waypoints.forEach((wp, idx) => {
         const isReached = totalClassSteps >= wp.step;
-        const isCurrent = (idx === currentIdx);
+        const isNextTarget = (idx === currentIdx + 1);
+        const isCurrentStay = (idx === currentIdx);
+
+        let cardBgClass = 'bg-stone-100 text-stone-400 border-stone-200';
+        let statusBadge = `<span class="text-[11px] font-bold text-stone-400">尚需 ${wp.step} 步</span>`;
+
+        if (isCurrentStay || isReached) {
+          // 已抵達站點：訂正底色青藍色
+          cardBgClass = 'bg-[#F0F6FA] text-[#1E4E79] border-[#B8D3E6] shadow-xs';
+          statusBadge = `<span class="text-xs font-black text-[#1E4E79] bg-white/90 px-2 py-0.5 rounded-lg border border-[#B8D3E6]">✓ 已抵達</span>`;
+        } else if (isNextTarget) {
+          // 下一站目標中：蕭淵群旗子淡黃色微調（柔和奶黃 #FEF9C3，深褐金字）
+          cardBgClass = 'bg-[#FEF9C3] text-[#854D0E] border-[#FDE047] shadow-sm';
+          statusBadge = `<span class="text-xs font-black text-[#854D0E] bg-white px-2 py-0.5 rounded-lg border border-[#FDE047]">🚩 目標中</span>`;
+        }
+
         const chip = document.createElement('div');
-        chip.className = `px-3 py-1.5 rounded-xl border flex items-center gap-1.5 shrink-0 text-xs sm:text-sm font-black ${
-          isCurrent
-            ? 'bg-[#8C5E3C] text-white border-[#8C5E3C] shadow-xs'
-            : isReached
-            ? 'bg-emerald-100 text-emerald-950 border-emerald-300'
-            : 'bg-white text-stone-400 border-stone-200'
-        }`;
+        chip.className = `p-2.5 sm:p-3 rounded-2xl border-2 flex flex-col justify-between items-center text-center gap-1.5 transition ${cardBgClass}`;
         chip.innerHTML = `
-          <span>${wp.flag}</span>
-          <span>${wp.country}</span>
-          <span class="font-num text-[11px] opacity-80">(${wp.step}步)</span>
+          <span class="text-xs font-bold opacity-75">第 ${idx + 1} 站</span>
+          <span class="text-base sm:text-xl font-black font-serif-tc tracking-tight truncate w-full">${wp.country}</span>
+          <div class="mt-0.5">${statusBadge}</div>
         `;
         msContainer.appendChild(chip);
       });
 
-      // 渲染船員個人貢獻榜
+      // 🌟 渲染十位小船員榜單（拿掉座號、拿掉金銀銅牌，字體全面顯著放大）
       const rosterList = document.getElementById('voyageRosterList');
       rosterList.innerHTML = '';
 
@@ -1934,29 +1938,33 @@
 
       sortedStudents.forEach((st, idx) => {
         const row = document.createElement('div');
-        row.className = 'bg-stone-50 hover:bg-stone-100/80 transition p-2.5 sm:p-3 rounded-xl border border-stone-200 flex items-center justify-between gap-2 shadow-2xs';
-        
-        let rankBadge = '';
-        if (AppState.voyageSort === 'score') {
-          if (idx === 0) rankBadge = '🥇';
-          else if (idx === 1) rankBadge = '🥈';
-          else if (idx === 2) rankBadge = '🥉';
-          else rankBadge = `<span class="w-5 text-center text-xs font-bold text-stone-400 font-num">${idx + 1}</span>`;
-        }
+        row.className = 'bg-stone-50 hover:bg-stone-100 transition p-3 sm:p-4 rounded-2xl border-2 border-stone-200 flex items-center justify-between gap-3 shadow-2xs';
+
+        // 統一編號方塊（1～10，無獎牌）
+        const rankNumber = idx + 1;
+        const rankBadge = `
+          <span class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-stone-200/90 text-stone-700 font-num font-black text-xl sm:text-2xl flex items-center justify-center shrink-0 border border-stone-300">
+            ${rankNumber}
+          </span>
+        `;
 
         row.innerHTML = `
-          <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-            <span class="text-base sm:text-xl shrink-0">${rankBadge}</span>
-            <span class="text-stone-400 font-num font-black text-xs sm:text-sm w-7 sm:w-8 shrink-0">${st.no}號</span>
-            <span class="text-base sm:text-xl font-black font-serif-tc text-stone-900 truncate">${maskName(st.name)}</span>
+          <div class="flex items-center gap-3 sm:gap-5 min-w-0">
+            ${rankBadge}
+            <!-- 學生大名（拿掉座號，顯著放大） -->
+            <span class="text-2xl sm:text-4xl font-black font-serif-tc text-stone-900 tracking-wide truncate">
+              ${maskName(st.name)}
+            </span>
           </div>
 
-          <div class="flex items-center gap-3 sm:gap-5 shrink-0">
+          <div class="flex items-center gap-4 sm:gap-6 shrink-0">
+            <!-- 累積大步數 -->
             <div class="text-right">
-              <span class="text-lg sm:text-2xl font-num font-black text-[#8C5E3C]">${st.steps}</span>
-              <span class="text-xs sm:text-sm font-bold text-stone-600">步</span>
+              <span class="text-3xl sm:text-5xl font-num font-black text-[#8C5E3C]">${st.steps}</span>
+              <span class="text-base sm:text-2xl font-black text-stone-600 ml-1">步</span>
             </div>
-            <span class="w-16 sm:w-20 text-right text-xs sm:text-sm font-num font-bold text-stone-500 bg-white px-2 py-0.5 rounded-lg border border-stone-200">
+            <!-- 百分比大膠囊 -->
+            <span class="w-20 sm:w-24 text-center text-sm sm:text-lg font-num font-black text-stone-600 bg-white px-2.5 py-1 rounded-xl border border-stone-300">
               ${st.pct}%
             </span>
           </div>
@@ -1972,20 +1980,19 @@
 
       AppState.voyageWaypoints.forEach((wp, idx) => {
         const row = document.createElement('div');
-        row.className = 'flex items-center gap-2 bg-stone-50 p-2 rounded-xl border border-stone-200';
+        row.className = 'flex items-center gap-2.5 bg-stone-50 p-2.5 rounded-xl border border-stone-200';
         row.innerHTML = `
-          <span class="text-stone-400 font-bold text-xs w-6 shrink-0">${idx + 1}.</span>
-          <input type="text" value="${wp.flag || ''}" placeholder="國旗" class="w-12 text-center text-lg p-1.5 border border-stone-300 rounded-lg outline-none wp-flag-input" />
-          <input type="text" value="${wp.country || ''}" placeholder="國家名稱" class="flex-1 text-sm sm:text-base p-1.5 border border-stone-300 rounded-lg outline-none font-bold wp-country-input" />
+          <span class="text-stone-400 font-bold text-sm w-7 shrink-0">${idx + 1}.</span>
+          <input type="text" value="${wp.country || ''}" placeholder="國家名稱" class="flex-1 text-base p-2 border border-stone-300 rounded-lg outline-none font-bold wp-country-input" />
           <div class="flex items-center gap-1 shrink-0">
-            <input type="number" value="${wp.step}" min="0" class="w-20 sm:w-24 text-right text-sm sm:text-base p-1.5 border border-stone-300 rounded-lg outline-none font-num font-black wp-step-input" />
-            <span class="text-xs text-stone-500 font-bold">步</span>
+            <input type="number" value="${wp.step}" min="0" class="w-24 sm:w-28 text-right text-base p-2 border border-stone-300 rounded-lg outline-none font-num font-black wp-step-input" />
+            <span class="text-sm text-stone-600 font-bold">步</span>
           </div>
           ${idx > 0 ? `
-            <button onclick="window.appActions.removeWaypointRow(${idx})" class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 font-black text-sm flex items-center justify-center shrink-0">
+            <button onclick="window.appActions.removeWaypointRow(${idx})" class="w-9 h-9 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 font-black text-base flex items-center justify-center shrink-0">
               ✕
             </button>
-          ` : '<div class="w-8"></div>'}
+          ` : '<div class="w-9"></div>'}
         `;
         container.appendChild(row);
       });
@@ -2387,7 +2394,7 @@
         document.getElementById('mileageModal').classList.add('hidden');
       },
 
-      // 🌟 全班航行總表視窗開關
+      // 🌟 【全班千里足跡航行總表】開關與排序
       openClassVoyageModal() {
         renderClassVoyageUI();
         document.getElementById('classVoyageModal').classList.remove('hidden');
@@ -2403,11 +2410,11 @@
         const sortNoBtn = document.getElementById('sortNoBtn');
 
         if (mode === 'score') {
-          sortRankBtn.className = 'px-2.5 py-1 rounded-xl text-xs sm:text-sm font-black bg-[#8C5E3C] text-white border border-[#8C5E3C] stone-btn';
-          sortNoBtn.className = 'px-2.5 py-1 rounded-xl text-xs sm:text-sm font-black bg-stone-100 text-stone-700 border border-stone-300 stone-btn';
+          sortRankBtn.className = 'px-3 py-1.5 rounded-xl text-xs sm:text-base font-black bg-[#8C5E3C] text-white border border-[#8C5E3C] stone-btn';
+          sortNoBtn.className = 'px-3 py-1.5 rounded-xl text-xs sm:text-base font-black bg-stone-100 text-stone-700 border border-stone-300 stone-btn';
         } else {
-          sortRankBtn.className = 'px-2.5 py-1 rounded-xl text-xs sm:text-sm font-black bg-stone-100 text-stone-700 border border-stone-300 stone-btn';
-          sortNoBtn.className = 'px-2.5 py-1 rounded-xl text-xs sm:text-sm font-black bg-[#8C5E3C] text-white border border-[#8C5E3C] stone-btn';
+          sortRankBtn.className = 'px-3 py-1.5 rounded-xl text-xs sm:text-base font-black bg-stone-100 text-stone-700 border border-stone-300 stone-btn';
+          sortNoBtn.className = 'px-3 py-1.5 rounded-xl text-xs sm:text-base font-black bg-[#8C5E3C] text-white border border-[#8C5E3C] stone-btn';
         }
 
         renderClassVoyageUI();
@@ -2429,7 +2436,7 @@
 
       addWaypointRow() {
         const lastStep = AppState.voyageWaypoints.length > 0 ? AppState.voyageWaypoints[AppState.voyageWaypoints.length - 1].step + 500 : 500;
-        AppState.voyageWaypoints.push({ step: lastStep, country: '新國家', flag: '🏳️' });
+        AppState.voyageWaypoints.push({ step: lastStep, country: '新站點' });
         renderWaypointsEditor();
       },
 
@@ -2443,7 +2450,7 @@
       },
 
       resetDefaultWaypoints() {
-        if (confirm('確定要恢復預設的 6 國航線目標嗎？')) {
+        if (confirm('確定要恢復預設的 7 站亞洲航線目標嗎？')) {
           AppState.voyageWaypoints = JSON.parse(JSON.stringify(DEFAULT_WAYPOINTS));
           renderWaypointsEditor();
           showToast('已恢復預設航線', 'info');
@@ -2455,13 +2462,11 @@
         const newWaypoints = [];
 
         rows.forEach(r => {
-          const flag = r.querySelector('.wp-flag-input').value.trim() || '🏳️';
-          const country = r.querySelector('.wp-country-input').value.trim() || '未知國家';
+          const country = r.querySelector('.wp-country-input').value.trim() || '未知站點';
           const step = parseInt(r.querySelector('.wp-step-input').value, 10) || 0;
-          newWaypoints.push({ flag, country, step });
+          newWaypoints.push({ country, step });
         });
 
-        // 依步數自動從小到大排序
         newWaypoints.sort((a, b) => a.step - b.step);
         AppState.voyageWaypoints = newWaypoints;
         localStorage.setItem('class_voyage_waypoints', JSON.stringify(newWaypoints));
@@ -2612,253 +2617,4 @@
 
             let statusBg = 'bg-rose-50 border-rose-300 text-rose-950';
             let iconText = '✗';
-            let iconColor = 'text-rose-600';
-            let badgeBg = 'bg-rose-100 border-rose-300 text-rose-900';
-            let labelText = '還未訂正';
-            let scoreText = '0';
-            let scoreColor = 'text-stone-400';
-
-            if (status === 'green') {
-              totalCorrectionScore += 1;
-              statusBg = 'bg-emerald-50 border-emerald-300 text-emerald-950';
-              iconText = '✓';
-              iconColor = 'text-emerald-600';
-              badgeBg = 'bg-emerald-100 border-emerald-300 text-emerald-950';
-              labelText = '當天完成';
-              scoreText = '+1';
-              scoreColor = 'text-emerald-700';
-            } else if (status === 'yellow') {
-              totalCorrectionScore += 1;
-              statusBg = 'bg-amber-50/80 border-amber-300 text-amber-950';
-              iconText = '✓';
-              iconColor = 'text-amber-600';
-              badgeBg = 'bg-yellow-100 border-yellow-300 text-yellow-950';
-              labelText = '補訂正';
-              scoreText = '+1';
-              scoreColor = 'text-amber-700';
-            }
-
-            const row = document.createElement('div');
-            row.className = `p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border-2 flex items-center justify-between gap-2 sm:gap-3 shadow-xs ${statusBg}`;
-            row.innerHTML = `
-              <div class="flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1">
-                <span class="text-xl sm:text-3xl font-black ${iconColor} shrink-0">${iconText}</span>
-                <span class="text-base sm:text-2xl font-black font-serif-tc text-stone-900 whitespace-nowrap overflow-hidden text-ellipsis">${tName}</span>
-              </div>
-              <div class="flex items-center gap-1.5 sm:gap-3 shrink-0 ml-auto">
-                <span class="w-10 sm:w-14 text-center text-lg sm:text-3xl font-num font-black ${scoreColor}">
-                  ${scoreText}
-                </span>
-                <span class="w-20 sm:w-28 text-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl border text-sm sm:text-xl font-black whitespace-nowrap ${badgeBg}">
-                  ${labelText}
-                </span>
-              </div>
-            `;
-            container.appendChild(row);
-          });
-
-          document.getElementById('correctionTotalScoreBadge').innerText = formatScore(totalCorrectionScore);
-        }
-
-        document.getElementById('correctionModal').classList.remove('hidden');
-      },
-
-      closeCorrectionModal() {
-        document.getElementById('correctionModal').classList.add('hidden');
-      },
-
-      toggleAuthModal() {
-        if (AppState.isTeacher) {
-          if (confirm('確定要登出教師身分嗎？')) {
-            auth.signOut().then(() => {
-              showToast('已登出教師身分，切換為學生模式');
-            });
-          }
-        } else {
-          document.getElementById('authErrorMessage').classList.add('hidden');
-          document.getElementById('teacherEmailInput').value = '';
-          document.getElementById('teacherPwdInput').value = '';
-          document.getElementById('teacherAuthModal').classList.remove('hidden');
-        }
-      },
-
-      closeAuthModal() {
-        document.getElementById('teacherAuthModal').classList.add('hidden');
-      },
-
-      verifyTeacherAuth() {
-        const email = document.getElementById('teacherEmailInput').value.trim();
-        const pwd = document.getElementById('teacherPwdInput').value.trim();
-        const errorDiv = document.getElementById('authErrorMessage');
-
-        if (!email || !pwd) {
-          errorDiv.innerText = '請完整輸入帳號與密碼！';
-          errorDiv.classList.remove('hidden');
-          return;
-        }
-
-        const submitBtn = document.getElementById('submitLoginBtn');
-        submitBtn.disabled = true;
-        submitBtn.innerText = '驗證中...';
-        errorDiv.classList.add('hidden');
-
-        auth.signInWithEmailAndPassword(email, pwd)
-          .then(() => {
-            this.closeAuthModal();
-            showToast('教師權限驗證成功！', 'success');
-          })
-          .catch((error) => {
-            console.error('Firebase Auth Error:', error);
-            errorDiv.innerText = '登入失敗：請確認帳號或密碼是否正確。';
-            errorDiv.classList.remove('hidden');
-          })
-          .finally(() => {
-            submitBtn.disabled = false;
-            submitBtn.innerText = '確認登入';
-          });
-      },
-
-      async archiveToday() {
-        if (!AppState.isTeacher) return;
-        const curDate = AppState.currentDate;
-        const dayData = getDayData(curDate);
-
-        if (!dayData.locked) {
-          const assignedHwList = AppState.checkinTasksAssigned[curDate] || [];
-          const studentCheckinMap = AppState.checkinAttendance[curDate] || {};
-          const correctionTasks = AppState.correctionTasks[curDate] || [];
-          const snapshotData = {};
-
-          STUDENTS.forEach(st => {
-            const studentDoc = studentCheckinMap[st.id] || {};
-
-            // 1. 到校
-            const attStatus = getStudentCheckinStatus(st.id, curDate);
-            const isLeave = (attStatus === 'sick' || attStatus === 'personal');
-            const leaveLabel = attStatus === 'sick' ? '病假' : '事假';
-
-            let arrivalScore = 0, arrivalLabel = '未到校';
-            if (attStatus === 'on-time') { arrivalScore = 1; arrivalLabel = '準時'; }
-            else if (attStatus === 'late') { arrivalScore = -2; arrivalLabel = '遲到'; }
-            else if (attStatus === 'sick') { arrivalScore = 0; arrivalLabel = '病假'; }
-            else if (attStatus === 'personal') { arrivalScore = 0; arrivalLabel = '事假'; }
-
-            // 2. 作業
-            let checkinHwScore = 0, checkinHwLabel = '作業';
-            if (isLeave) {
-              checkinHwScore = 0;
-              checkinHwLabel = leaveLabel;
-            } else {
-              let missingHwCount = 0, lateHwCount = 0;
-              if (assignedHwList.length > 0) {
-                assignedHwList.forEach(tName => {
-                  const detailStat = getCheckinTaskDetailStatus(st.id, tName, curDate);
-                  if (detailStat === 'red') missingHwCount++;
-                  else if (detailStat === 'yellow') lateHwCount++;
-                });
-              }
-              if (assignedHwList.length === 0) { checkinHwScore = 0; checkinHwLabel = '本日無作業'; }
-              else if (missingHwCount > 0) { checkinHwScore = -missingHwCount; checkinHwLabel = `缺交 -${missingHwCount}`; }
-              else if (lateHwCount > 0) { checkinHwScore = 0; checkinHwLabel = '遲交完成'; }
-              else { checkinHwScore = 2; checkinHwLabel = '完成'; }
-            }
-
-            // 3. 習慣
-            let previewDone = false, suppliesDone = false, checkinDone = false, habitScore = 0;
-            if (!isLeave) {
-              const completedKeys = Object.keys(studentDoc.completedTasks || {}).filter(k => !!studentDoc.completedTasks[k]);
-              const manualKeys = Object.keys(studentDoc.manualTasks || {}).filter(k => studentDoc.manualTasks[k] === 'done');
-              const allDoneTasks = [...completedKeys, ...manualKeys].map(k => k.trim());
-
-              previewDone = allDoneTasks.some(t => t.includes('預習') && t.includes('複習')) || allDoneTasks.includes('預習') || allDoneTasks.includes('複習');
-              suppliesDone = allDoneTasks.some(t => t.includes('學用品'));
-              checkinDone = allDoneTasks.some(t => t.includes('訂正') && (t.includes('功課') || t.includes('作業')));
-
-              habitScore = (previewDone && suppliesDone && checkinDone) ? 1 : 0;
-            }
-
-            const checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
-
-            // 4. 訂正
-            let correctionScore = 0;
-            let correctionPreviewText = '0 / 0';
-            if (isLeave) {
-              correctionScore = 0;
-              correctionPreviewText = leaveLabel;
-            } else {
-              const doneCorrectionCount = correctionTasks.filter(tName => {
-                const stat = getCorrectionStatus(tName, st.id, curDate);
-                return stat === 'green' || stat === 'yellow';
-              }).length;
-              correctionScore = doneCorrectionCount;
-              correctionPreviewText = correctionTasks.length === 0 ? '0 / 0' : `${doneCorrectionCount} / ${correctionTasks.length}`;
-            }
-
-            // 5. 表現
-            const records = dayData.records[st.id] || [];
-            const classroomScore = records.reduce((acc, r) => acc + (r.step || 0), 0);
-
-            const totalScore = checkinSubtotal + correctionScore + classroomScore;
-
-            snapshotData[st.id] = {
-              arrivalScore, arrivalLabel,
-              checkinHwScore, checkinHwLabel,
-              previewDone, suppliesDone, checkinDone, habitScore,
-              checkinScore: checkinSubtotal,
-              correctionScore,
-              correctionPreviewText,
-              classroomScore,
-              totalScore
-            };
-          });
-
-          dayData.snapshot = snapshotData;
-          dayData.locked = true;
-          showToast('今日修為已正式歸檔封存！已固化入帳千里足跡', 'success');
-        } else {
-          dayData.locked = false;
-          showToast('已解除歸檔封存，恢復動態連動', 'info');
-        }
-
-        await persistDayData(curDate);
-        renderDatePills();
-        renderStudentCards();
-        if (!document.getElementById('classVoyageModal').classList.contains('hidden')) {
-          renderClassVoyageUI();
-        }
-      },
-
-      showConnectionInfo() {
-        showToast('🟢 雙向即時連動中：打卡、訂正、加扣步即時全軌同步', 'success');
-      }
-    };
-
-    function updateClock() {
-      const now = new Date();
-      const month = now.getMonth() + 1;
-      const date = now.getDate();
-      const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-      const dayName = days[now.getDay()];
-
-      const hh = String(now.getHours()).padStart(2, '0');
-      const mm = String(now.getMinutes()).padStart(2, '0');
-      const ss = String(now.getSeconds()).padStart(2, '0');
-
-      document.getElementById('headerDateText').innerText = `${month}月${date}日 ${dayName}`;
-      document.getElementById('headerClockDigits').innerText = `${hh}:${mm}:${ss}`;
-    }
-
-    window.onload = function() {
-      updateClock();
-      setInterval(updateClock, 1000);
-      
-      const mSelect = document.getElementById('practiceMonthSelect');
-      if (mSelect) mSelect.value = AppState.selectedMonth;
-
-      setupRecordedDaysSync();
-      setupWaypointsSync();
-      setupRealtimeSync(AppState.currentDate);
-    };
-  </script>
-</body>
-</html>
+            let iconColor
