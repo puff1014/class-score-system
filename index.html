@@ -93,9 +93,9 @@
 
       <!-- 中間空檔：獨立千里足跡總表按鈕 -->
       <div class="flex items-center justify-center my-2 md:my-0">
-        <button type="button" onclick="window.appActions.openClassVoyageModal()" class="px-5 py-2 sm:px-6 sm:py-2.5 rounded-2xl bg-gradient-to-r from-[#FAF3EA] via-[#F4E8D5] to-[#FAF3EA] hover:from-[#F4E8D5] hover:to-[#EBD5B7] border-2 border-[#D9C4A9] text-[#8C5E3C] font-black text-base sm:text-xl flex items-center justify-center gap-2.5 shadow-sm stone-btn transition cursor-pointer">
+        <button type="button" onclick="window.appActions.openClassVoyageModal()" class="px-4 py-2 sm:px-5 sm:py-2 rounded-2xl bg-gradient-to-r from-[#FAF3EA] via-[#F4E8D5] to-[#FAF3EA] hover:from-[#F4E8D5] hover:to-[#EBD5B7] border-2 border-[#D9C4A9] text-[#8C5E3C] font-black text-base sm:text-xl flex items-center justify-center gap-2 shadow-xs stone-btn transition cursor-pointer whitespace-nowrap shrink-0">
           <span class="text-xl sm:text-2xl">🌍</span>
-          <span class="font-serif-tc tracking-wide">千里足跡總表</span>
+          <span class="font-serif-tc tracking-wide">足跡總表</span>
         </button>
       </div>
 
@@ -311,7 +311,7 @@
           <div>
             <h3 class="text-3xl sm:text-5xl font-black text-stone-900 font-serif-tc tracking-tight">全班千里足跡航行總表</h3>
             <p class="text-sm sm:text-xl font-bold text-amber-950 font-serif-tc tracking-wide mt-1">
-              《淮南子》：「乘眾人之智，則無不任也；用眾人之力，則無不勝也。」
+              「乘眾人之智，則無不任也；用眾人之力，則無不勝也。」
             </p>
           </div>
         </div>
@@ -1849,8 +1849,7 @@
 
     // 🌟 渲染【全班千里足跡航行總表】
     function renderClassVoyageUI() {
-      const modal = document.getElementById('classVoyageModal');
-      if (!modal || modal.classList.contains('hidden')) return;
+      const { totalClassSteps, studentMap } = getClassTotalCumulativeMileage();
 
       const { totalClassSteps, studentMap } = getClassTotalCumulativeMileage();
       const waypoints = [...AppState.voyageWaypoints].sort((a, b) => a.step - b.step);
