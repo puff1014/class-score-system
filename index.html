@@ -2615,4 +2615,249 @@
 
             let statusBg = 'bg-rose-50 border-rose-300 text-rose-950';
             let iconText = '✗';
-            let iconColor
+            let iconColor = 'text-rose-600';
+            let badgeBg = 'bg-rose-100 border-rose-300 text-rose-900';
+            let labelText = '還未訂正';
+            let scoreText = '0';
+            let scoreColor = 'text-stone-400';
+
+            if (status === 'green') {
+              totalCorrectionScore += 1;
+              statusBg = 'bg-emerald-50 border-emerald-300 text-emerald-950';
+              iconText = '✓';
+              iconColor = 'text-emerald-600';
+              badgeBg = 'bg-emerald-100 border-emerald-300 text-emerald-950';
+              labelText = '當天完成';
+              scoreText = '+1';
+              scoreColor = 'text-emerald-700';
+            } else if (status === 'yellow') {
+              totalCorrectionScore += 1;
+              statusBg = 'bg-amber-50/80 border-amber-300 text-amber-950';
+              iconText = '✓';
+              iconColor = 'text-amber-600';
+              badgeBg = 'bg-yellow-100 border-yellow-300 text-yellow-950';
+              labelText = '補訂正';
+              scoreText = '+1';
+              scoreColor = 'text-amber-700';
+            }
+
+            const row = document.createElement('div');
+            row.className = `p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border-2 flex items-center justify-between gap-2 sm:gap-3 shadow-xs ${statusBg}`;
+            row.innerHTML = `
+              <div class="flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1">
+                <span class="text-xl sm:text-3xl font-black ${iconColor} shrink-0">${iconText}</span>
+                <span class="text-base sm:text-2xl font-black font-serif-tc text-stone-900 whitespace-nowrap overflow-hidden text-ellipsis">${tName}</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:gap-3 shrink-0 ml-auto">
+                <span class="w-10 sm:w-14 text-center text-lg sm:text-3xl font-num font-black ${scoreColor}">
+                  ${scoreText}
+                </span>
+                <span class="w-20 sm:w-28 text-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl border text-sm sm:text-xl font-black whitespace-nowrap ${badgeBg}">
+                  ${labelText}
+                </span>
+              </div>
+            `;
+            container.appendChild(row);
+          });
+
+          document.getElementById('correctionTotalScoreBadge').innerText = formatScore(totalCorrectionScore);
+        }
+
+        document.getElementById('correctionModal').classList.remove('hidden');
+      },
+
+      closeCorrectionModal() {
+        document.getElementById('correctionModal').classList.add('hidden');
+      },
+
+      toggleAuthModal() {
+        if (AppState.isTeacher) {
+          if (confirm('確定要登出教師身分嗎？')) {
+            auth.signOut().then(() => {
+              showToast('已登出教師身分，切換為學生模式');
+            });
+          }
+        } else {
+          document.getElementById('authErrorMessage').classList.add('hidden');
+          document.getElementById('teacherEmailInput').value = '';
+          document.getElementById('teacherPwdInput').value = '';
+          document.getElementById('teacherAuthModal').classList.remove('hidden');
+        }
+      },
+
+      closeAuthModal() {
+        document.getElementById('teacherAuthModal').classList.add('hidden');
+      },
+
+      verifyTeacherAuth() {
+        const email = document.getElementById('teacherEmailInput').value.trim();
+        const pwd = document.getElementById('teacherPwdInput').value.trim();
+        const errorDiv = document.getElementById('authErrorMessage');
+
+        if (!email || !pwd) {
+          errorDiv.innerText = '請完整輸入帳號與密碼！';
+          errorDiv.classList.remove('hidden');
+          return;
+        }
+
+        const submitBtn = document.getElementById('submitLoginBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerText = '驗證中...';
+        errorDiv.classList.add('hidden');
+
+        auth.signInWithEmailAndPassword(email, pwd)
+          .then(() => {
+            this.closeAuthModal();
+            showToast('教師權限驗證成功！', 'success');
+          })
+          .catch((error) => {
+            console.error('Firebase Auth Error:', error);
+            errorDiv.innerText = '登入失敗：請確認帳號或密碼是否正確。';
+            errorDiv.classList.remove('hidden');
+          })
+          .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerText = '確認登入';
+          });
+      },
+
+      async archiveToday() {
+        if (!AppState.isTeacher) return;
+        const curDate = AppState.currentDate;
+        const dayData = getDayData(curDate);
+
+        if (!dayData.locked) {
+          const assignedHwList = AppState.checkinTasksAssigned[curDate] || [];
+          const studentCheckinMap = AppState.checkinAttendance[curDate] || {};
+          const correctionTasks = AppState.correctionTasks[curDate] || [];
+          const snapshotData = {};
+
+          STUDENTS.forEach(st => {
+            const studentDoc = studentCheckinMap[st.id] || {};
+
+            const attStatus = getStudentCheckinStatus(st.id, curDate);
+            const isLeave = (attStatus === 'sick' || attStatus === 'personal');
+            const leaveLabel = attStatus === 'sick' ? '病假' : '事假';
+
+            let arrivalScore = 0, arrivalLabel = '未到校';
+            if (attStatus === 'on-time') { arrivalScore = 1; arrivalLabel = '準時'; }
+            else if (attStatus === 'late') { arrivalScore = -2; arrivalLabel = '遲到'; }
+            else if (attStatus === 'sick') { arrivalScore = 0; arrivalLabel = '病假'; }
+            else if (attStatus === 'personal') { arrivalScore = 0; arrivalLabel = '事假'; }
+
+            let checkinHwScore = 0, checkinHwLabel = '作業';
+            if (isLeave) {
+              checkinHwScore = 0;
+              checkinHwLabel = leaveLabel;
+            } else {
+              let missingHwCount = 0, lateHwCount = 0;
+              if (assignedHwList.length > 0) {
+                assignedHwList.forEach(tName => {
+                  const detailStat = getCheckinTaskDetailStatus(st.id, tName, curDate);
+                  if (detailStat === 'red') missingHwCount++;
+                  else if (detailStat === 'yellow') lateHwCount++;
+                });
+              }
+              if (assignedHwList.length === 0) { checkinHwScore = 0; checkinHwLabel = '本日無作業'; }
+              else if (missingHwCount > 0) { checkinHwScore = -missingHwCount; checkinHwLabel = `缺交 -${missingHwCount}`; }
+              else if (lateHwCount > 0) { checkinHwScore = 0; checkinHwLabel = '遲交完成'; }
+              else { checkinHwScore = 2; checkinHwLabel = '完成'; }
+            }
+
+            let previewDone = false, suppliesDone = false, checkinDone = false, habitScore = 0;
+            if (!isLeave) {
+              const completedKeys = Object.keys(studentDoc.completedTasks || {}).filter(k => !!studentDoc.completedTasks[k]);
+              const manualKeys = Object.keys(studentDoc.manualTasks || {}).filter(k => studentDoc.manualTasks[k] === 'done');
+              const allDoneTasks = [...completedKeys, ...manualKeys].map(k => k.trim());
+
+              previewDone = allDoneTasks.some(t => t.includes('預習') && t.includes('複習')) || allDoneTasks.includes('預習') || allDoneTasks.includes('複習');
+              suppliesDone = allDoneTasks.some(t => t.includes('學用品'));
+              checkinDone = allDoneTasks.some(t => t.includes('訂正') && (t.includes('功課') || t.includes('作業')));
+
+              habitScore = (previewDone && suppliesDone && checkinDone) ? 1 : 0;
+            }
+
+            const checkinSubtotal = arrivalScore + checkinHwScore + habitScore;
+
+            let correctionScore = 0;
+            let correctionPreviewText = '0 / 0';
+            if (isLeave) {
+              correctionScore = 0;
+              correctionPreviewText = leaveLabel;
+            } else {
+              const doneCorrectionCount = correctionTasks.filter(tName => {
+                const stat = getCorrectionStatus(tName, st.id, curDate);
+                return stat === 'green' || stat === 'yellow';
+              }).length;
+              correctionScore = doneCorrectionCount;
+              correctionPreviewText = correctionTasks.length === 0 ? '0 / 0' : `${doneCorrectionCount} / ${correctionTasks.length}`;
+            }
+
+            const records = dayData.records[st.id] || [];
+            const classroomScore = records.reduce((acc, r) => acc + (r.step || 0), 0);
+            const totalScore = checkinSubtotal + correctionScore + classroomScore;
+
+            snapshotData[st.id] = {
+              arrivalScore, arrivalLabel,
+              checkinHwScore, checkinHwLabel,
+              previewDone, suppliesDone, checkinDone, habitScore,
+              checkinScore: checkinSubtotal,
+              correctionScore,
+              correctionPreviewText,
+              classroomScore,
+              totalScore
+            };
+          });
+
+          dayData.snapshot = snapshotData;
+          dayData.locked = true;
+          showToast('今日修為已正式歸檔封存！已固化入帳千里足跡', 'success');
+        } else {
+          dayData.locked = false;
+          showToast('已解除歸檔封存，恢復動態連動', 'info');
+        }
+
+        await persistDayData(curDate);
+        renderDatePills();
+        renderStudentCards();
+        if (!document.getElementById('classVoyageModal').classList.contains('hidden')) {
+          renderClassVoyageUI();
+        }
+      },
+
+      showConnectionInfo() {
+        showToast('🟢 雙向即時連動中：打卡、訂正、加扣步即時全軌同步', 'success');
+      }
+    };
+
+    function updateClock() {
+      const now = new Date();
+      const month = now.getMonth() + 1;
+      const date = now.getDate();
+      const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+      const dayName = days[now.getDay()];
+
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+
+      const dateTextEl = document.getElementById('headerDateText');
+      const clockDigitsEl = document.getElementById('headerClockDigits');
+      if (dateTextEl) dateTextEl.innerText = `${month}月${date}日 ${dayName}`;
+      if (clockDigitsEl) clockDigitsEl.innerText = `${hh}:${mm}:${ss}`;
+    }
+
+    window.onload = function() {
+      updateClock();
+      setInterval(updateClock, 1000);
+      
+      const mSelect = document.getElementById('practiceMonthSelect');
+      if (mSelect) mSelect.value = AppState.selectedMonth;
+
+      setupRecordedDaysSync();
+      setupWaypointsSync();
+      setupRealtimeSync(AppState.currentDate);
+    };
+  </script>
+</body>
+</html>
