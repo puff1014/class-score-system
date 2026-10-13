@@ -1847,6 +1847,42 @@
       document.getElementById('modalCurrentScore').innerText = `🚩 ${formatScore(totalModalClassroom)}`;
     }
 
+    // 🌟 全球常見與各國中文對照 ISO 代碼表（支援 200+ 國家地區自動辨識）
+    const COUNTRY_FLAG_MAP = {
+      '台灣': 'tw', '中華民國': 'tw', '日本': 'jp', '韓國': 'kr', '南韓': 'kr', '北韓': 'kp', '中國': 'cn',
+      '香港': 'hk', '澳門': 'mo', '菲律賓': 'ph', '越南': 'vn', '泰國': 'th', '馬來西亞': 'my', '新加坡': 'sg',
+      '印尼': 'id', '印度': 'in', '緬甸': 'mm', '柬埔寨': 'kh', '寮國': 'la', '汶萊': 'bn', '東帝汶': 'tl',
+      '哈薩克': 'kz', '烏茲別克': 'uz', '吉爾吉斯': 'kg', '塔吉克': 'tj', '土庫曼': 'tm', '蒙古': 'mn',
+      '亞美尼亞': 'am', '喬治亞': 'ge', '亞塞拜然': 'az', '約旦': 'jo', '以色列': 'il', '黎巴嫩': 'lb',
+      '敘利亞': 'sy', '伊拉克': 'iq', '伊朗': 'ir', '土耳其': 'tr', '沙烏地阿拉伯': 'sa', '阿聯酋': 'ae',
+      '阿拉伯聯合大公國': 'ae', '杜拜': 'ae', '卡達': 'qa', '科威特': 'kw', '阿曼': 'om', '葉門': 'ye',
+      '巴林': 'bh', '巴基斯坦': 'pk', '孟加拉': 'bd', '斯里蘭卡': 'lk', '尼泊爾': 'np', '不丹': 'bt',
+      '馬爾地夫': 'mv', '俄羅斯': 'ru', '英國': 'gb', '法國': 'fr', '德國': 'de', '義大利': 'it',
+      '西班牙': 'es', '葡萄牙': 'pt', '荷蘭': 'nl', '比利時': 'be', '瑞士': 'ch', '奧地利': 'at',
+      '瑞典': 'se', '挪威': 'no', '丹麥': 'dk', '芬蘭': 'fi', '冰島': 'is', '愛爾蘭': 'ie',
+      '希臘': 'gr', '波蘭': 'pl', '捷克': 'cz', '匈牙利': 'hu', '烏克蘭': 'ua', '羅馬尼亞': 'ro',
+      '保加利亞': 'bg', '克羅埃西亞': 'hr', '塞爾維亞': 'rs', '梵蒂岡': 'va', '摩納哥': 'mc',
+      '美國': 'us', '加拿大': 'ca', '墨西哥': 'mx', '巴西': 'br', '阿根廷': 'ar', '智利': 'cl',
+      '秘魯': 'pe', '哥倫比亞': 'co', '澳洲': 'au', '紐西蘭': 'nz', '埃及': 'eg', '南非': 'za',
+      '肯亞': 'ke', '摩洛哥': 'ma'
+    };
+
+    // 取得國旗 HTML：自動匹配 200+ 國旗，未匹配則顯示航海羅盤 🧭
+    function getCountryFlagImgHtml(countryName, sizeClass = "w-6 h-4") {
+      if (!countryName) return '🚩';
+      const cleanName = countryName.replace(/\(.*\)|（.*）/g, '').trim();
+      let code = COUNTRY_FLAG_MAP[cleanName];
+      if (!code) {
+        for (const [key, val] of Object.entries(COUNTRY_FLAG_MAP)) {
+          if (cleanName.includes(key)) { code = val; break; }
+        }
+      }
+      if (code) {
+        return `<img src="https://flagcdn.com/w40/${code}.png" class="${sizeClass} inline-block object-contain rounded-xs shadow-2xs border border-stone-200" alt="${cleanName}" onerror="this.outerHTML='🧭'">`;
+      }
+      return '🧭';
+    }
+
     // 🌟 渲染【全班千里足跡航行總表】
     function renderClassVoyageUI() {
       const { totalClassSteps, studentMap } = getClassTotalCumulativeMileage();
@@ -1868,56 +1904,66 @@
       const nextWp = waypoints[currentIdx + 1] || null;
 
       const countryEl = document.getElementById('voyageCurrentCountry');
-      if (countryEl) countryEl.innerText = curWp.country;
-
-      const promptEl = document.getElementById('voyageNextTargetPrompt');
-      const percentEl = document.getElementById('voyageSegmentPercentText');
-      const barEl = document.getElementById('voyageProgressBar');
-
-      if (nextWp) {
-        const remaining = Math.max(0, nextWp.step - totalClassSteps);
-        if (promptEl) promptEl.innerText = `距離下一站【${nextWp.country}】，全班還差 ${remaining} 步`;
-
-        const segmentTotal = Math.max(1, nextWp.step - curWp.step);
-        const segmentProgress = Math.max(0, totalClassSteps - curWp.step);
-        const percent = Math.min(100, Math.round((segmentProgress / segmentTotal) * 100));
-
-        if (percentEl) percentEl.innerText = `本站進度 ${percent}%`;
-        if (barEl) barEl.style.width = `${percent}%`;
-      } else {
-        if (promptEl) promptEl.innerText = `🎉 恭喜全班！已圓滿達成環球壯遊終極目標【${curWp.country}】！`;
-        if (percentEl) percentEl.innerText = `100% 達成`;
-        if (barEl) barEl.style.width = `100%`;
+      if (countryEl) {
+        const flagHtml = getCountryFlagImgHtml(curWp.country, "w-8 sm:w-11 h-6 sm:h-8 mr-2 sm:mr-3 align-middle");
+        countryEl.innerHTML = `${flagHtml}<span>${curWp.country}</span>`;
       }
 
-      // 渲染 7 國航線站點階梯圖
-      const msContainer = document.getElementById('voyageMilestonesContainer');
-      if (msContainer) {
-        msContainer.innerHTML = '';
+      const targetPromptEl = document.getElementById('voyageNextTargetPrompt');
+      const segmentPercentEl = document.getElementById('voyageSegmentPercentText');
+      const progressBarEl = document.getElementById('voyageProgressBar');
+
+      if (!nextWp) {
+        if (targetPromptEl) targetPromptEl.innerHTML = `🎉 恭喜達成壯舉！已抵達終點站【${curWp.country}】！`;
+        if (segmentPercentEl) segmentPercentEl.innerText = `壯遊完成 100%`;
+        if (progressBarEl) progressBarEl.style.width = `100%`;
+      } else {
+        const needed = nextWp.step - totalClassSteps;
+        const nextFlag = getCountryFlagImgHtml(nextWp.country, "w-5 h-3.5 mx-1 inline-block align-middle");
+        if (targetPromptEl) {
+          targetPromptEl.innerHTML = `距離下一站 ${nextFlag}【${nextWp.country}】，全班還差 <span class="text-amber-800 font-num font-black underline underline-offset-4 text-2xl sm:text-3xl">${needed}</span> 步`;
+        }
+
+        const segmentTotal = nextWp.step - curWp.step;
+        const segmentProgress = totalClassSteps - curWp.step;
+        const pct = segmentTotal > 0 ? Math.min(100, Math.max(0, Math.round((segmentProgress / segmentTotal) * 100))) : 0;
+
+        if (segmentPercentEl) segmentPercentEl.innerText = `本站進度 ${pct}%`;
+        if (progressBarEl) progressBarEl.style.width = `${pct}%`;
+      }
+
+      // 渲染 7 站站點（文字放大、卡片加寬、彩色國旗）
+      const container = document.getElementById('voyageMilestonesContainer');
+      if (container) {
+        container.innerHTML = '';
         waypoints.forEach((wp, idx) => {
-          const isReached = totalClassSteps >= wp.step;
-          const isNextTarget = (idx === currentIdx + 1);
-          const isCurrentStay = (idx === currentIdx);
+          let cardBgClass = 'bg-stone-50/90 border-stone-200 text-stone-400 opacity-80';
+          let statusBadge = `<span class="text-[10px] sm:text-xs text-stone-400">尚需 ${wp.step} 步</span>`;
 
-          let cardBgClass = 'bg-stone-100 text-stone-400 border-stone-200';
-          let statusBadge = `<span class="text-[11px] font-bold text-stone-400">尚需 ${wp.step} 步</span>`;
-
-          if (isCurrentStay || isReached) {
-            cardBgClass = 'bg-[#F0F6FA] text-[#1E4E79] border-[#B8D3E6] shadow-xs';
-            statusBadge = `<span class="text-xs font-black text-[#1E4E79] bg-white/90 px-2 py-0.5 rounded-lg border border-[#B8D3E6]">✓ 已抵達</span>`;
-          } else if (isNextTarget) {
-            cardBgClass = 'bg-[#FEF9C3] text-[#854D0E] border-[#FDE047] shadow-sm';
-            statusBadge = `<span class="text-xs font-black text-[#854D0E] bg-white px-2 py-0.5 rounded-lg border border-[#FDE047]">🚩 目標中</span>`;
+          if (idx < currentIdx) {
+            cardBgClass = 'bg-sky-50 border-sky-300 text-sky-900 shadow-xs';
+            statusBadge = `<span class="px-2 py-0.5 bg-sky-100 text-sky-800 rounded-md text-xs font-bold">✓ 已抵達</span>`;
+          } else if (idx === currentIdx) {
+            cardBgClass = 'bg-amber-50 border-2 border-amber-400 text-amber-950 shadow-md ring-2 ring-amber-300/60 scale-[1.03] z-10';
+            statusBadge = `<span class="px-2 py-0.5 bg-amber-400 text-white rounded-md text-xs font-black shadow-2xs animate-pulse">🚩 目前位置</span>`;
+          } else if (idx === currentIdx + 1) {
+            cardBgClass = 'bg-white border-2 border-amber-300 text-stone-800 shadow-xs';
+            statusBadge = `<span class="px-2 py-0.5 bg-amber-100 text-amber-900 rounded-md text-xs font-black">▶ 目標中</span>`;
           }
 
+          const flagImg = getCountryFlagImgHtml(wp.country, "w-6 sm:w-8 h-4 sm:h-5 shadow-2xs");
+
           const chip = document.createElement('div');
-          chip.className = `p-2.5 sm:p-3 rounded-2xl border-2 flex flex-col justify-between items-center text-center gap-1.5 transition ${cardBgClass}`;
+          chip.className = `p-2.5 sm:p-3.5 rounded-2xl border flex flex-col justify-between items-center text-center gap-1.5 transition-all ${cardBgClass} min-w-0`;
           chip.innerHTML = `
-            <span class="text-xs font-bold opacity-75">第 ${idx + 1} 站</span>
-            <span class="text-base sm:text-xl font-black font-serif-tc tracking-tight truncate w-full">${wp.country}</span>
-            <div class="mt-0.5">${statusBadge}</div>
+            <span class="text-xs sm:text-sm font-black opacity-75 whitespace-nowrap">第 ${idx + 1} 站</span>
+            <div class="my-0.5 flex flex-col items-center gap-1 w-full">
+              ${flagImg}
+              <span class="text-base sm:text-xl font-black font-serif-tc tracking-tight truncate w-full" title="${wp.country}">${wp.country}</span>
+            </div>
+            <div class="mt-0.5 w-full flex justify-center">${statusBadge}</div>
           `;
-          msContainer.appendChild(chip);
+          container.appendChild(chip);
         });
       }
 
@@ -1983,11 +2029,19 @@
             <input type="number" value="${wp.step}" min="0" class="w-24 sm:w-28 text-right text-base p-2 border border-stone-300 rounded-lg outline-none font-num font-black wp-step-input" />
             <span class="text-sm text-stone-600 font-bold">步</span>
           </div>
-          ${idx > 0 ? `
-            <button onclick="window.appActions.removeWaypointRow(${idx})" class="w-9 h-9 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 font-black text-base flex items-center justify-center shrink-0">
-              ✕
-            </button>
-          ` : '<div class="w-9"></div>'}
+          <div class="flex items-center gap-1 shrink-0">
+              ${idx > 0 ? `
+                <button type="button" onclick="window.appActions.moveWaypointUp(${idx})" title="上移" class="w-8 h-8 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 font-black text-sm flex items-center justify-center border border-stone-300">
+                  <i class="fa-solid fa-arrow-up"></i>
+                </button>
+                <button type="button" onclick="window.appActions.moveWaypointDown(${idx})" title="下移" class="w-8 h-8 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 font-black text-sm flex items-center justify-center border border-stone-300">
+                  <i class="fa-solid fa-arrow-down"></i>
+                </button>
+                <button type="button" onclick="window.appActions.removeWaypointRow(${idx})" title="刪除" class="w-8 h-8 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-black text-sm flex items-center justify-center border border-rose-200">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              ` : '<div class="w-[104px] text-center text-xs text-stone-400 font-bold">起點固定</div>'}
+            </div>
         `;
         container.appendChild(row);
       });
@@ -2443,7 +2497,31 @@
         AppState.voyageWaypoints.splice(index, 1);
         renderWaypointsEditor();
       },
+moveWaypointUp(index) {
+      if (index <= 1) {
+        showToast('第 1 站起點無法移動，且已經是最前站！', 'warning');
+        return;
+      }
+      const temp = AppState.voyageWaypoints[index];
+      AppState.voyageWaypoints[index] = AppState.voyageWaypoints[index - 1];
+      AppState.voyageWaypoints[index - 1] = temp;
+      renderWaypointsEditor();
+    },
 
+    moveWaypointDown(index) {
+      if (index === 0) {
+        showToast('第 1 站起點位置固定！', 'warning');
+        return;
+      }
+      if (index >= AppState.voyageWaypoints.length - 1) {
+        showToast('已經是最後一站囉！', 'warning');
+        return;
+      }
+      const temp = AppState.voyageWaypoints[index];
+      AppState.voyageWaypoints[index] = AppState.voyageWaypoints[index + 1];
+      AppState.voyageWaypoints[index + 1] = temp;
+      renderWaypointsEditor();
+    },
       resetDefaultWaypoints() {
         if (confirm('確定要恢復預設的 7 站亞洲航線目標嗎？')) {
           AppState.voyageWaypoints = JSON.parse(JSON.stringify(DEFAULT_WAYPOINTS));
@@ -2462,7 +2540,7 @@
           newWaypoints.push({ country, step });
         });
 
-        newWaypoints.sort((a, b) => a.step - b.step);
+        // newWaypoints.sort((a, b) => a.step - b.step);
         AppState.voyageWaypoints = newWaypoints;
         localStorage.setItem('class_voyage_waypoints', JSON.stringify(newWaypoints));
 
