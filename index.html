@@ -1919,7 +1919,7 @@
         const needed = nextWp.step - totalClassSteps;
         const nextFlag = getCountryFlagImgHtml(nextWp.country, "w-5 h-3.5 mx-1 inline-block align-middle");
         if (targetPromptEl) {
-          targetPromptEl.innerHTML = `距離下一站 ${nextFlag}【${nextWp.country}】，全班還差 <span class="text-amber-800 font-num font-black underline underline-offset-4 text-2xl sm:text-3xl">${needed}</span> 步`;
+          targetPromptEl.innerHTML = `距離下一站 ${nextFlag}【${nextWp.country}】，還差 <span class="text-amber-800 font-num font-black underline underline-offset-4 text-2xl sm:text-3xl">${needed}</span> 步`;
         }
 
         const segmentTotal = nextWp.step - curWp.step;
