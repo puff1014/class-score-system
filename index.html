@@ -1037,7 +1037,30 @@
 
       return { totalMileage, historyList };
     }
+    async function syncAllRecordedDaysFromCloud() {
+      if (!db || !Array.isArray(AppState.recordedDays) || AppState.recordedDays.length === 0) return;
+      const colName = getDailyRecordsColName();
+      const missingDays = AppState.recordedDays.filter(dStr => !AppState.dailyData[dStr] && !localStorage.getItem(`daily_data_${dStr}`));
+      if (missingDays.length === 0) return;
 
+      try {
+        const promises = missingDays.map(dStr => db.collection(colName).doc(dStr).get());
+        const docs = await Promise.all(promises);
+        docs.forEach(docSnap => {
+          if (docSnap.exists) {
+            const data = docSnap.data();
+            const dStr = docSnap.id;
+            AppState.dailyData[dStr] = data;
+            try {
+              localStorage.setItem(`daily_data_${dStr}`, JSON.stringify(data));
+            } catch(e) {}
+          }
+        });
+        renderClassVoyageUI();
+      } catch (err) {
+        console.warn("載入歷史雲端資料略過:", err);
+      }
+    }
     function getClassTotalCumulativeMileage() {
       let total = 0;
       const studentMap = {};
@@ -2445,6 +2468,9 @@
       openClassVoyageModal() {
       if (typeof setupWaypointsSync === 'function') {
         setupWaypointsSync();
+      }
+      if (typeof syncAllRecordedDaysFromCloud === 'function') {
+        syncAllRecordedDaysFromCloud();
       }
       renderClassVoyageUI();
       document.getElementById('classVoyageModal').classList.remove('hidden');
