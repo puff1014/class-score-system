@@ -1038,10 +1038,28 @@
       return { totalMileage, historyList };
     }
     async function syncAllRecordedDaysFromCloud() {
-      if (!db || !Array.isArray(AppState.recordedDays) || AppState.recordedDays.length === 0) return;
-      const colName = getDailyRecordsColName();
-      const missingDays = AppState.recordedDays.filter(dStr => !AppState.dailyData[dStr] && !localStorage.getItem(`daily_data_${dStr}`));
-      if (missingDays.length === 0) return;
+  if (!db) return;
+  const colName = getDailyRecordsColName();
+  try {
+    // 1. 如果手機裡沒有日期清單，直接向雲端抓取所有的歷史日期！
+    if (!AppState.recordedDays || AppState.recordedDays.length <= 1) {
+      const allDocsSnap = await db.collection(colName).get();
+      allDocsSnap.forEach(docSnap => {
+        const dStr = docSnap.id;
+        const data = docSnap.data();
+        if (data && data.locked && data.snapshot) {
+          AppState.dailyData[dStr] = data;
+          try { localStorage.setItem(`daily_data_${dStr}`, JSON.stringify(data)); } catch(e){}
+          if (!AppState.recordedDays.includes(dStr)) {
+            AppState.recordedDays.push(dStr);
+          }
+        }
+      });
+      AppState.recordedDays.sort().reverse();
+      try { localStorage.setItem('recorded_days', JSON.stringify(AppState.recordedDays)); } catch(e){}
+      renderClassVoyageUI();
+      return;
+    }
 
       try {
         const promises = missingDays.map(dStr => db.collection(colName).doc(dStr).get());
