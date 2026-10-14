@@ -1102,6 +1102,30 @@
         console.warn("手機載入雲端里程失敗:", err);
       }
     }
+    // 🚀 將電腦本機的所有歷史里程與封存快照強制推送至 Firebase 雲端
+    async function syncLocalHistoryToCloud() {
+      if (!db) {
+        alert("尚未連線至 Firebase！");
+        return;
+      }
+      const colName = getDailyRecordsColName();
+      const days = AppState.recordedDays || [];
+      let uploadCount = 0;
+
+      for (const dStr of days) {
+        const localData = getDayData(dStr);
+        if (localData) {
+          try {
+            await db.collection(colName).doc(dStr).set(localData, { merge: true });
+            uploadCount++;
+          } catch (e) {
+            console.error(`上傳 ${dStr} 失敗:`, e);
+          }
+        }
+      }
+      alert(`已成功將 ${uploadCount} 天的歷史紀錄同步至雲端！請用手機重新整理查看。`);
+    }
+    window.syncLocalHistoryToCloud = syncLocalHistoryToCloud;
     function setupRealtimeSync(dateStr) {
       if (!db) return;
 
