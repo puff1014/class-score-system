@@ -865,7 +865,7 @@
       correctionAttendance: {},
       checkinAttendance: {},
       checkinTasksAssigned: {},
-      voyageWaypoints: JSON.parse(localStorage.getItem('class_voyage_waypoints') || JSON.stringify(DEFAULT_WAYPOINTS)),
+      voyageWaypoints: JSON.parse(localStorage.getItem('') || JSON.stringify(DEFAULT_WAYPOINTS)),
       voyageSort: 'score'
     };
 
@@ -2443,9 +2443,12 @@
 
       // 🌟 【全班千里足跡航行總表】開關與排序
       openClassVoyageModal() {
-        renderClassVoyageUI();
-        document.getElementById('classVoyageModal').classList.remove('hidden');
-      },
+      if (typeof setupWaypointsSync === 'function') {
+        setupWaypointsSync();
+      }
+      renderClassVoyageUI();
+      document.getElementById('classVoyageModal').classList.remove('hidden');
+    },
 
       closeClassVoyageModal() {
         document.getElementById('classVoyageModal').classList.add('hidden');
