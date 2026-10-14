@@ -1071,7 +1071,37 @@
       });
       return { totalClassSteps: total, studentMap };
     }
+    async function loadCloudMileageForMobile() {
+      if (!db) return;
+      try {
+        const colName = getDailyRecordsColName();
+        const snap = await db.collection(colName).get();
+        if (snap.empty) return;
 
+        let hasNew = false;
+        snap.forEach(doc => {
+          const dStr = doc.id;
+          const data = doc.data();
+          if (data && data.locked && data.snapshot) {
+            AppState.dailyData[dStr] = data;
+            try {
+              localStorage.setItem(`daily_data_${dStr}`, JSON.stringify(data));
+            } catch(e) {}
+            if (!AppState.recordedDays.includes(dStr)) {
+              AppState.recordedDays.push(dStr);
+            }
+            hasNew = true;
+          }
+        });
+
+        if (hasNew) {
+          AppState.recordedDays.sort().reverse();
+          renderClassVoyageUI();
+        }
+      } catch (err) {
+        console.warn("手機載入雲端里程失敗:", err);
+      }
+    }
     function setupRealtimeSync(dateStr) {
       if (!db) return;
 
