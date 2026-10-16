@@ -576,6 +576,7 @@
               </span>
             </div>
             <div class="space-y-1.5 sm:space-y-1">
+              <!-- 1. 慢吞吞 -->
               <div class="bg-white py-1 sm:py-1.5 px-2 sm:px-2.5 rounded-xl sm:rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-1">
                 <button onclick="window.appActions.applyStudentRule('慢吞吞', -1, 'attitude')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-1.5 flex-1 text-left">
                   <span>🐢</span> 慢吞吞
@@ -587,9 +588,10 @@
                 </div>
               </div>
 
+              <!-- 2. 不尊重 -->
               <div class="bg-white py-1 sm:py-1.5 px-2 sm:px-2.5 rounded-xl sm:rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-1">
-                <button onclick="window.appActions.applyStudentRule('不細心', -1, 'attitude')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-1.5 flex-1 text-left">
-                  <span>👀</span> 不細心
+                <button onclick="window.appActions.applyStudentRule('不尊重', -1, 'attitude')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-1.5 flex-1 text-left">
+                  <span>🗣️</span> 不尊重
                 </button>
                 <div class="flex items-center gap-1 bg-amber-50 rounded-lg sm:rounded-xl p-0.5 sm:p-1 border border-amber-200 shrink-0">
                   <button onclick="window.appActions.adjustModalStepper('btn_step_att_2', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 text-base sm:text-xl font-black hover:bg-amber-200 rounded">-</button>
@@ -598,14 +600,39 @@
                 </div>
               </div>
 
+              <!-- 3. 不細心 -->
               <div class="bg-white py-1 sm:py-1.5 px-2 sm:px-2.5 rounded-xl sm:rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-1">
-                <button onclick="window.appActions.applyStudentRule('上課要專心', -1, 'attitude')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-1.5 flex-1 text-left">
-                  <span>📉</span> 上課要專心
+                <button onclick="window.appActions.applyStudentRule('不細心', -1, 'attitude')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-1.5 flex-1 text-left">
+                  <span>👀</span> 不細心
                 </button>
                 <div class="flex items-center gap-1 bg-amber-50 rounded-lg sm:rounded-xl p-0.5 sm:p-1 border border-amber-200 shrink-0">
                   <button onclick="window.appActions.adjustModalStepper('btn_step_att_3', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 text-base sm:text-xl font-black hover:bg-amber-200 rounded">-</button>
                   <span id="btn_step_att_3" class="w-6 text-center text-lg sm:text-2xl font-num font-black text-amber-900">1</span>
                   <button onclick="window.appActions.adjustModalStepper('btn_step_att_3', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 text-base sm:text-xl font-black hover:bg-amber-200 rounded">+</button>
+                </div>
+              </div>
+
+              <!-- 4. 不專心 -->
+              <div class="bg-white py-1 sm:py-1.5 px-2 sm:px-2.5 rounded-xl sm:rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-1">
+                <button onclick="window.appActions.applyStudentRule('不專心', -1, 'attitude')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-1.5 flex-1 text-left">
+                  <span>🪁</span> 不專心
+                </button>
+                <div class="flex items-center gap-1 bg-amber-50 rounded-lg sm:rounded-xl p-0.5 sm:p-1 border border-amber-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_4', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 text-base sm:text-xl font-black hover:bg-amber-200 rounded">-</button>
+                  <span id="btn_step_att_4" class="w-6 text-center text-lg sm:text-2xl font-num font-black text-amber-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_4', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 text-base sm:text-xl font-black hover:bg-amber-200 rounded">+</button>
+                </div>
+              </div>
+
+              <!-- 5. 不思考 -->
+              <div class="bg-white py-1 sm:py-1.5 px-2 sm:px-2.5 rounded-xl sm:rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-1">
+                <button onclick="window.appActions.applyStudentRule('不思考', -1, 'attitude')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-1.5 flex-1 text-left">
+                  <span>💤</span> 不思考
+                </button>
+                <div class="flex items-center gap-1 bg-amber-50 rounded-lg sm:rounded-xl p-0.5 sm:p-1 border border-amber-200 shrink-0">
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_5', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 text-base sm:text-xl font-black hover:bg-amber-200 rounded">-</button>
+                  <span id="btn_step_att_5" class="w-6 text-center text-lg sm:text-2xl font-num font-black text-amber-900">1</span>
+                  <button onclick="window.appActions.adjustModalStepper('btn_step_att_5', 1)" class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 text-base sm:text-xl font-black hover:bg-amber-200 rounded">+</button>
                 </div>
               </div>
             </div>
@@ -1828,7 +1855,10 @@
         if (ruleName === '中午未準時回位') return '🔔';
         if (ruleName === '個人工作未完成') return '⚠️';
         if (ruleName === '慢吞吞') return '🐢';
+        if (ruleName === '不尊重') return '🗣️';
         if (ruleName === '不細心') return '👀';
+        if (ruleName === '不專心') return '🪁';
+        if (ruleName === '不思考') return '💤';
         if (ruleName === '上課要專心') return '📉';
         if (ruleName === '結算後修改') return '🚨';
         return defaultSign;
@@ -2350,8 +2380,11 @@
         else if (ruleName === '中午未準時回位') stepperId = 'btn_step_bad_2';
         else if (ruleName === '個人工作未完成') stepperId = 'btn_step_bad_3';
         else if (ruleName === '慢吞吞') stepperId = 'btn_step_att_1';
-        else if (ruleName === '不細心') stepperId = 'btn_step_att_2';
-        else if (ruleName === '上課要專心') stepperId = 'btn_step_att_3';
+        else if (ruleName === '不尊重') stepperId = 'btn_step_att_2';
+        else if (ruleName === '不細心') stepperId = 'btn_step_att_3';
+        else if (ruleName === '不專心') stepperId = 'btn_step_att_4';
+        else if (ruleName === '不思考') stepperId = 'btn_step_att_5';
+        else if (ruleName === '上課要專心') stepperId = 'btn_step_att_4';
 
         const stepVal = parseInt(document.getElementById(stepperId).innerText, 10) || 1;
         const finalStep = sign * stepVal;
