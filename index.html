@@ -600,10 +600,10 @@
                 </div>
               </div>
 
-              <!-- 3. 不細心 -->
+              <!-- 3. 不檢查 -->
               <div class="bg-white py-1 sm:py-1.5 px-2 sm:px-2.5 rounded-xl sm:rounded-2xl border border-amber-200 flex items-center justify-between shadow-xs gap-1">
-                <button onclick="window.appActions.applyStudentRule('不細心', -1, 'attitude')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-1.5 flex-1 text-left">
-                  <span>👀</span> 不細心
+                <button onclick="window.appActions.applyStudentRule('不檢查', -1, 'attitude')" class="text-lg sm:text-2xl font-black text-stone-800 hover:text-amber-800 flex items-center gap-1.5 flex-1 text-left">
+                  <span>👀</span> 不檢查
                 </button>
                 <div class="flex items-center gap-1 bg-amber-50 rounded-lg sm:rounded-xl p-0.5 sm:p-1 border border-amber-200 shrink-0">
                   <button onclick="window.appActions.adjustModalStepper('btn_step_att_3', -1)" class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 text-base sm:text-xl font-black hover:bg-amber-200 rounded">-</button>
@@ -1856,7 +1856,7 @@
         if (ruleName === '個人工作未完成') return '⚠️';
         if (ruleName === '慢吞吞') return '🐢';
         if (ruleName === '不尊重') return '🗣️';
-        if (ruleName === '不細心') return '👀';
+        if (ruleName === '不檢查') return '👀';
         if (ruleName === '不專心') return '🪁';
         if (ruleName === '不思考') return '💤';
         if (ruleName === '上課要專心') return '📉';
@@ -2381,7 +2381,7 @@
         else if (ruleName === '個人工作未完成') stepperId = 'btn_step_bad_3';
         else if (ruleName === '慢吞吞') stepperId = 'btn_step_att_1';
         else if (ruleName === '不尊重') stepperId = 'btn_step_att_2';
-        else if (ruleName === '不細心') stepperId = 'btn_step_att_3';
+        else if (ruleName === '不檢查') stepperId = 'btn_step_att_3';
         else if (ruleName === '不專心') stepperId = 'btn_step_att_4';
         else if (ruleName === '不思考') stepperId = 'btn_step_att_5';
         else if (ruleName === '上課要專心') stepperId = 'btn_step_att_4';
