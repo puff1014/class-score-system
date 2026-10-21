@@ -1029,20 +1029,42 @@
     }
 
     async function persistDayData(dateStr) {
-      const data = getDayData(dateStr);
-      localStorage.setItem(`daily_data_${dateStr}`, JSON.stringify(data));
-      renderStudentCards();
-      renderClassActionState();
+  const data = getDayData(dateStr);
+  localStorage.setItem(`daily_data_${dateStr}`, JSON.stringify(data));
+  renderStudentCards();
+  renderClassActionState();
 
-      if (db) {
-        try {
-          const colName = getDailyRecordsColName();
-          await db.collection(colName).doc(dateStr).set(data, { merge: true });
-        } catch (e) {
-          console.warn("Firestore 即時推播存檔略過 (已在本地生效):", e);
-        }
+  if (db) {
+    try {
+      const colName = getDailyRecordsColName();
+      await db.collection(colName).doc(dateStr).set(data, { merge: true });
+
+      // 當天為鎖定/封存狀態時，同步產生全班航行總覽快照存至雲端
+      if (data.locked) {
+        const { totalClassSteps, studentMap } = getClassTotalCumulativeMileage();
+        const lockedDays = (AppState.recordedDays || []).filter(d => {
+          const dData = AppState.dailyData[d] || JSON.parse(localStorage.getItem(`daily_data_${d}`) || 'null');
+          return dData && dData.locked;
+        }).sort();
+        const latestDay = lockedDays[lockedDays.length - 1] || dateStr;
+
+        const summaryData = {
+          totalClassSteps: totalClassSteps,
+          totalDays: lockedDays.length,
+          lastSettledDate: latestDay,
+          studentMap: studentMap,
+          updatedAt: new Date().toISOString()
+        };
+
+        // 存到本地與 Firestore
+        localStorage.setItem('class_voyage_summary', JSON.stringify(summaryData));
+        await db.collection(colName).doc('voyage_summary').set(summaryData, { merge: true });
       }
+    } catch (e) {
+      console.warn("Firestore 即時推播存檔略過 (已在本地生效):", e);
     }
+  }
+}
 
     function getStudentCumulativeMileage(studentId) {
       let totalMileage = 0;
@@ -2593,15 +2615,48 @@
       },
 
       // 🌟 【全班千里足跡航行總表】開關與排序
-      openClassVoyageModal() {
+      async openClassVoyageModal() {
       if (typeof setupWaypointsSync === 'function') {
         setupWaypointsSync();
       }
-      if (typeof syncAllRecordedDaysFromCloud === 'function') {
-        syncAllRecordedDaysFromCloud();
-      }
+
+      // 先立即打開彈窗並用現有快照渲染，避免畫面卡頓
       renderClassVoyageUI();
       document.getElementById('classVoyageModal').classList.remove('hidden');
+
+      // 1. 優先從雲端抓取最新的「全班航行總覽快照 (voyage_summary)」
+      if (typeof db !== 'undefined' && db && typeof getDailyRecordsColName === 'function') {
+        try {
+          const colName = getDailyRecordsColName();
+          const docSnap = await db.collection(colName).doc('voyage_summary').get();
+          if (docSnap.exists) {
+            const sumData = docSnap.data();
+            localStorage.setItem('class_voyage_summary', JSON.stringify(sumData));
+
+            // 更新畫面上顯示的總步數與結算日期
+            const totalStepsEl = document.getElementById('voyageTotalClassSteps');
+            if (totalStepsEl && sumData.totalClassSteps !== undefined) {
+              totalStepsEl.innerText = sumData.totalClassSteps;
+            }
+            const lastDateEl = document.getElementById('voyageLastSettledDateText');
+            if (lastDateEl && sumData.lastSettledDate) {
+              lastDateEl.innerText = `結算至 ${sumData.lastSettledDate}（共 ${sumData.totalDays || 0} 天）`;
+            }
+          }
+        } catch (e) {
+          console.warn("讀取雲端航行快照略過:", e);
+        }
+      }
+
+      // 2. 背景同步完整歷史日曆資料，同步完成後再次完整重繪
+      if (typeof syncAllRecordedDaysFromCloud === 'function') {
+        try {
+          await syncAllRecordedDaysFromCloud();
+          renderClassVoyageUI();
+        } catch (e) {
+          console.warn("背景同步歷史資料失敗:", e);
+        }
+      }
     },
 
       closeClassVoyageModal() {
