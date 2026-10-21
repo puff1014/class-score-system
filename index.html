@@ -335,12 +335,13 @@
           <span id="voyageCurrentCountry" class="text-4xl sm:text-6xl font-black font-serif-tc text-stone-900 tracking-tight">台灣 (出發起點)</span>
         </div>
         <div class="sm:text-right">
-          <span class="text-sm sm:text-base font-black text-stone-500 block mb-1 tracking-wide">🔥 全班已封存累計步數</span>
-          <div class="flex items-baseline sm:justify-end gap-1.5">
-            <span id="voyageTotalClassSteps" class="text-5xl sm:text-7xl font-num font-black text-[#8C5E3C]">0</span>
-            <span class="text-2xl sm:text-4xl font-black text-[#8C5E3C]">步</span>
-          </div>
+        <span class="text-sm sm:text-base font-black text-stone-500 block mb-1 tracking-wide">🩸 全班已封存累計步數</span>
+        <div class="flex items-baseline sm:justify-end gap-1.5">
+          <span id="voyageTotalClassSteps" class="text-5xl sm:text-7xl font-num font-black text-[#8C5E3C]">0</span>
+          <span class="text-2xl sm:text-4xl font-black text-[#8C5E3C]">步</span>
         </div>
+        <div id="voyageLastSettledDateText" class="text-xs sm:text-sm font-bold text-stone-500 mt-1">結算至 --（共 0 天）</div>
+      </div>
           </div>
 
           <!-- 下一站推進引導文字 -->
@@ -2017,7 +2018,24 @@
       const waypoints = [...AppState.voyageWaypoints].sort((a, b) => a.step - b.step);
 
       const totalStepsEl = document.getElementById('voyageTotalClassSteps');
-      if (totalStepsEl) totalStepsEl.innerText = totalClassSteps;
+    if (totalStepsEl) totalStepsEl.innerText = totalClassSteps;
+
+    // 顯示最新結算日期與累計天數
+    const lastDateEl = document.getElementById('voyageLastSettledDateText');
+    if (lastDateEl) {
+      const days = (AppState.recordedDays || []).filter(d => {
+        const dData = AppState.dailyData[d] || JSON.parse(localStorage.getItem(`daily_data_${d}`) || 'null');
+        return dData && dData.locked;
+      });
+      if (days.length > 0) {
+        // 取排序後最新的一天
+        const sortedDays = [...days].sort();
+        const latestDay = sortedDays[sortedDays.length - 1];
+        lastDateEl.innerText = `結算至 ${latestDay}（共 ${sortedDays.length} 天）`;
+      } else {
+        lastDateEl.innerText = `尚未有封存紀錄（共 0 天）`;
+      }
+    }
 
       let currentIdx = 0;
       for (let i = 0; i < waypoints.length; i++) {
