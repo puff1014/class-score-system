@@ -2035,7 +2035,7 @@
     }
 
     // 🌟 渲染【全班千里足跡航行總表】
-    function renderClassVoyageUI() {
+    function I() {
       const { totalClassSteps, studentMap } = getClassTotalCumulativeMileage();
       const waypoints = [...AppState.voyageWaypoints].sort((a, b) => a.step - b.step);
 
@@ -2620,44 +2620,81 @@
         setupWaypointsSync();
       }
 
-      // 先立即打開彈窗並用現有快照渲染，避免畫面卡頓
-      renderClassVoyageUI();
       document.getElementById('classVoyageModal').classList.remove('hidden');
 
-      // 1. 優先從雲端抓取最新的「全班航行總覽快照 (voyage_summary)」
+      // 1. 先抓取雲端總航行快照
+      let sumData = null;
       if (typeof db !== 'undefined' && db && typeof getDailyRecordsColName === 'function') {
         try {
           const colName = getDailyRecordsColName();
           const docSnap = await db.collection(colName).doc('voyage_summary').get();
           if (docSnap.exists) {
-            const sumData = docSnap.data();
+            sumData = docSnap.data();
             localStorage.setItem('class_voyage_summary', JSON.stringify(sumData));
-
-            // 更新畫面上顯示的總步數與結算日期
-            const totalStepsEl = document.getElementById('voyageTotalClassSteps');
-            if (totalStepsEl && sumData.totalClassSteps !== undefined) {
-              totalStepsEl.innerText = sumData.totalClassSteps;
-            }
-            const lastDateEl = document.getElementById('voyageLastSettledDateText');
-            if (lastDateEl && sumData.lastSettledDate) {
-              lastDateEl.innerText = `結算至 ${sumData.lastSettledDate}（共 ${sumData.totalDays || 0} 天）`;
-            }
           }
         } catch (e) {
-          console.warn("讀取雲端航行快照略過:", e);
+          console.warn("讀取雲端航行快照失敗:", e);
         }
       }
 
-      // 2. 背景同步完整歷史日曆資料，同步完成後再次完整重繪
-      if (typeof syncAllRecordedDaysFromCloud === 'function') {
-        try {
-          await syncAllRecordedDaysFromCloud();
-          renderClassVoyageUI();
-        } catch (e) {
-          console.warn("背景同步歷史資料失敗:", e);
+      // 如果雲端抓不到，退回讀取本地快照
+      if (!sumData) {
+        sumData = JSON.parse(localStorage.getItem('class_voyage_summary') || 'null');
+      }
+
+      // 2. 執行本機渲染
+      renderClassVoyageUI();
+
+      // 3. 關鍵：如果快照存在，強制把畫面的步數、天數覆蓋為雲端真實數據（避免手機被本機少算的天數覆蓋）
+      if (sumData && sumData.totalClassSteps !== undefined) {
+        const totalStepsEl = document.getElementById('voyageTotalClassSteps');
+        if (totalStepsEl) totalStepsEl.innerText = sumData.totalClassSteps;
+
+        const lastDateEl = document.getElementById('voyageLastSettledDateText');
+        if (lastDateEl && sumData.lastSettledDate) {
+          lastDateEl.innerText = `結算至 ${sumData.lastSettledDate}（共 ${sumData.totalDays || 0} 天）`;
+        }
+
+        // 重新依據快照步數計算當前站點與進度條
+        const waypoints = [...AppState.voyageWaypoints].sort((a, b) => a.step - b.step);
+        let currWp = waypoints[0];
+        let nextWp = null;
+        for (let i = 0; i < waypoints.length; i++) {
+          if (sumData.totalClassSteps >= waypoints[i].step) {
+            currWp = waypoints[i];
+            nextWp = waypoints[i + 1] || null;
+          } else {
+            if (!nextWp) nextWp = waypoints[i];
+            break;
+          }
+        }
+
+        // 更新當前位置與下一站資訊
+        const currLocEl = document.getElementById('voyageCurrentLocationText');
+        if (currLocEl && currWp) currLocEl.innerText = currWp.country;
+
+        const nextInfoEl = document.getElementById('voyageNextStationInfo');
+        if (nextInfoEl) {
+          if (nextWp) {
+            const diff = nextWp.step - sumData.totalClassSteps;
+            const range = nextWp.step - currWp.step;
+            const progress = range > 0 ? Math.min(100, Math.max(0, Math.round(((sumData.totalClassSteps - currWp.step) / range) * 100))) : 100;
+            nextInfoEl.innerHTML = `距離下一站 <span class="font-bold">【${nextWp.country}】</span>，還差 <span class="text-[#8C5E3C] font-black underline">${diff}</span> 步 <span class="ml-2 px-2 py-0.5 bg-amber-100 text-amber-800 text-xs rounded-full">本站進度 ${progress}%</span>`;
+            
+            const barEl = document.getElementById('voyageProgressBar');
+            if (barEl) barEl.style.width = `${progress}%`;
+          } else {
+            nextInfoEl.innerHTML = `<span class="text-emerald-700 font-bold">🎉 已完成所有航程目標！</span>`;
+            const barEl = document.getElementById('voyageProgressBar');
+            if (barEl) barEl.style.width = `100%`;
+          }
         }
       }
-    },
+
+      // 4. 背景同步歷史資料
+      if (typeof syncAllRecordedDaysFromCloud === 'function') {
+        syncAllRecordedDaysFromCloud().catch(() => {});
+      }
 
       closeClassVoyageModal() {
         document.getElementById('classVoyageModal').classList.add('hidden');
