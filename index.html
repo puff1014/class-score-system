@@ -1172,38 +1172,56 @@
       }
     }
 
-    // 3. 計算航程站點與進度
-    const waypoints = [...AppState.voyageWaypoints].sort((a, b) => a.step - b.step);
-    let currWp = waypoints[0];
-    let nextWp = null;
-
-    for (let i = 0; i < waypoints.length; i++) {
-      if (totalClassSteps >= waypoints[i].step) {
-        currWp = waypoints[i];
-        nextWp = waypoints[i + 1] || null;
-      } else {
-        if (!nextWp) nextWp = waypoints[i];
-        break;
-      }
-    }
-
+    // 更新當前位置
     const currLocEl = document.getElementById('voyageCurrentLocationText');
     if (currLocEl && currWp) currLocEl.innerText = currWp.country;
 
-    const nextInfoEl = document.getElementById('voyageNextStationInfo');
-    if (nextInfoEl) {
-      if (nextWp) {
-        const diff = nextWp.step - totalClassSteps;
-        const range = nextWp.step - currWp.step;
-        const progress = range > 0 ? Math.min(100, Math.max(0, Math.round(((totalClassSteps - currWp.step) / range) * 100))) : 100;
-        nextInfoEl.innerHTML = `距離下一站 <span class="font-bold">【${nextWp.country}】</span>，全班還差 <span class="text-[#8C5E3C] font-black underline">${diff}</span> 步 <span class="ml-2 px-2 py-0.5 bg-amber-100 text-amber-800 text-xs rounded-full">進度 ${progress}%</span>`;
-        const barEl = document.getElementById('voyageProgressBar');
-        if (barEl) barEl.style.width = `${progress}%`;
-      } else {
-        nextInfoEl.innerHTML = `<span class="text-emerald-700 font-bold">🎉 已完成所有航程目標！</span>`;
-        const barEl = document.getElementById('voyageProgressBar');
-        if (barEl) barEl.style.width = `100%`;
+    // 更新下一站提示文字、百分比與彩色進度條
+    const targetPromptEl = document.getElementById('voyageNextTargetPrompt');
+    const percentTextEl = document.getElementById('voyageSegmentPercentText');
+    const barEl = document.getElementById('voyageProgressBar');
+
+    if (nextWp) {
+      const diff = Math.max(0, nextWp.step - totalClassSteps);
+      const startStep = currWp.step || 0;
+      const range = nextWp.step - startStep;
+      const progress = range > 0 ? Math.min(100, Math.max(0, Math.round(((totalClassSteps - startStep) / range) * 100))) : 0;
+
+      if (targetPromptEl) {
+        targetPromptEl.innerHTML = `距離下一站 <span class="font-bold">【${nextWp.country}】</span>，全班還差 <span class="text-[#8C5E3C] font-black underline">${diff}</span> 步`;
       }
+      if (percentTextEl) {
+        percentTextEl.innerText = `進度 ${progress}%`;
+      }
+      if (barEl) {
+        barEl.style.width = `${progress}%`;
+      }
+    } else {
+      if (targetPromptEl) {
+        targetPromptEl.innerHTML = `<span class="text-emerald-700 font-bold">🎉 已完成所有航程目標！</span>`;
+      }
+      if (percentTextEl) {
+        percentTextEl.innerText = `進度 100%`;
+      }
+      if (barEl) {
+        barEl.style.width = `100%`;
+      }
+    }
+
+    // 繪製 7 國航線站點階梯圖
+    const milestonesEl = document.getElementById('voyageMilestonesContainer');
+    if (milestonesEl && waypoints.length > 0) {
+      milestonesEl.innerHTML = waypoints.map(wp => {
+        const isPassed = totalClassSteps >= wp.step;
+        return `
+          <div class="p-2 sm:p-2.5 rounded-xl border ${isPassed ? 'bg-amber-50/90 border-[#8C5E3C] text-[#8C5E3C]' : 'bg-white border-stone-200 text-stone-400'} flex flex-col items-center justify-center text-center">
+            <span class="text-xs font-bold font-num mb-0.5">${wp.step} 步</span>
+            <span class="font-black text-sm sm:text-base ${isPassed ? 'text-stone-800' : 'text-stone-400'}">${wp.country}</span>
+            <span class="text-[10px] mt-1 px-1.5 py-0.2 rounded-md ${isPassed ? 'bg-emerald-100 text-emerald-800 font-bold' : 'bg-stone-100 text-stone-400'}">${isPassed ? '✓ 已抵達' : '未抵達'}</span>
+          </div>
+        `;
+      }).join('');
+    }
     }
 // 4. 繪製學生貢獻榜清單
     const rankListEl = document.getElementById('voyageRosterList');
