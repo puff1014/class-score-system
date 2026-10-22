@@ -2651,12 +2651,16 @@
       if (!sumData) {
         sumData = JSON.parse(localStorage.getItem('class_voyage_summary') || 'null');
       }
-// 2. 執行航行總表渲染
-      renderClassVoyageUI();
+// 2. 執行航行總表渲染（加上 this. 避免報錯）
+      if (typeof this.renderClassVoyageUI === 'function') {
+        this.renderClassVoyageUI();
+      }
 
       // 3. 背景同步歷史資料
       if (typeof syncAllRecordedDaysFromCloud === 'function') {
-        syncAllRecordedDaysFromCloud().then(() => renderClassVoyageUI()).catch(() => {});
+        syncAllRecordedDaysFromCloud().then(() => {
+          if (typeof this.renderClassVoyageUI === 'function') this.renderClassVoyageUI();
+        }).catch(() => {});
       }
     },
 
