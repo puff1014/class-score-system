@@ -1172,6 +1172,21 @@
       }
     }
 
+    // 3. 計算航程站點與進度
+    const waypoints = [...(AppState.voyageWaypoints || [])].sort((a, b) => a.step - b.step);
+    let currWp = waypoints[0] || { country: '台灣 (出發起點)', step: 0 };
+    let nextWp = null;
+
+    for (let i = 0; i < waypoints.length; i++) {
+      if (totalClassSteps >= waypoints[i].step) {
+        currWp = waypoints[i];
+        nextWp = waypoints[i + 1] || null;
+      } else {
+        if (!nextWp) nextWp = waypoints[i];
+        break;
+      }
+    }
+
     // 更新當前位置
     const currLocEl = document.getElementById('voyageCurrentLocationText');
     if (currLocEl && currWp) currLocEl.innerText = currWp.country;
@@ -1222,8 +1237,8 @@
         `;
       }).join('');
     }
-    }
-// 4. 繪製學生貢獻榜清單
+
+    // 4. 繪製學生貢獻榜清單
     const rankListEl = document.getElementById('voyageRosterList');
     if (rankListEl && typeof STUDENTS !== 'undefined') {
       let list = STUDENTS.map(st => ({
