@@ -1154,6 +1154,82 @@
     });
     return { totalClassSteps: total, studentMap };
 }
+    function renderClassVoyageUI() {
+    const { totalClassSteps, studentMap } = getClassTotalCumulativeMileage();
+
+    // 1. 更新總步數顯示
+    const totalEl = document.getElementById('voyageTotalClassSteps');
+    if (totalEl) totalEl.innerText = totalClassSteps;
+
+    // 2. 更新結算天數文字
+    const cached = JSON.parse(localStorage.getItem('class_voyage_summary') || 'null');
+    const lastDateEl = document.getElementById('voyageLastSettledDateText');
+    if (lastDateEl) {
+      if (cached && cached.lastSettledDate) {
+        lastDateEl.innerText = `結算至 ${cached.lastSettledDate}（共 ${cached.totalDays || 0} 天）`;
+      } else {
+        lastDateEl.innerText = `結算至 ${AppState.recordedDays[0] || '--'}（共 ${AppState.recordedDays.length} 天）`;
+      }
+    }
+
+    // 3. 計算航程站點與進度
+    const waypoints = [...AppState.voyageWaypoints].sort((a, b) => a.step - b.step);
+    let currWp = waypoints[0];
+    let nextWp = null;
+
+    for (let i = 0; i < waypoints.length; i++) {
+      if (totalClassSteps >= waypoints[i].step) {
+        currWp = waypoints[i];
+        nextWp = waypoints[i + 1] || null;
+      } else {
+        if (!nextWp) nextWp = waypoints[i];
+        break;
+      }
+    }
+
+    const currLocEl = document.getElementById('voyageCurrentLocationText');
+    if (currLocEl && currWp) currLocEl.innerText = currWp.country;
+
+    const nextInfoEl = document.getElementById('voyageNextStationInfo');
+    if (nextInfoEl) {
+      if (nextWp) {
+        const diff = nextWp.step - totalClassSteps;
+        const range = nextWp.step - currWp.step;
+        const progress = range > 0 ? Math.min(100, Math.max(0, Math.round(((totalClassSteps - currWp.step) / range) * 100))) : 100;
+        nextInfoEl.innerHTML = `距離下一站 <span class="font-bold">【${nextWp.country}】</span>，全班還差 <span class="text-[#8C5E3C] font-black underline">${diff}</span> 步 <span class="ml-2 px-2 py-0.5 bg-amber-100 text-amber-800 text-xs rounded-full">進度 ${progress}%</span>`;
+        const barEl = document.getElementById('voyageProgressBar');
+        if (barEl) barEl.style.width = `${progress}%`;
+      } else {
+        nextInfoEl.innerHTML = `<span class="text-emerald-700 font-bold">🎉 已完成所有航程目標！</span>`;
+        const barEl = document.getElementById('voyageProgressBar');
+        if (barEl) barEl.style.width = `100%`;
+      }
+    }
+
+    // 4. 繪製學生貢獻榜清單
+    const rankListEl = document.getElementById('voyageRankList') || document.getElementById('voyageStudentList');
+    if (rankListEl && typeof STUDENTS !== 'undefined') {
+      let list = STUDENTS.map(st => ({
+        id: st.id,
+        name: st.name,
+        steps: (studentMap && studentMap[st.id]) ? studentMap[st.id] : 0
+      }));
+
+      if (AppState.voyageSort === 'score') {
+        list.sort((a, b) => b.steps - a.steps);
+      }
+
+      rankListEl.innerHTML = list.map((st, idx) => `
+        <div class="flex items-center justify-between p-2.5 rounded-xl border border-stone-200 bg-white">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-stone-100 text-stone-600 flex items-center justify-center text-xs font-bold">${idx + 1}</span>
+            <span class="font-bold text-stone-800">${typeof maskName === 'function' ? maskName(st.name) : st.name}</span>
+          </div>
+          <div class="font-black text-[#8C5E3C] font-num">${st.steps} 步</div>
+        </div>
+      `).join('');
+    }
+}
     async function loadCloudMileageForMobile() {
       if (!db) return;
       try {
